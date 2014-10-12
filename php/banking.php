@@ -7,12 +7,12 @@ if (isset($_POST['submit'])) {
 	if (empty($_POST['amount']) || empty($_POST['transaction_code']) || empty($_POST['to_account'])) {
 		$error = "Input is invalid- empty";
 	}
-else
-{
-	$amount=$_POST['amount'];
-	$transaction_code=$_POST['transaction_code'];
-	$account_to = $_POST['to_account'];
-	$details = $_POST['details'];
+	else
+	{
+		$amount=$_POST['amount'];
+		$transaction_code=$_POST['transaction_code'];
+		$account_to = $_POST['to_account'];
+		$details = $_POST['details'];
 		// To protect MySQL injection for Security purpose
 		$transaction_code = stripslashes($transaction_code);
 		$account_to = stripslashes($account_to);
@@ -53,31 +53,38 @@ else
 				$to_a_id = $row['a_id'];
 				$from_a_id = $_SESSION['login_a_id'];
 				$minus_ammount = -$amount;
+				$confirmed = '1';
+				if($amount>=1000){
+					$confirmed ='0';
+				}
 				//perform transaction	
-				$sql="INSERT INTO transactions (t_account_from,t_account_to,t_amount,t_code,t_description)
-				 VALUES ('$from_a_id', '$to_a_id', '$minus_ammount','$transaction_code','$details' )";
+				$sql="INSERT INTO transactions (t_account_from,t_account_to,t_amount,t_code,t_description,t_confirmed)
+				 VALUES ('$from_a_id', '$to_a_id', '$minus_ammount','$transaction_code','$details' ,'$confirmed')";
 				 
 				$con->autocommit(FALSE); //start transaction
 				if (!mysqli_query($con,$sql)) {
 					$con->rollback();
 					die('insert 1 Error: ' . $sql . mysqli_error($con));
 				}
-				$sql ="INSERT INTO transactions (t_account_from,t_account_to,t_amount,t_code,t_description)
-				 VALUES ('$to_a_id', '$from_a_id', '$amount','$transaction_code','$details' )";
+				$sql ="INSERT INTO transactions (t_account_from,t_account_to,t_amount,t_code,t_description,t_confirmed)
+				 VALUES ('$to_a_id', '$from_a_id', '$amount','$transaction_code','$details' ,'$confirmed')";
 				 if (!mysqli_query($con,$sql)) {
 					$con->rollback();
 					die('insert 2 Error: ' . mysqli_error($con));
 				}
 				///update balance
 				$sql = "update accounts as a join 
-				(select t_account_from,sum(t_amount) as balance from transactions group by transactions.t_account_from ) as t 
+				(select t_account_from,sum(t_amount) as balance
+				from transactions 
+				group by t_account_from,t_confirmed 
+				having t_confirmed=1) as t 
 				on a.a_id = t.t_account_from 
 				set a.a_balance = t.balance
 				Where a.a_id ='$from_a_id' OR a.a_id='$to_a_id'";
 				
 				if (!mysqli_query($con,$sql)) {
 					$con->rollback();
-					die('Error: ' . mysqli_error($con));
+					die('Error updating balance: '. $sql . mysqli_error($con));
 				}
 				
 				///deactive tan

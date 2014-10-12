@@ -8,7 +8,7 @@ if (mysqli_connect_errno()) {
   echo "Failed to connect to MySQL: " . mysqli_connect_error();
 }
 $sql = "SELECT 
-t_timestamp,t_amount,--case  t_type when 0 then '+' when 1 then '-' end  as typet, 
+t_timestamp,t_amount,case  t_confirmed when 0 then 'Not confimed' when 1 then 'Confirmed' end  as t_confirmation, 
 afrom.a_name as from_account,
 ato.a_name as to_account,t_description , afrom.a_balance
 FROM transactions
@@ -18,10 +18,17 @@ where afrom.a_user ='$uid'
 order by t_timestamp desc";
 
 $result = mysqli_query($con,$sql);
-$reBalance = mysqli_query($con,"select a_balance from accounts where a_user='$uid'");
+$sqlBalance = "select balance 
+from accounts as a join 
+(select t_account_from, sum(t_amount) as balance from transactions  
+group by t_account_from,t_confirmed
+ having t_confirmed=1) as t
+  on a.a_id = t.t_account_from 
+  where a.a_user='$uid'";
+$reBalance = mysqli_query($con,$sqlBalance);
 $row = mysqli_fetch_assoc($reBalance);
 echo "<h1>Transaction history</h1>";
-echo "Account balance:" .  $row['a_balance'];
+echo "Account balance:" .  $row['balance'];
 echo "<table border='1'>
 <tr>
 <th>#</th>
@@ -30,6 +37,7 @@ echo "<table border='1'>
 <th>From</th>
 <th>To</th>
 <th>Description</th>
+<th>Confirmation status</th>
 </tr>";
 $i =1;
 while($row = mysqli_fetch_array($result)) {
@@ -40,6 +48,7 @@ while($row = mysqli_fetch_array($result)) {
   echo "<td>" . $row['from_account'] . "</td>";
   echo "<td>" . $row['to_account'] . "</td>";
   echo "<td>" . $row['t_description'] . "</td>";
+  echo "<td>" . $row['t_confirmation'] . "</td>";
   echo "</tr>";
   $i=$i+1;
 }

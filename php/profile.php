@@ -1,5 +1,9 @@
 <?php
 include('session.php');
+if ( $_SESSION['login_user_type']=='1'){ 
+	header("Location:admin.php");
+    die(isset($_SESSION['login_user_type']) . $_SESSION['login_user_type']);
+}
 ?>
 <!DOCTYPE html>
 <html>
