@@ -54,7 +54,7 @@ if (isset($_POST['submit'])) {
 				$from_a_id = $_SESSION['login_a_id'];
 				$minus_ammount = -$amount;
 				$confirmed = '1';
-				if($amount>=1000){
+				if($amount>10000){
 					$confirmed ='0';
 				}
 				//perform transaction	
