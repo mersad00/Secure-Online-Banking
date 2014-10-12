@@ -1,4 +1,6 @@
 <?php
+
+include("tangenerator.php");
 ini_set('display_errors', 'On');
 $error=''; // Variable To Store Error Message
 $success= false;
@@ -29,7 +31,7 @@ $account = mysql_real_escape_string($account);
 // Establishing Connection with Server by passing server_name, user_id and password as a parameter
 //$connection = mysql_connect("localhost", "root", "SecurePass!");
 $con=mysqli_connect("localhost","root","SecurePass!","banking");
-
+$con->autocommit(FALSE); //start transaction
 if (mysqli_connect_errno()) {
   echo "Failed to connect to MySQL: " . mysqli_connect_error();
 }
@@ -47,6 +49,7 @@ else{
 $sql="INSERT INTO users (u_name, u_email, u_password) VALUES ('$username', '$email', '$password' )";
 
 if (!mysqli_query($con,$sql)) {
+	$con->rollback();
   die('Error: ' . mysqli_error($con));
 }
 $memberid = mysqli_insert_id($con);
@@ -54,10 +57,19 @@ $balance = "0";
 ///Insert account
 	$sql ="insert into accounts (a_user,a_number,a_balance) values ('$memberid','$account','$balance')";
 	if (!mysqli_query($con,$sql)) {
-  die('Error: ' . mysqli_error($con));
-}
-mysqli_close($con); // Closing Connection
-header('Location: index.php'); // Redirecting To Home Page
+		$con->rollback(); 
+		die('Error: ' . mysqli_error($con));
+	}
+	$account_id = mysqli_insert_id($con);
+	
+	///generate 100 tans
+	generateTans($memberid,$account_id,100,$con);
+	
+	$con->commit();
+    $con->autocommit(TRUE); 
+	mysqli_close($con); // Closing Connection
+	
+	header('Location: index.php'); // Redirecting To Home Page
 //}
 }
 }
