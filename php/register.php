@@ -15,6 +15,7 @@ exit;
 	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
 	<meta name="generator" content="Geany 0.21" />
 </head>
+<body>
 <div id="main">
 <h1>Registration</h1>
 <div id="register">
@@ -38,8 +39,6 @@ exit;
 </form>
 </div>
 </div>
-<body>
-	
 </body>
 
 </html>

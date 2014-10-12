@@ -13,7 +13,7 @@ include('session.php');
 <b id="logout"><a href="logout.php">Log Out</a></b>
 
 </div>
-
+<a href="transfer.php">Transfer</a>
 <?php include 'history.php';?>
 </body>
 </html>
