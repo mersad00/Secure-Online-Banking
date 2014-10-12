@@ -12,3 +12,5 @@ typedef struct
 Transaction** load_transactions(char * filename);
 
 Transaction* convert_transaction(char * line);
+
+int process_transaction(Transaction * t, MYSQL * conn);

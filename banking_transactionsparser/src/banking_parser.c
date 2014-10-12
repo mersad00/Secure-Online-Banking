@@ -7,8 +7,12 @@
 #include<sys/stat.h>
 #include<unistd.h>
 
+#include <my_global.h>
+#include <mysql.h>
+
 #include "bankingtypes.h"
 #include "utils.h"
+#include "banking_transactionprocessor.h"
 
 int main(int argc, char ** args)
 {
@@ -46,6 +50,8 @@ Transaction ** load_transactions(char filename[])
 		exit(-1);
 	}
 		
+	MYSQL * conn = init_bank_connection();
+
 	while((read = getline(&line, &len, fp)) != -1) 
 	{
 		if(line[0] == 0)
@@ -61,10 +67,11 @@ Transaction ** load_transactions(char filename[])
 		{
 			continue;
 		}
-		convert_transaction(line);
-		
+		Transaction * t = convert_transaction(line);
+		process_transaction(t, conn);
 	}	
 			
+	close_database_connection(conn);
 	fclose(fp);
 	if(line)
 		free(line);
