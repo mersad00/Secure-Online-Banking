@@ -49,7 +49,7 @@ $sql="INSERT INTO users (u_name, u_email, u_password) VALUES ('$username', '$ema
 if (!mysqli_query($con,$sql)) {
   die('Error: ' . mysqli_error($con));
 }
-$memberid = mysqli_insert_id;
+$memberid = mysqli_insert_id($con);
 $balance = "0";
 ///Insert account
 	$sql ="insert into accounts (a_user,a_number,a_balance) values ('$memberid','$account','$balance')";
