@@ -25,7 +25,7 @@ exit;
 <input name="submit" type="submit" value=" Login ">
 <span><?php echo $error; ?></span>
 </form>
-<a href="/register.php">Register</a>
+<a href="register.php">Register</a>
 </div>
 </div>
 </body>
