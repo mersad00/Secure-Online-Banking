@@ -51,7 +51,10 @@ function activate_user($user_id){
 	$sql = "update users set u_active =1 where u_id='$user_id'";
 	if(!mysqli_query($con,$sql)){
 		die('Error activate user: ' . mysqli_error($con));
+		exit;
 	}
+	require('email.php');
+	sendTansMailToUser($user_id);//,'mohsen.ahmadv@gmail.com','mohsen');
 }
 
 
