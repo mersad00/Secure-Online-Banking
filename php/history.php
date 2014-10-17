@@ -1,7 +1,12 @@
 
 <?php
-session_start();// Starting Session
-$uid = $_SESSION['login_id'];
+include('session.php');
+
+$uid=$_REQUEST["uid"];
+$uid = stripslashes($uid);
+$uid = mysql_real_escape_string($uid);
+
+//$uid = $_SESSION['login_id'];
 $con=mysqli_connect("localhost","root","SecurePass!","banking");
 // Check connection
 if (mysqli_connect_errno()) {
@@ -54,7 +59,6 @@ while($row = mysqli_fetch_array($result)) {
 }
 
 echo "</table>";
-echo $_SESSION['login_user_type'];
 mysqli_close($con);
 ?>
 

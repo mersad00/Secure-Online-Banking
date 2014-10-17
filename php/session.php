@@ -1,17 +1,37 @@
 <?php
-// Establishing Connection with Server by passing server_name, user_id and password as a parameter
-//$connection = mysql_connect("localhost", "root", "");
-// Selecting Database
-//$db = mysql_select_db("company", $connection);
 session_start();// Starting Session
+$page = basename($_SERVER['PHP_SELF']);
+
 // Storing Session
 $user_check=$_SESSION['login_user'];
-// SQL Query To Fetch Complete Information Of User
-//$ses_sql=mysql_query("select username from login where username='$user_check'", $connection);
-//$row = mysql_fetch_assoc($ses_sql);
-$login_session =$_SESSION['login_user'];//$login_session =$row['username'];
+$login_session =$_SESSION['login_user'];
+$login_type = $_SESSION['login_user_type'];
 if(!isset($login_session)){
-//mysql_close($connection); // Closing Connection
-header('Location: index.php'); // Redirecting To Home Page
+	header('Location: index.php'); // Redirecting To Home Page
 }
+
+switch($page){
+	case 'admin.php':
+	//case 'getuser.php':
+	case 'history.php':
+	case 'customerTransactionHistory.php':
+		$isEmployeePage = TRUE;
+		break;
+	default: 
+		$isEmployeePage = FALSE;
+		break;
+}
+
+if($login_type != 1 && $isEmployeePage)
+{
+	///has no access to admin group pages
+	die('Access denied!'); // Redirecting To Home Page
+	exit;
+}
+if($login_type == 1 && !$isEmployeePage){
+	header('location: admin.php');
+}
+
+
+
 ?>
