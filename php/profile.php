@@ -17,7 +17,8 @@ if ( $_SESSION['login_user_type']=='1'){
 <b id="logout"><a href="logout.php">Log Out</a></b>
 
 </div>
-<a href="transfer.php">Transfer</a>
+<a href="transfer.php">Transfer</a><br>
+<a href='file_transaction.php'>Upload transaction file</a>
 <?php include 'history.php';?>
 </body>
 </html>
