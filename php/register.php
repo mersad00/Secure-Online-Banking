@@ -33,6 +33,9 @@ exit;
 <label>Account Number</label>
 <input id="account" name="account" type="text" size="10">
 <br>
+<label>Register as employee</label>
+<input id="employer" name="employee" type="checkbox" value="yes">
+<br>
 <input name="submit" type="submit" value=" Register ">
 <br>
 <span><?php echo $error; ?></span>
