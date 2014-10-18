@@ -9,8 +9,8 @@ typedef struct
 } Transaction;
 
 
-Transaction** load_transactions(char * filename);
+std::vector<Transaction *> load_transactions(char * filename);
 
 Transaction* convert_transaction(char * line);
 
-int process_transaction(Transaction * t);
+int process_transactions(std::vector<Transaction *> transactions, sql::Connection *con);

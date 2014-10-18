@@ -7,12 +7,20 @@
 #include<sys/stat.h>
 #include<unistd.h>
 
-#include <my_global.h>
-#include <mysql.h>
+//#include <my_global.h>
+//#include <my_sys.h>
+//#include <mysql.h>
+
+
+#include <SQLAPI.h>
+#include <samisc.h>
 
 #include "bankingtypes.h"
 #include "utils.h"
-#include "banking_transactionprocessor.h"
+//#include "banking_transactionprocessor.h"
+#include "banking_transactions.h"
+
+// MYSQL * conn;
 
 int main(int argc, char ** args)
 {
@@ -50,7 +58,7 @@ Transaction ** load_transactions(char filename[])
 		exit(-1);
 	}
 		
-	MYSQL * conn = init_bank_connection();
+//	conn = init_bank_connection();
 
 	while((read = getline(&line, &len, fp)) != -1) 
 	{
@@ -68,10 +76,10 @@ Transaction ** load_transactions(char filename[])
 			continue;
 		}
 		Transaction * t = convert_transaction(line);
-		process_transaction(t, conn);
+		process_transaction(t);
 	}	
 			
-	close_database_connection(conn);
+//	close_database_connection(conn);
 	fclose(fp);
 	if(line)
 		free(line);
@@ -81,8 +89,8 @@ Transaction ** load_transactions(char filename[])
 
 Transaction * convert_transaction(char * line)
 {
-	//vulnerabilities!!
-	printf("retrieved: %s", line);
+	//TODO: vulnerabilities!!
+	//printf("retrieved: %s", line);
 	
 	char delimiters[] =",";
 	char * tan = strtok(line, delimiters);
@@ -91,7 +99,7 @@ Transaction * convert_transaction(char * line)
 	char * amount = strtok(NULL, delimiters);
 	char * description = strtok(NULL, delimiters);
 	
-	//vulnerabilities!!
+	//TODO: vulnerabilities!!
 	//printf("tan %s\n", tan);
 	//printf("src_acc %s\n", src_acc);
 	//printf("dst_acc %s\n", dst_acc);
