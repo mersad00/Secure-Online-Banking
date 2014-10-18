@@ -15,6 +15,7 @@ exit;
 	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
 	<meta name="generator" content="Geany 0.21" />
 </head>
+<body>
 <div id="main">
 <h1>Registration</h1>
 <div id="register">
@@ -32,14 +33,15 @@ exit;
 <label>Account Number</label>
 <input id="account" name="account" type="text" size="10">
 <br>
+<label>Register as employee</label>
+<input id="employer" name="employee" type="checkbox" value="yes">
+<br>
 <input name="submit" type="submit" value=" Register ">
 <br>
 <span><?php echo $error; ?></span>
 </form>
 </div>
 </div>
-<body>
-	
 </body>
 
 </html>
