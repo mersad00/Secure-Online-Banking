@@ -2,9 +2,9 @@
 typedef struct  
 {
 	char tan[16];
-	char src_acc[12];
-	char dst_acc[12];
-	char amount[12];
+	int src_acc;
+	int dst_acc;
+	int amount;
 	char description[251];
 } Transaction;
 
