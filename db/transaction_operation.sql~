@@ -17,10 +17,10 @@ where a_number = 1
  AND tc_active = 1
 );
 select @sufficientBalance;
---update valid transactions counter
+-- update valid transactions counter
 SET @validTransactionsCounter = @validTransactionsCounter + @sufficientBalance;
 
---set flag for processed transaction
+-- set flag for processed transaction
 SET @transactionValid = 0;
 -- insert transaction for sender
 INSERT INTO transactions (t_account_from, t_amount, t_type, t_code, t_description, t_account_to, t_confirmed) 

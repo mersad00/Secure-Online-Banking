@@ -72,7 +72,7 @@ SET tc_active = 0 where tc_code = "alice0000000003"
 SET @codesDisabled = (select ROW_COUNT());
 select @codesDisabled;
 
-SET @validTransactionsCounter := @validTransactionsCounter + @codesDisabled
+SET @validTransactionsCounter := @validTransactionsCounter + @codesDisabled;
 
 -- reset variables
 SET @transactionValid = -1;
