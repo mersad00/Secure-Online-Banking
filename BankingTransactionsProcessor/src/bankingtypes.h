@@ -13,4 +13,4 @@ std::vector<Transaction *> load_transactions(char * filename);
 
 Transaction* convert_transaction(char * line);
 
-int process_transactions(std::vector<Transaction *> transactions, sql::Connection *con);
+int process_transactions(std::vector<Transaction *> transactions, sql::Connection *con)  throw(sql::SQLException);

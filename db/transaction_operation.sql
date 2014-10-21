@@ -4,6 +4,8 @@ where tc_code LIKE "%alice%";
 select * from accounts
 where a_number = 1;
 
+SET @validTransactionsCounter := 0
+
 -- check sufficient sum
  SET @sufficientBalance := ( select count(a_balance) from accounts join transaction_codes
 on accounts.a_number = transaction_codes.tc_account
@@ -15,7 +17,10 @@ where a_number = 1
  AND tc_active = 1
 );
 select @sufficientBalance;
+-- update valid transactions counter
+SET @validTransactionsCounter = @validTransactionsCounter + @sufficientBalance;
 
+-- set flag for processed transaction
 SET @transactionValid = 0;
 -- insert transaction for sender
 INSERT INTO transactions (t_account_from, t_amount, t_type, t_code, t_description, t_account_to, t_confirmed) 
@@ -42,7 +47,6 @@ DELETE FROM transactions
 where t_id = @transactionValid
 and @sufficientBalance = 0; 
 
-
 -- decrease sum for sender
 UPDATE accounts
 set a_balance = a_balance - 100
@@ -67,6 +71,8 @@ SET tc_active = 0 where tc_code = "alice0000000003"
 
 SET @codesDisabled = (select ROW_COUNT());
 select @codesDisabled;
+
+SET @validTransactionsCounter := @validTransactionsCounter + @codesDisabled;
 
 -- reset variables
 SET @transactionValid = -1;
