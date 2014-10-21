@@ -1,6 +1,9 @@
 <?php
-session_start(); // Starting Session
-
+require_once("utils/dbconnection.php");
+ if(!isset($_SESSION)) 
+    {        
+	session_start(); //start session only if it is not already startedonnect
+    }
 ini_set('display_errors', 'On');
 $error=''; // Variable To Store Error Message
 if (isset($_POST['submit'])) {
@@ -23,18 +26,11 @@ if (isset($_POST['submit'])) {
 		$account_to = mysql_real_escape_string($account_to);
 		$details = mysql_real_escape_string($details);
 
-		// Establishing Connection with Server by passing server_name, user_id and password as a parameter
-		//$connection = mysql_connect("localhost", "root", "SecurePass!");
-		$con=mysqli_connect("localhost","root","SecurePass!","banking");
-		if (mysqli_connect_errno()) {
-		  echo "Failed to connect to MySQL: " . mysqli_connect_error();
-		}
-
 		//check transaction code is valid
 		$sql ="select tc_active from transaction_codes where tc_code='$transaction_code' and tc_active = '1'";
 		
 		
-		$query= mysqli_query($con,$sql);
+		$query= mysqli_query($connection,$sql);
 		$rows = mysqli_num_rows($query);
 		if($rows == 0){
 			$error = "transaction code is not valid!";
@@ -43,7 +39,7 @@ if (isset($_POST['submit'])) {
 		{
 			///Check that account exists in db
 			$sql="select a_id from accounts where a_number='$account_to'";
-			$query= mysqli_query($con,$sql);
+			$query= mysqli_query($connection,$sql);
 			$rows = mysqli_num_rows($query);
 			if($rows!=1){
 				$error = "Account number does not exist!";
@@ -61,15 +57,15 @@ if (isset($_POST['submit'])) {
 				$sql="INSERT INTO transactions (t_account_from,t_account_to,t_amount,t_code,t_description,t_confirmed)
 				 VALUES ('$from_a_id', '$to_a_id', '$minus_ammount','$transaction_code','$details' ,'$confirmed')";
 				 
-				$con->autocommit(FALSE); //start transaction
-				if (!mysqli_query($con,$sql)) {
-					$con->rollback();
+				$connection->autocommit(FALSE); //start transaction
+				if (!mysqli_query($connection,$sql)) {
+					$connection->rollback();
 					die('insert 1 Error: ' . $sql . mysqli_error($con));
 				}
 				$sql ="INSERT INTO transactions (t_account_from,t_account_to,t_amount,t_code,t_description,t_confirmed)
 				 VALUES ('$to_a_id', '$from_a_id', '$amount','$transaction_code','$details' ,'$confirmed')";
-				 if (!mysqli_query($con,$sql)) {
-					$con->rollback();
+				 if (!mysqli_query($connection,$sql)) {
+					$connection->rollback();
 					die('insert 2 Error: ' . mysqli_error($con));
 				}
 				///update balance
@@ -82,25 +78,25 @@ if (isset($_POST['submit'])) {
 				set a.a_balance = t.balance
 				Where a.a_id ='$from_a_id' OR a.a_id='$to_a_id'";
 				
-				if (!mysqli_query($con,$sql)) {
-					$con->rollback();
+				if (!mysqli_query($connection,$sql)) {
+					$connection->rollback();
 					die('Error updating balance: '. $sql . mysqli_error($con));
 				}
 				
 				///deactive tan
 				$sql = "update transaction_codes set tc_active = '0' where tc_code ='$transaction_code'";
-				if (!mysqli_query($con,$sql)) {
-					$con->rollback();
+				if (!mysqli_query($connection,$sql)) {
+					$connection->rollback();
 					die('Error: ' . mysqli_error($con));
 				}
 				
-				$con->commit();
-				$con->autocommit(TRUE); 
+				$connection->commit();
+				$connection->autocommit(TRUE); 
 			
 			
 				header('Location: profile.php'); // Redirecting To Home Page
 		}
-		mysqli_close($con); // Closing Connection
+		mysqli_close($connection); // Closing Connection
 
 		}
 }

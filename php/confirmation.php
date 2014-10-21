@@ -1,20 +1,16 @@
 <?php
-
-session_start();// Starting Session
+ if(!isset($_SESSION)) 
+    {        
+	session_start(); //start session only if it is not already started
+    }
 $uid = $_SESSION['login_id'];
-$con=mysqli_connect("localhost","root","SecurePass!","banking");
-// Check connection
-if (mysqli_connect_errno()) {
-  echo "Failed to connect to MySQL: " . mysqli_connect_error();
-}
 $sql = "SELECT t_id,t_account_from,t_account_to,t_amount,t_timestamp
 from transactions where t_confirmed=0";
 
-$result = mysqli_query($con,$sql);
+$result = mysqli_query($connection,$sql);
 echo "<h1>Transactions which need confirmation</h1>";
-echo "<Form action=\"\" method=\"post\"><table border='1'>
+echo "<Form action=\"\" method=\"post\"><table class=\"table table-striped table-condensed\">
 <tr>
-<th>#</th>
 <th>Transaction Id</th>
 <th>Account Id From</th>
 <th>Account Id To</th>
@@ -25,7 +21,6 @@ echo "<Form action=\"\" method=\"post\"><table border='1'>
 $i =1;
 while($row = mysqli_fetch_array($result)) {
   echo "<tr>";
-  echo "<td>" . $i . "</td>";
   echo "<td>" . $row['t_id'] . "</td>";
   echo "<td>" . $row['t_account_from'] . "</td>";
   echo "<td>" . $row['t_account_to'] . "</td>";
@@ -37,7 +32,8 @@ while($row = mysqli_fetch_array($result)) {
 }
 
 echo "</table>";
-echo "<input name=\"submit\" type=\"submit\" value=\" Submit \">";
+echo " <div class=\"col-sm-offset-10 col-sm-2\"><input class=\"btn btn-custom btn-lg btn-block\" name=\"submit\" type=\"submit\" value=\" Confirm \">";
+echo "</div></Form>";
 echo "</Form>";
 
 
@@ -51,15 +47,15 @@ if (isset($_POST['submit'])  && isset($_POST['confirm'])) {
 }
 
 function confirm_transaction($t_id){
-	global $con;
+	global $connection;
 	$sql = "update transactions set t_confirmed =1 where t_id='$t_id'";
-	if(!mysqli_query($con,$sql)){
-		die('Error confirming transaction: ' . mysqli_error($con));
+	if(!mysqli_query($connection,$sql)){
+		die('Error confirming transaction: ' . mysqli_error($connection));
 	}
 }
 
 
-mysqli_close($con);
+mysqli_close($connection);
 
 
 

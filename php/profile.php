@@ -1,13 +1,40 @@
 <?php
+include('functions/banking.php');
 include('session.php');
+include('includes/top.php');
 ?>
-<!DOCTYPE html>
-<html>
-<head>
-<title>Your Home Page</title>
-<link href="style.css" rel="stylesheet" type="text/css">
-<script src="http://code.jquery.com/jquery-latest.min.js"
-        type="text/javascript"></script>
+<body>
+<!-- Page Heading -->
+	<div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="page-header">Welcome
+                    <small><?php echo $login_session; ?></small>
+					<div id="logout"><h4><a href="logout.php">Logout</a></h4></div>
+                </h1>
+			</div>
+        </div>
+	</div>
+		
+<!-- Page Content -->
+	<div class="container">
+		<div class="row">
+			<div class="col-md-4">
+			<div id="userInfo"></div>
+				</div>
+<?php include('transfer.php') ?>
+		</div>
+		<div class = "row">
+		<div class = "col-md-12">
+		<?php  
+					$_REQUEST['uid'] = $_SESSION['login_id'];
+					include('history.php');
+				?>
+		</div>
+
+</div>
+</div>
+<?php include('includes/bottom.php')?>
 <script>
 	function showUserInfo(val) {
 		if (window.XMLHttpRequest) {
@@ -19,9 +46,10 @@ include('session.php');
 		xmlhttp.onreadystatechange=function() {
 			if (xmlhttp.readyState==4 && xmlhttp.status==200) {
 				var record = JSON.parse(xmlhttp.responseText)[0];
-				var info = "<p>User name:"+record.u_name+"</p>"+
-				"<p>Email:"+record.u_email+"</p>"+
-				"<p>Account Number:"+record.a_number+"</p>";
+				var info = "<table class=\"table\">" +
+                    "<tbody><tr class=\"noborder\"><th colspan=\"2\"><h4 id=\"green\"><b>User information</b></h4></th></tr><tr><td>Username:</td><td>"+record.u_name+"</td></tr>"+
+				"<tr><td>Email:</td><td>"+record.u_email+"</td></tr>"+
+				"<tr><td>Account Number:</td><td>"+record.a_number+"</td></tr></tbody></table>";
 				document.getElementById("userInfo").innerHTML=info;
 			}
 		}
@@ -33,21 +61,6 @@ include('session.php');
     showUserInfo(a);
 });
 </script>
-</head>
-<body>
-<div id="profile">
-<b id="welcome">Welcome : <i><?php echo $login_session; ?></i></b>
-<b id="logout"><a href="logout.php">Log Out</a></b>
-
-</div>
-<a href="transfer.php">Transfer</a><br>
-<a href='file_transaction.php'>Upload transaction file</a>
-<div>
-<div id="userInfo"></div>
-<?php  
-$_REQUEST['uid'] = $_SESSION['login_id'];
-include('history.php');
-?>
-</div>
 </body>
 </html>
+

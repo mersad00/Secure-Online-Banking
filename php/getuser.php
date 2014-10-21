@@ -1,4 +1,5 @@
 <?php
+require_once("utils/dbconnection.php");
 include('session.php');
 $searchBy=$_REQUEST["searchby"];
 $key = $_REQUEST["key"];
@@ -23,15 +24,10 @@ if($all=='1')
  else
  $key = " = '$key'";
  
-$con=mysqli_connect("localhost","root","SecurePass!","banking");
-// Check connection
-if (mysqli_connect_errno()) {
-  echo "Failed to connect to MySQL: " . mysqli_connect_error();
-}
 $sql = "select u_id, u_name, u_email, a_number from users inner join accounts on users.u_id = accounts.a_user
 where $searchBy $key order by $searchBy";
 //die($sql);		
-$result = mysqli_query($con,$sql);
+$result = mysqli_query($connection,$sql);
 $i =1;
 $rows = array();
 while($r = mysqli_fetch_assoc($result)) {
@@ -40,7 +36,7 @@ while($r = mysqli_fetch_assoc($result)) {
 print json_encode($rows);
 
 exit;
-
+mysqli_close($connection);
 
 ?>
 

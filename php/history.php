@@ -1,4 +1,5 @@
 
+<?php require_once("utils/dbconnection.php"); ?>
 <?php
 include('session.php');
 
@@ -6,12 +7,6 @@ $uid=$_REQUEST["uid"];
 $uid = stripslashes($uid);
 $uid = mysql_real_escape_string($uid);
 
-//$uid = $_SESSION['login_id'];
-$con=mysqli_connect("localhost","root","SecurePass!","banking");
-// Check connection
-if (mysqli_connect_errno()) {
-  echo "Failed to connect to MySQL: " . mysqli_connect_error();
-}
 $sql = "SELECT 
 t_timestamp,t_amount,case  t_confirmed when 0 then 'Not confimed' when 1 then 'Confirmed' end  as t_confirmation, 
 afrom.a_name as from_account,
@@ -22,21 +17,27 @@ inner join accounts as ato on ato.a_id = t_account_to
 where afrom.a_user ='$uid'
 order by t_timestamp desc";
 
-$result = mysqli_query($con,$sql);
+$result = mysqli_query($connection,$sql);
 $sqlBalance = "select balance 
 from accounts as a join 
 (select t_account_from, sum(t_amount) as balance from transactions  
 group by t_account_from,t_confirmed
- having t_confirmed=1) as t
+ having t_confirmed = 1) as t
   on a.a_id = t.t_account_from 
   where a.a_user='$uid'";
-$reBalance = mysqli_query($con,$sqlBalance);
+$reBalance = mysqli_query($connection,$sqlBalance);
+if($reBalance === FALSE) {
+    die(mysqli_error($connection)); // TODO: better error handling
+}
 $row = mysqli_fetch_assoc($reBalance);
-echo "<h1>Transaction history</h1>";
-echo "Account balance:" .  $row['balance'];
-echo "<table border='1'>
+echo "<h4 id=\"green\">Transaction history</h4>";
+while($row = mysqli_fetch_array($reBalance))
+{
+    echo "Account balance:" .  $row['balance'];
+}
+echo "<table class=\"table table-striped table-condensed\">
 <tr>
-<th>#</th>
+<th>Id</th>
 <th>Date</th>
 <th>Amount</th>
 <th>From</th>
@@ -59,7 +60,7 @@ while($row = mysqli_fetch_array($result)) {
 }
 
 echo "</table>";
-mysqli_close($con);
+mysqli_close($connection);
 ?>
 
 

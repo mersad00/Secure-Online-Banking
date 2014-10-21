@@ -1,44 +1,65 @@
-<?php
-include('session.php');
-include('banking.php');
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-
-<head>
-	<title>untitled</title>
-	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
-	<meta name="generator" content="Geany 0.21" />
-</head>
-
-<body>
-	<div id="main">
-	<h1>Transfer</h1>
-	<div id="transfer">
-	<h2>Transfer</h2>
-	<form action="" method="post">
-	<label>From :</label>
-	<span><?php echo $_SESSION['login_a_name'] . ' ' . $_SESSION['login_a_number']; ?></span>
-	<br>
-	<label>To (Account number):</label>
-<input id="to_account" name="to_account" type="text" size="20">
-<br>
-<label> Amount:</label>
-<input id="amount" name="amount" type="number" size ="20">
-<br>
-<label> Transaction code:</label>
-<input id="transaction_code" name="transaction_code" type="text" size ="20">
-<br>
-<label>Details</label>
-<input id="details" name="details" type="text" size="30">
-<br>
-<input name="submit" type="submit" value=" Submit ">
-<br>
-<span><?php echo $error; ?></span>
-</form>
-</div>
-</div>
-</body>
-
-</html>
+			<div class="col-md-8">
+			<table class="table">
+                    <tbody><tr><th><h4 id="green"><b>Transfer Money</b></h4></th></tr></tbody></table>
+			<div class="col-md-6" style=" border-right: 1px solid #333;">
+			<h4 id="green">Use transaction Form</h4>
+			<section id="myform">
+				<form role="form" action="" method="post" id="transaction-form" class="form-horizontal" autocomplete="off">
+				<div class="form-group">
+                            <label for="to_account" class="col-sm-5 control-label">To: </label>
+							 <div class="col-sm-7">
+                            <input type="text" name="to_account" id="to_account" class="form-control" placeholder="Receiver account number">
+							</div>
+                 </div>
+				 <div class="form-group">
+                            <label for="amount" class="col-sm-5 control-label">Amount</label>
+							    <div class="col-sm-7">
+                            <input type="number" name="amount" id="amount" class="form-control" placeholder="Transfer amount">
+							</div>
+                 </div>
+				 <div class="form-group">
+                            <label for="transaction_code" class="col-sm-5 control-label">Transaction code</label>
+							<div class="col-sm-7">
+                            <input type="text" name="transaction_code" id="transaction_code" class="form-control" placeholder="TAN">
+							</div>
+                 </div>
+				 <div class="form-group">
+                            <label for="details" class="col-sm-5 control-label">Details</label>
+							<div class="col-sm-7">
+                            <input type="textbox" name="details" id="details" class="form-control" placeholder="Description...">
+							</div>
+				</div>
+				<div class="col-sm-offset-5 col-sm-7">
+					<input type="submit" name = "submit" id="btn-login" class="btn btn-custom btn-lg btn-block" value="Transfer">
+				</div>
+				<div class="col-sm-offset-5 col-sm-7 control label">
+					<span class = "error"><?php echo $error; ?></span>
+				</div>
+				</form>
+			</section>
+				
+			</div>
+			<div class="col-md-6">
+			<h4 id="green">Use transaction file</h4>
+				<section id="myform">
+				<form action="functions/upload.php" method="post" enctype="multipart/form-data" id="js-upload-form">
+            <div class="form-inline">
+              <div class="form-group">
+			  <div class="col-sm-12">
+                <input type="file" class="btn btn-default btn-file" name="uploadFile">
+				</div>
+              </div>
+			  <div class="col-sm-offset-2 col-sm-7">
+              <input type="submit" class="btn btn-lg btn-block btn-upload" id="js-upload-submit" value="Upload File">
+			  </div>
+			  <div class="col-sm-3">
+			  </div>
+            </div>
+			<div class="col-sm-12">
+			  <span>Your input must have following format:<br> Account | Amount | Transaction | Code | Description</span>
+			  </div>
+          </form>
+		  </section>
+				
+			</div>
+			</div>

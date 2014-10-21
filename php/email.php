@@ -1,20 +1,17 @@
 <?php
-require 'PHPMailerAutoload.php';
-session_start();// Starting Session
-
-
-
+require_once("utils/dbconnection.php");
+require 'mailer/PHPMailerAutoload.php';
+ if(!isset($_SESSION)) 
+    {        
+	session_start(); //start session only if it is not already started
+    }
 
 function sendTansMailToUser($user_id){
-	$con=mysqli_connect("localhost","root","SecurePass!","banking");
-	// Check connection
-	if (mysqli_connect_errno()) {
-		echo "Failed to connect to MySQL: " . mysqli_connect_error();
-	}
+	global $connection;
 	$sql = "SELECT u_id,u_name,u_email,tc.tc_code from users 
 	join accounts on users.u_id = accounts.a_user join 
 	transaction_codes tc on accounts.a_id  where u_id = '$user_id' and tc_account = a_id";
-	$result = mysqli_query($con,$sql);
+	$result = mysqli_query($connection,$sql);
 	$i =1; 
 	$tans ='<table border=\'1\'>	<tr><th>#</th><th>TAN</th></tr>';
 	while($row = mysqli_fetch_array($result)) {
@@ -25,7 +22,7 @@ function sendTansMailToUser($user_id){
 		$i=$i+1;
 	}
 	$tans = $tans . '</table>';
-	mysqli_close($con);
+	mysqli_close($connection);
 	if(sendMail($recipientEmail,$recipientName,$tans)){ return TRUE;}
 	return FALSE;
 }

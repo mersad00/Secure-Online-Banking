@@ -1,5 +1,8 @@
 <?php
-session_start();// Starting Session
+if(!isset($_SESSION)) 
+    {        
+	session_start(); //start session only if it is not already started
+    }
 $page = basename($_SERVER['PHP_SELF']);
 
 // Storing Session

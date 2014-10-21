@@ -12,10 +12,9 @@ $sql = "SELECT u_id,u_name,u_email,case u_type when 0 then 'Customer' when 1 the
 from users where u_active=0";
 
 $result = mysqli_query($con,$sql);
-echo "<h1>Users who need activation</h1>";
-echo "<Form action=\"\" method=\"post\"><table border='1'>
+echo "<h4 id=\"green\">Transaction history</h4>";
+echo "<form action=\"\" method=\"post\"><table class=\"table table-striped table-condensed\">
 <tr>
-<th>#</th>
 <th>UserId</th>
 <th>User name</th>
 <th>Email</th>
@@ -25,7 +24,6 @@ echo "<Form action=\"\" method=\"post\"><table border='1'>
 $i =1;
 while($row = mysqli_fetch_array($result)) {
   echo "<tr>";
-  echo "<td>" . $i . "</td>";
   echo "<td>" . $row['u_id'] . "</td>";
   echo "<td>" . $row['u_name'] . "</td>";
   echo "<td>" . $row['u_email'] . "</td>";
@@ -38,8 +36,8 @@ while($row = mysqli_fetch_array($result)) {
 echo "</table>";
 echo $activateErr;
 echo '<br>';
-echo "<input name=\"submit\" type=\"submit\" value=\" Submit \">";
-echo "</Form>";
+echo " <div class=\"col-sm-offset-10 col-sm-2\"><input class=\"btn btn-custom btn-lg btn-block\" name=\"submit\" type=\"submit\" value=\" Activate \">";
+echo "</div></Form>";
 mysqli_close($con);
 
 
