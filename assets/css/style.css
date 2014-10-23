@@ -150,9 +150,7 @@ th {
 #footer {
     color: #6d6d6d;
     font-size: 12px;
-    text-align: center;
-	bottom:10px;
-	position:fixed;
+    text-align: left;
 	
 }
 #footer p {

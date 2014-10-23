@@ -8,25 +8,25 @@
 				<div class="form-group">
                             <label for="to_account" class="col-sm-5 control-label">To: </label>
 							 <div class="col-sm-7">
-                            <input type="text" name="to_account" id="to_account" class="form-control" placeholder="Receiver account number">
+                            <input type="text" name="to_account" id="to_account" class="form-control" placeholder="Receiver account number" required>
 							</div>
                  </div>
 				 <div class="form-group">
                             <label for="amount" class="col-sm-5 control-label">Amount</label>
 							    <div class="col-sm-7">
-                            <input type="number" name="amount" id="amount" class="form-control" placeholder="Transfer amount">
+                            <input type="number" name="amount" id="amount" class="form-control" placeholder="Transfer amount" required>
 							</div>
                  </div>
 				 <div class="form-group">
                             <label for="transaction_code" class="col-sm-5 control-label">Transaction code</label>
 							<div class="col-sm-7">
-                            <input type="text" name="transaction_code" id="transaction_code" class="form-control" placeholder="TAN">
+                            <input type="text" name="transaction_code" id="transaction_code" class="form-control" placeholder="TAN" required>
 							</div>
                  </div>
 				 <div class="form-group">
                             <label for="details" class="col-sm-5 control-label">Details</label>
 							<div class="col-sm-7">
-                            <input type="textbox" name="details" id="details" class="form-control" placeholder="Description...">
+                            <input type="textbox" name="details" id="details" class="form-control" placeholder="Description...(optional)">
 							</div>
 				</div>
 				<div class="col-sm-offset-5 col-sm-7">
@@ -46,7 +46,7 @@
             <div class="form-inline">
               <div class="form-group">
 			  <div class="col-sm-12">
-                <input type="file" class="btn btn-default btn-file" name="uploadFile">
+                <input type="file" class="btn btn-default btn-file" id="uploadFile" name="uploadFile" required>
 				</div>
               </div>
 			  <div class="col-sm-offset-2 col-sm-7">
@@ -60,6 +60,6 @@
 			  </div>
           </form>
 		  </section>
-				
+			<div id="chooseFileFirst"> </div>
 			</div>
 			</div>

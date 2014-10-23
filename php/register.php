@@ -1,5 +1,4 @@
 <?php
-include('functions/login.php'); // Includes Login Script
  if(!isset($_SESSION)) 
     {        
 	session_start(); //start session only if it is not already started
@@ -22,19 +21,19 @@ exit;
                     <form role="form" action="" method="post" id="registration-form" autocomplete="off">
                         <div class="form-group">
                             <label for="username" class="sr-only">Username</label>
-                            <input type="text" name="username" id="username" class="form-control" placeholder="username">
+                            <input type="text" name="username" id="username" class="form-control" placeholder="username" required>
                         </div>
                         <div class="form-group">
                             <label for="password" class="sr-only">Password</label>
-                            <input type="password" name="password" id="password" class="form-control" placeholder="********">
+                            <input type="password" name="password" id="password" class="form-control" placeholder="********" required>
                         </div>
                         <div class="form-group">
                             <label for="email" class="sr-only">Email</label>
-                            <input type="email" name="email" id="email" class="form-control" placeholder="somebody@example.com">
+                            <input type="email" name="email" id="email" class="form-control" placeholder="somebody@example.com" required>
                         </div>
 						<div class="form-group">
                             <label for="account" class="sr-only">Account number</label>
-                            <input type="text" name="account" id="account" class="form-control" placeholder="12345678">
+                            <input type="text" name="account" id="account" class="form-control" placeholder="12345678" required>
                         </div>
 						<div class="checkbox">
 							<input id="employee" type="checkbox" name="employee" style="opacity:0; position:absolute; left:9999px;">
