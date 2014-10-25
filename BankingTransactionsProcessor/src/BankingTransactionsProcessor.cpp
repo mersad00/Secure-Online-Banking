@@ -74,6 +74,7 @@ int main(int argc, char ** args) {
 		cout << ", SQLState: " << e.getSQLState() << " )" << endl;
 	}
 
+	cout << endl ;
 	con->close();
 	delete con;
 
