@@ -30,6 +30,8 @@ using namespace std;
 #define DB_PASS "SecurePass!"
 #define DB_DATABASE "banking"
 
+#define DEBUG 0
+
 sql::Connection* initialize_connetion();
 void check_sum(Transaction * t, sql::Connection *con) throw(sql::SQLException);
 void insert_transaction_sender(Transaction * t, int confirmed, sql::Connection *con) throw(sql::SQLException);
@@ -69,9 +71,13 @@ int main(int argc, char ** args) {
 		stmt -> execute ("ROLLBACK;");
 		delete stmt;
 		cout << "# ERR: SQLException " << endl;
-		cout << "# ERR: " << e.what();
-		cout << " (MySQL error code: " << e.getErrorCode();
-		cout << ", SQLState: " << e.getSQLState() << " )" << endl;
+		if(DEBUG == 1)
+		{
+			cout << "# ERR: " << e.what();
+			cout << " (MySQL error code: " << e.getErrorCode();
+			cout << ", SQLState: " << e.getSQLState() << " )" ;
+		}
+		cout  << endl;
 	}
 
 	cout << endl ;
@@ -87,8 +93,6 @@ std::vector<Transaction *> load_transactions(char filename[]) {
 	size_t len = 20;
 	ssize_t read;
 	std::vector<Transaction *> transactions(1);
-
-	//TODO: protect against large files!
 
 	fp = fopen(filename, "r");
 	if (fp == NULL) {
@@ -157,10 +161,11 @@ Transaction * convert_transaction(char * line) {
 		exit(-1);
 	}
 	strncpy(t->description, description, 251);
-
-	printf("loaded: %s %d %d %d %s", t->tan, t->src_acc, t->dst_acc,
+	if(DEBUG == 1)
+	{
+		printf("loaded: %s %d %d %d %s", t->tan, t->src_acc, t->dst_acc,
 			t->amount, t->description);
-
+	}
 	return t;
 }
 
@@ -192,11 +197,18 @@ int process_transactions(std::vector<Transaction *> transactions, sql::Connectio
 				continue;
 			totalTransactions++;
 	}
-	cout << "start>> transactions to process: " << totalTransactions <<endl;
+	if(DEBUG == 1)
+	{
+		cout << "start>> transactions to process: " << totalTransactions <<endl;
+	}
 	stmt -> execute ("START TRANSACTION;");
 
 	char totalTransactionsSql[] = "SET @totalTransactions = ?;";
-	cout << totalTransactionsSql << endl;
+	if(DEBUG == 1)
+	{
+		cout << totalTransactionsSql << endl;
+	}
+
 	prep_stmt = con->prepareStatement(totalTransactionsSql);
 	prep_stmt->setInt(1, totalTransactions); //a_number
 	prep_stmt->execute();
@@ -208,11 +220,13 @@ int process_transactions(std::vector<Transaction *> transactions, sql::Connectio
 		Transaction * t = transactions.at(i) ;
 		if(t == NULL)
 			continue;
-		cout << "processing: tan " << t->tan
+		if(DEBUG == 1)
+		{
+			cout << "processing: tan " << t->tan
 						<< t->src_acc <<" "<<t->dst_acc << " " << t->amount <<" "
 						<< user_id << " " << t->description
 						<< endl;
-
+		}
 		int confirmed = 1;
 		int value = t->amount;
 		if(value > 10000)
@@ -232,7 +246,10 @@ int process_transactions(std::vector<Transaction *> transactions, sql::Connectio
 	//commit OR rollback ar done inside the procedure
 	sql::ResultSet  *res = stmt -> executeQuery ("CALL process_transaction()");
 	while (res->next()) {
-	    cout << "\t... MySQL says: ";
+		if(DEBUG == 1)
+		{
+			cout << "\t... MySQL says: ";
+		}
 	    /* Access column fata by numeric offset, 1 is the first column */
 	    performed_operations = res->getInt(1);
 	    cout << performed_operations << endl;
@@ -248,14 +265,18 @@ int process_transactions(std::vector<Transaction *> transactions, sql::Connectio
 	else {
 		cout << "2 operations / file entry " << endl;
 		cout << "performed operations: " << performed_operations << " from total " << totalTransactions * 2 <<endl;
-		cout << "ERROR: transaction processing ROLLED BACK";
+		cout << "ERROR: transaction processing ROLLED BACK" <<endl;
+		cout << "source account owner invalid OR insufficient balance" << endl;
 	}
 	return totalTransactions;
 }
 
 void check_sum(Transaction * t, sql::Connection *con) throw(sql::SQLException){
 	PreparedStatement *prep_stmt = NULL;
-	cout << "check_sum" << endl;
+	if(DEBUG == 1)
+	{
+		cout << "check_sum" << endl;
+	}
 	//-- check sufficient sum
 	char sql_transaction[] =
 			" SET @sufficientBalance := ( select count(a_balance) from accounts join transaction_codes \
@@ -267,8 +288,10 @@ void check_sum(Transaction * t, sql::Connection *con) throw(sql::SQLException){
 		 AND tc_account = ? \
 		 AND tc_active = 1 \
 		)";
-
-	cout << sql_transaction << endl;
+	if(DEBUG == 1)
+	{
+		cout << sql_transaction << endl;
+	}
 	prep_stmt = con->prepareStatement(sql_transaction);
 	prep_stmt->setInt(1, t->src_acc); //a_number
 	prep_stmt->setInt(2, user_id); //a_user
@@ -294,11 +317,16 @@ void insert_transaction_sender(Transaction * t, int confirmed, sql::Connection *
 	stmt->execute(transactionValid);
 
 	PreparedStatement *prep_stmt = NULL;
-	cout << "insert transaction for sender" <<endl;
+	if(DEBUG == 1)
+	{
+		cout << "insert transaction for sender" <<endl;
+	}
 	char sql_transaction[] = "INSERT INTO transactions (t_account_from, t_amount, t_type, t_code, t_description, t_account_to, t_confirmed) \
 			 VALUES ( ?, ?, ?, ?, ?, ?, ?)";
-
-	cout << sql_transaction << endl;
+	if(DEBUG == 1)
+	{
+		cout << sql_transaction << endl;
+	}
 	prep_stmt = con->prepareStatement(sql_transaction);
 	prep_stmt->setInt(1, t->src_acc); //t_account_from
 	prep_stmt->setInt(2, 0 - t->amount); //t_amount
@@ -328,11 +356,16 @@ void insert_transaction_receiver(Transaction * t, int confirmed, sql::Connection
 	stmt->execute(transactionValid);
 
 	PreparedStatement *prep_stmt = NULL;
-	cout << "insert transaction for receiver" <<endl;
+	if(DEBUG == 1)
+	{
+		cout << "insert transaction for receiver" <<endl;
+	}
 	char sql_transaction[] = "INSERT INTO transactions (t_account_from, t_amount, t_type, t_code, t_description, t_account_to, t_confirmed) \
 			 VALUES ( ?, ?, ?, ?, ?, ?, ?)";
-
-	cout << sql_transaction << endl;
+	if(DEBUG == 1)
+	{
+		cout << sql_transaction << endl;
+	}
 	prep_stmt = con->prepareStatement(sql_transaction);
 	prep_stmt->setInt(1, t->dst_acc); //t_account_from
 	prep_stmt->setInt(2, t->amount); //t_amount
@@ -358,15 +391,20 @@ void update_balance(Transaction * t, sql::Connection *con) throw(sql::SQLExcepti
 
 	//decrease sum for sender
 	PreparedStatement *prep_stmt = NULL;
-	cout << "update_balance" <<endl;
+	if(DEBUG == 1)
+	{
+		cout << "update_balance" <<endl;
+	}
 	char sql_transaction[] = "UPDATE accounts \
 	           set a_balance = a_balance - ? \
 	           where a_number = ? \
 	           and a_user = ? \
 	           and @sufficientBalance <> 0;"
 			;
-
-	cout << sql_transaction << endl;
+	if(DEBUG == 1)
+	{
+		cout << sql_transaction << endl;
+	}
 	prep_stmt = con->prepareStatement(sql_transaction);
 	prep_stmt->setInt(1, t->amount); //t_amount
 	prep_stmt->setInt(2, t->src_acc); //t_account_from
@@ -376,14 +414,19 @@ void update_balance(Transaction * t, sql::Connection *con) throw(sql::SQLExcepti
 
 	//increase sum for receiver
 	prep_stmt = NULL;
-	cout << "update_balance" <<endl;
+	if(DEBUG == 1)
+	{
+		cout << "update_balance" <<endl;
+	}
 	char sql_transaction2[] = "UPDATE accounts \
 			   set a_balance = a_balance + ? \
 			   where a_number = ? \
 			   and @sufficientBalance <> 0;"
 			;
-
-	cout << sql_transaction << endl;
+	if(DEBUG == 1)
+	{
+		cout << sql_transaction << endl;
+	}
 	prep_stmt = con->prepareStatement(sql_transaction2);
 	prep_stmt->setInt(1, t->amount); //t_amount
 	prep_stmt->setInt(2, t->dst_acc); //t_account_from
@@ -395,7 +438,10 @@ void diactivate_transaction_code(Transaction * t, sql::Connection *con) throw(sq
 
 	//disable transaction code
 	PreparedStatement *prep_stmt = NULL;
-	cout << "diactivate_transaction_code" <<endl;
+	if(DEBUG == 1)
+	{
+		cout << "diactivate_transaction_code" <<endl;
+	}
 	char sql_transaction[] = "UPDATE transaction_codes \
 			   SET tc_active = 0 \
 			   WHERE tc_code = ? \
@@ -403,8 +449,10 @@ void diactivate_transaction_code(Transaction * t, sql::Connection *con) throw(sq
 			   AND tc_active = 1 \
 			   and @sufficientBalance <> 0;"
 			;
-
-	cout << sql_transaction << endl;
+	if(DEBUG == 1)
+	{
+		cout << sql_transaction << endl;
+	}
 	prep_stmt = con->prepareStatement(sql_transaction);
 	prep_stmt->setString(1, t->tan); //tc_code
 	prep_stmt->setInt(2, t->src_acc); //tc_account
@@ -423,7 +471,10 @@ void diactivate_transaction_code(Transaction * t, sql::Connection *con) throw(sq
 }
 
 void debug_db(char const name[], sql::Connection *con) throw(sql::SQLException){
-
+	if(DEBUG == 0 )
+	{
+		return;
+	}
 	char transactionValid[300] = "INSERT INTO debug (name, value) VALUES (?, (select ";
 	strcat(transactionValid, name);
 	strcat(transactionValid, "));");
