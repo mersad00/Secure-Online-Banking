@@ -1,0 +1,161 @@
+/*    --------------------------------------------------
+	:: Master Properties
+	-------------------------------------------------- */
+a:link{
+	color: #1fa67b;
+    font-size: 18px;
+    text-align: right;
+}
+
+a:visited {
+    color: #1fa67b;
+}
+
+a:hover {
+    color: #1fa67b;
+}
+
+#logout{
+display:inline;
+float:right;
+
+}
+#green{
+color: #1fa67b;
+}
+
+.col-centered{
+    float: none;
+    margin: 0 auto;
+}
+
+/*    --------------------------------------------------
+	:: Form Section
+	-------------------------------------------------- */
+#myform {
+    padding-top: 10px
+}
+#myform .form-wrap {
+    width: 30%;
+    margin: 0 auto;
+}
+#myform h1 {
+    color: #1fa67b;
+    font-size: 18px;
+    text-align: center;
+    font-weight: bold;
+    padding-bottom: 20px;
+}
+
+#myform .form-group {
+    margin-bottom: 25px;
+}
+#myform .checkbox {
+    margin-bottom: 20px;
+    position: relative;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+#myform .checkbox.show:before {
+    content: '\e013';
+    color: #1fa67b;
+    font-size: 17px;
+    margin: 1px 0 0 3px;
+    position: absolute;
+    pointer-events: none;
+    font-family: 'Glyphicons Halflings';
+}
+#myform .checkbox .character-checkbox {
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+    vertical-align: middle;
+    display: inline-block;
+}
+#myform .checkbox .label {
+    color: #6d6d6d;
+    font-size: 13px;
+    font-weight: normal;
+}
+#myform .btn{
+    font-size: 14px;
+	margin-bottom: 20px;
+}
+#myform .forget {
+    font-size: 13px;
+	text-align: center;
+	display: block;
+}
+
+/*    --------------------------------------------------
+	:: Inputs & Buttons
+	-------------------------------------------------- */
+.form-control {
+    color: #212121;
+}
+.btn-custom {
+    color: #fff;
+	background-color: #1fa67b;
+}
+.btn-upload {
+	color: #fff;
+	background-color: 	#FFB547;
+}
+.btn-custom:hover,
+.btn-custom:focus {
+    color: #fff;
+}
+.error {
+	color: #FF6600;
+}
+
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
+
+/*    --------------------------------------------------
+	:: Table
+	-------------------------------------------------- */
+
+th {
+	color: #1fa67b;
+	background-color: #F8F8F4;
+	font-weight:bold;
+}
+
+/*    --------------------------------------------------
+    :: Footer
+	-------------------------------------------------- */
+#footer {
+    color: #6d6d6d;
+    font-size: 12px;
+    text-align: left;
+	
+}
+#footer p {
+    margin-bottom: 10;
+}
+#footer a {
+    color: inherit;
+}
