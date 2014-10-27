@@ -33,7 +33,7 @@ exit;
                         </div>
 						<div class="form-group">
                             <label for="account" class="sr-only">Account number</label>
-                            <input type="text" name="account" id="account" class="form-control" placeholder="12345678" required>
+                            <input type="text" name="account" id="account" class="form-control" placeholder="account number" required>
                         </div>
 						<div class="checkbox">
 							<input id="employee" type="checkbox" name="employee" style="opacity:0; position:absolute; left:9999px;">

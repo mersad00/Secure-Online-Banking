@@ -12,7 +12,7 @@ $sql = "SELECT u_id,u_name,u_email,case u_type when 0 then 'Customer' when 1 the
 from users where u_active=0";
 
 $result = mysqli_query($con,$sql);
-echo "<h4 id=\"green\">Transaction history</h4>";
+echo "<h4 id=\"green\">User Accounts</h4>";
 echo "<form action=\"\" method=\"post\"><table class=\"table table-striped table-condensed\">
 <tr>
 <th>UserId</th>

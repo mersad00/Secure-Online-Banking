@@ -49,7 +49,8 @@ include('includes/top.php');
 				var info = "<table class=\"table\">" +
                     "<tbody><tr class=\"noborder\"><th colspan=\"2\"><h4 id=\"green\"><b>User information</b></h4></th></tr><tr><td>Username:</td><td>"+record.u_name+"</td></tr>"+
 				"<tr><td>Email:</td><td>"+record.u_email+"</td></tr>"+
-				"<tr><td>Account Number:</td><td>"+record.a_number+"</td></tr></tbody></table>";
+				"<tr><td>Account Number:</td><td>"+record.a_number+"</td></tr>" +
+				"<tr><td>Balance:</td><td>"+record.a_balance+"</td></tr></tbody></table>";
 				document.getElementById("userInfo").innerHTML=info;
 			}
 		}

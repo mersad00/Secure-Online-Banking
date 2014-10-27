@@ -24,7 +24,7 @@ if($all=='1')
  else
  $key = " = '$key'";
  
-$sql = "select u_id, u_name, u_email, a_number from users inner join accounts on users.u_id = accounts.a_user
+$sql = "select u_id, u_name, u_email, a_number, a_balance from users inner join accounts on users.u_id = accounts.a_user
 where $searchBy $key order by $searchBy";
 //die($sql);		
 $result = mysqli_query($connection,$sql);

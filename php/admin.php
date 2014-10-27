@@ -35,8 +35,8 @@ include('includes/top.php');
 							</div>
                  </div>
 		</section>
-	<div id="persons"><b>List of search records:</b></div>
-	<div id="trans"><b>Transaction list</b></div>
+	<div id="persons"></div>
+	<div id="trans"></div>
 		</div>
 		</div>
 		<div class="row">
@@ -68,7 +68,7 @@ include('includes/top.php');
 			if (xmlhttp.readyState==4 && xmlhttp.status==200) {
 				var arr = JSON.parse(xmlhttp.responseText);
 				//document.getElementById("persons").innerHTML=arr.length;
-				var rows="<table class=\"table table-striped table-condensed\"><tr><th>#</th><th>Name</th><th>Email</th><th>Account number</th><th>Action</th></tr>";
+				var rows="<h4 id=\"green\">List of search records:</h4><table class=\"table table-striped table-condensed\"><tr><th>#</th><th>Name</th><th>Email</th><th>Account number</th><th>Action</th></tr>";
 				for(i = 0; i < arr.length; i++) {
 				  var row=  "<tr><td>#</td><td>"+arr[i]['u_name']+
 				  "</td><td>"+arr[i]['u_email']+"</td><td>"+arr[i]['a_number']+
