@@ -10,6 +10,7 @@ include('session.php');
 	<meta name="generator" content="Geany 0.21" />
 	<script>
 	function showRecords(str,val) {
+		debugger;
 		if (str=="") {
 			document.getElementById("persons").innerHTML="";
 			return;
