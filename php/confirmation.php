@@ -32,9 +32,8 @@ while($row = mysqli_fetch_array($result)) {
 }
 
 echo "</table>";
-echo " <div class=\"col-sm-offset-10 col-sm-2\"><input class=\"btn btn-custom btn-lg btn-block\" name=\"submit\" type=\"submit\" value=\" Confirm \">";
+echo " <div class=\"col-sm-offset-10 col-sm-2\"><input class=\"btn btn-custom btn-lg btn-block\" name=\"submit\" type=\"submit\" value=\" Confirm \"/>";
 echo "</div></Form>";
-echo "</Form>";
 
 
 

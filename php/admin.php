@@ -34,6 +34,7 @@ include('includes/top.php');
                             <input type="text" name="accountNumber" id="accountNumber" class="form-control" onchange = "showRecords('acn',this.value)" >
 							</div>
                  </div>
+				</form>
 		</section>
 	<div id="persons"></div>
 	<div id="trans"></div>
