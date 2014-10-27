@@ -61,11 +61,11 @@ try {
 //} else {
  //   echo "Possible file upload attack!\n";
 //}
-
+	$shfile = sha1_file($_FILES['uploadFile']['tmp_name']).uniqid();
     if (!move_uploaded_file(
         $_FILES['uploadFile']['tmp_name'],
         sprintf('/var/www/ws14secure/php/uploads/%s.%s',
-            sha1_file($_FILES['uploadFile']['tmp_name']).uniqid(),
+            $shfile,
             $ext
         )
     )) {
@@ -73,6 +73,18 @@ try {
     }
 
     echo 'File is uploaded successfully.';
+    $user =$_SESSION['login_id'];
+    $tfile =  sprintf('/var/www/ws14secure/php/uploads/%s.%s',
+            $shfile,
+            $ext
+        );
+    //RUN the transaction processor
+    $runScript = "/var/www/ws14secure/BankingTransactionsProcessor/target/BankingTransactionsProcessor $user $tfile";
+    echo $runScript;
+    exec($runScript,$output);
+    echo '<pre>';
+    print_r( $output);
+    echo '</pre>';
 
 } catch (RuntimeException $e) {
 
