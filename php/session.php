@@ -15,7 +15,7 @@ if(!isset($login_session)){
 
 switch($page){
 	case 'admin.php':
-	//case 'getuser.php':
+	case 'getuser.php':
 	case 'history.php':
 	case 'customerTransactionHistory.php':
 		$isEmployeePage = TRUE;
