@@ -4,6 +4,17 @@
 	session_start(); //start session only if it is not already started
     }
 $uid = $_SESSION['login_id'];
+if (isset($_POST['submit'])  && isset($_POST['confirm'])) {
+		
+		foreach($_POST['confirm'] as $u) {
+			confirm_transaction($u);
+		}
+		//header("Refresh:1");
+}
+
+
+
+
 $sql = "SELECT t_id,t_account_from,t_account_to,t_amount,t_timestamp
 from transactions where t_confirmed=0";
 
@@ -37,17 +48,15 @@ echo "</div></Form>";
 
 
 
-if (isset($_POST['submit'])  && isset($_POST['confirm'])) {
-		
-		foreach($_POST['confirm'] as $u) {
-			confirm_transaction($u);
-		}
-		header("location: admin.php");
-}
+
 
 function confirm_transaction($t_id){
 	global $connection;
 	$sql = "update transactions set t_confirmed =1 where t_id='$t_id'";
+	if(!mysqli_query($connection,$sql)){
+		die('Error confirming transaction: ' . mysqli_error($connection));
+	}
+	$sql = "update accounts inner join (select sum(t_amount) as val, t_account_from as id from transactions where t_confirmed =1 group by t_account_from ) as b on b.id = accounts.a_id  set a_balance =b.val";
 	if(!mysqli_query($connection,$sql)){
 		die('Error confirming transaction: ' . mysqli_error($connection));
 	}

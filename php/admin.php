@@ -69,11 +69,11 @@ include('includes/top.php');
 			if (xmlhttp.readyState==4 && xmlhttp.status==200) {
 				var arr = JSON.parse(xmlhttp.responseText);
 				//document.getElementById("persons").innerHTML=arr.length;
-				var rows="<h4 id=\"green\">List of search records:</h4><table class=\"table table-striped table-condensed\"><tr><th>#</th><th>Name</th><th>Email</th><th>Account number</th><th>Action</th></tr>";
+				var rows="<h4 id=\"green\">List of search records:</h4><table class=\"table table-striped table-condensed\"><tr><th>#</th><th>Name</th><th>Email</th><th>Account number</th><th>Balance</th><th>Action</th></tr>";
 				for(i = 0; i < arr.length; i++) {
-				  var row=  "<tr><td>#</td><td>"+arr[i]['u_name']+
+				  var row=  "<tr><td>"+(i+1)+"</td><td>"+arr[i]['u_name']+
 				  "</td><td>"+arr[i]['u_email']+"</td><td>"+arr[i]['a_number']+
-				  "</td><td><input name=\"submit_"+arr[i]['u_id']+
+				  "</td><td>"+arr[i]['a_balance']+"</td><td><input name=\"submit_"+arr[i]['u_id']+
 				  "\" type=\"submit\" size =\"20\" value=\"View Transactions \" onclick=\"showTrans("+arr[i]['u_id']+")\">"
 				  +"</tr>";
 					rows += row;

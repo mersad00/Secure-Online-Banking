@@ -5,7 +5,13 @@ require_once("utils/dbconnection.php");
 	session_start(); //start session only if it is not already startedonnect
     }
 ini_set('display_errors', 'On');
-$error=''; // Variable To Store Error Message
+
+if(isset($_SESSION['tError'])){
+	$error = $_SESSION['tError'];
+}
+else{
+	$error=''; // Variable To Store Error Message
+}
 if (isset($_POST['submit'])) {
 	if (empty($_POST['amount']) || empty($_POST['transaction_code']) || empty($_POST['to_account'])) {
 		$error = "Input is invalid- empty";
@@ -89,7 +95,8 @@ if (isset($_POST['submit'])) {
 					$connection->rollback();
 					die('Error: ' . mysqli_error($con));
 				}
-				
+				$error = "Transaction has been executed successfully!";
+				$_SESSION['tError'] = $error;
 				$connection->commit();
 				$connection->autocommit(TRUE); 
 			

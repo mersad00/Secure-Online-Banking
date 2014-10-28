@@ -29,7 +29,7 @@ $query = mysqli_query($connection,"select u_name,u_active,u_id,accounts.a_id,
 $rows = mysqli_num_rows($query);
 if ($rows == 1) {
 	if(mysqli_result($query,0,1)==0) {
-		$error= "User is not activated yet, must wait for admin" . mysqli_result($query,0,1);
+		$error= "User is not activated yet, must wait for admin";
 	}
 	else{
 		$_SESSION['login_user']=$username; // Initializing Session

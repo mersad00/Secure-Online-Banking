@@ -15,7 +15,7 @@ if(!isset($login_session)){
 
 switch($page){
 	case 'admin.php':
-	case 'getuser.php':
+	//case 'getuser.php':
 	case 'history.php':
 	case 'customerTransactionHistory.php':
 		$isEmployeePage = TRUE;
@@ -24,17 +24,16 @@ switch($page){
 		$isEmployeePage = FALSE;
 		break;
 }
-
-if($login_type != 1 && $isEmployeePage)
-{
-	///has no access to admin group pages
-	die('Access denied!'); // Redirecting To Home Page
-	exit;
+if($page != 'getuser.php'){
+	if($login_type != 1 && $isEmployeePage)
+	{
+		///has no access to admin group pages
+		die('Access denied!'); // Redirecting To Home Page
+		exit;
+	}
+	if($login_type == 1 && !$isEmployeePage){
+		header('location: admin.php');
+	}
 }
-if($login_type == 1 && !$isEmployeePage){
-	header('location: admin.php');
-}
-
-
 
 ?>
