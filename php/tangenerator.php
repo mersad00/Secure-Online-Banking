@@ -9,7 +9,8 @@ function generateTans($user_id, $account_id,$nums,$con)
     for ($x=0; $x<$nums; $x++) {
 		$r = rand(1000,9999999);
 		$val = $user_id . '-' . $account_id . $r;
-		$tan = fnEncrypt($val);
+		$tan = "F" . fnEncrypt($val);
+		
 		$sql="INSERT INTO transaction_codes (tc_code, tc_account, tc_active) VALUES ('$tan', '$account_id', '1' )";
 		if (!mysqli_query($con,$sql)) {
 			$con->rollback();
