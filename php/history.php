@@ -12,8 +12,8 @@ t_timestamp,t_amount,case  t_confirmed when 0 then 'Not confimed' when 1 then 'C
 afrom.a_name as from_account,
 ato.a_name as to_account,t_description , afrom.a_balance
 FROM transactions
-inner join accounts as afrom on afrom.a_number = t_account_from 
-inner join accounts as ato on ato.a_number = t_account_to
+inner join accounts as afrom on afrom.a_id = t_account_from 
+inner join accounts as ato on ato.a_id = t_account_to
 where afrom.a_user ='$uid'
 order by t_timestamp desc";
 
@@ -23,7 +23,7 @@ from accounts as a join
 (select t_account_from, sum(t_amount) as balance from transactions  
 group by t_account_from,t_confirmed
  having t_confirmed = 1) as t
-  on a.a_number = t.t_account_from 
+  on a.a_id = t.t_account_from 
   where a.a_user='$uid'";
 $reBalance = mysqli_query($connection,$sqlBalance);
 if($reBalance === FALSE) {
@@ -40,8 +40,8 @@ echo "<table class=\"table table-striped table-condensed\">
 <th>Id</th>
 <th>Date</th>
 <th>Amount</th>
-<th>From</th>
-<th>To</th>
+<th>From (Acc. name.)</th>
+<th>To (Acc. name.)</th>
 <th>Description</th>
 <th>Confirmation status</th>
 </tr>";

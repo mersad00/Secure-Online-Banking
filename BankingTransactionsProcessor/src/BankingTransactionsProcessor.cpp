@@ -30,7 +30,7 @@ using namespace std;
 #define DB_PASS "SecurePass!"
 #define DB_DATABASE "banking"
 
-#define DEBUG 1
+#define DEBUG 0
 
 sql::Connection* initialize_connetion();
 void check_sum(Transaction * t, sql::Connection *con) throw(sql::SQLException);
@@ -39,6 +39,8 @@ void insert_transaction_receiver(Transaction * t, int confirmed, sql::Connection
 void update_balance(Transaction * t, sql::Connection *con) throw(sql::SQLException);
 void diactivate_transaction_code(Transaction * t, sql::Connection *con) throw(sql::SQLException);
 void debug_db(char const name[], sql::Connection *con) throw(sql::SQLException);
+
+void encode(std::string& data);
 
 int user_id = 0;
 
@@ -59,11 +61,15 @@ int main(int argc, char ** args) {
 		exit(-1);
 	}
 
-	//TODO: filter parameters
+	//parameters are sent by our own php applications.
+	//it is considered as trusted
 	user_id = atoi(args[1]);
+	if(user_id < 1){
+		cout<< "invalid user" << endl;
+		exit(-1);
+	}
 	char * transactions_file = args[2];
-	std::vector<Transaction *> transactions = load_transactions(
-			transactions_file);
+	std::vector<Transaction *> transactions = load_transactions(transactions_file);
 	try {
 		process_transactions(transactions, con);
 	} catch (sql::SQLException &e) {
@@ -100,7 +106,10 @@ std::vector<Transaction *> load_transactions(char filename[]) {
 		exit(-1);
 	}
 
-	//	conn = init_bank_connection();
+	//we limit the amount of allowed transactions in a file
+	int MAX_TRANSACTIONS = 100;
+	int transactionIndex = 0 ;
+
 	while ((read = getline(&line, &len, fp)) != -1) {
 		if (line[0] == 0) {
 			continue;
@@ -109,13 +118,20 @@ std::vector<Transaction *> load_transactions(char filename[]) {
 		if (line[0] == '#') {
 			continue;
 		}
+		//filter out short lines
 		if (strlen(line) < 5) {
 			continue;
 		}
-		Transaction * t = convert_transaction(line);
-		if(t==NULL)
-			continue;
-		transactions.push_back(t);
+
+		if(transactionIndex < MAX_TRANSACTIONS){
+			Transaction * t = convert_transaction(line);
+			if(t==NULL){
+				cout << "invalid trasaction - trasaction " << transactionIndex+1 <<endl;
+				exit(-1);
+			}
+			transactions.push_back(t);
+			transactionIndex ++ ;
+		}
 	}
 
 	fclose(fp);
@@ -126,8 +142,6 @@ std::vector<Transaction *> load_transactions(char filename[]) {
 }
 
 Transaction * convert_transaction(char * line) {
-	//TODO: vulnerabilities!!
-	//printf("retrieved: %s", line);
 
 	char delimiters[] = ",";
 	char * tan = strtok(line, delimiters);
@@ -136,7 +150,6 @@ Transaction * convert_transaction(char * line) {
 	char * amount = strtok(NULL, delimiters);
 	char * description = strtok(NULL, delimiters);
 
-	//TODO: vulnerabilities!!
 	//printf("tan %s\n", tan);
 	//printf("src_acc %s\n", src_acc);
 	//printf("dst_acc %s\n", dst_acc);
@@ -152,6 +165,9 @@ Transaction * convert_transaction(char * line) {
 		return NULL;
 
 	Transaction * t = (Transaction*) malloc(sizeof(*t));
+	if(t==NULL){
+		return NULL;
+	}
 	strncpy(t->tan, tan, 16);
 	t->src_acc = strtol (src_acc,NULL,10);
 	t->dst_acc = strtol(dst_acc,NULL,10);
@@ -160,7 +176,14 @@ Transaction * convert_transaction(char * line) {
 		cout<<"amount is not allowed to be negative"<<endl;
 		exit(-1);
 	}
-	strncpy(t->description, description, 251);
+	//force last character to end of string
+	description[250] = '\0';
+	string des = string(description);
+	//escape "interesting" characters
+	encode(des);
+
+	strncpy(t->description, des.c_str(), 251);
+
 	if(DEBUG == 1)
 	{
 		printf("loaded: %s %d %d %d %s", t->tan, t->src_acc, t->dst_acc,
@@ -222,7 +245,7 @@ int process_transactions(std::vector<Transaction *> transactions, sql::Connectio
 			continue;
 		if(DEBUG == 1)
 		{
-			cout << "processing: tan " << t->tan
+			cout << "processing [tan] >> " << t->tan
 						<< t->src_acc <<" "<<t->dst_acc << " " << t->amount <<" "
 						<< user_id << " " << t->description
 						<< endl;
@@ -279,7 +302,7 @@ void check_sum(Transaction * t, sql::Connection *con) throw(sql::SQLException){
 	}
 	//-- check sufficient sum
 	char sql_transaction[] =
-			" SET @sufficientBalance := ( select count(a_balance) from accounts join transaction_codes \
+			" SET @senderAccountId := ( select a_id from accounts join transaction_codes \
 		on accounts.a_id = transaction_codes.tc_account \
 		where a_number = ? \
 		 and a_user = ? \
@@ -299,10 +322,33 @@ void check_sum(Transaction * t, sql::Connection *con) throw(sql::SQLException){
 	// i don't expect an answer
 	prep_stmt->execute();
 	delete prep_stmt;
+	debug_db("@senderAccountId", con);
+
+
+	//-- check sufficient sum
+	char sql_transaction2[] =
+			" SET @receiverAccountId := ( select a_id from accounts  \
+		       where a_number = ? \
+	        )";
+	if(DEBUG == 1)
+	{
+		cout << sql_transaction2 << endl;
+	}
+	prep_stmt = con->prepareStatement(sql_transaction2);
+	prep_stmt->setInt(1, t->dst_acc); //a_number
+	// i don't expect an answer
+	prep_stmt->execute();
+	delete prep_stmt;
+	debug_db("@receiverAccountId", con);
+
+	//update sufficient balance flag
+	char updateSufficientBalanceFlag[] = "SET @sufficientBalance := IF(@senderAccountId = NULL , 0, 1);" ;
+	Statement *stmt = con -> createStatement();
+	stmt->execute(updateSufficientBalanceFlag);
 	debug_db("@sufficientBalance", con);
+
 	//update valid transactions counter
 	char updateValidTransactionsCounter[] = "SET @validTransactionsCounter = @validTransactionsCounter + @sufficientBalance ;" ;
-	Statement *stmt = con -> createStatement();
 	stmt->execute(updateValidTransactionsCounter);
 	debug_db("@validTransactionsCounter", con);
 	delete stmt;
@@ -320,19 +366,19 @@ void insert_transaction_sender(Transaction * t, int confirmed, sql::Connection *
 		cout << "insert transaction for sender" <<endl;
 	}
 	char sql_transaction[] = "INSERT INTO transactions (t_account_from, t_amount, t_type, t_code, t_description, t_account_to, t_confirmed) \
-			 VALUES ( ?, ?, ?, ?, ?, ?, ?)";
+			 VALUES ( @senderAccountId, ?, ?, ?, ?, @receiverAccountId, ?)";
 	if(DEBUG == 1)
 	{
 		cout << sql_transaction << endl;
 	}
 	prep_stmt = con->prepareStatement(sql_transaction);
-	prep_stmt->setInt(1, t->src_acc); //t_account_from
-	prep_stmt->setInt(2, 0 - t->amount); //t_amount
-	prep_stmt->setInt(3, 0); //type
-	prep_stmt->setString(4, t->tan); //t_code
-	prep_stmt->setString(5, t->description); //t_description
-	prep_stmt->setInt(6, t->dst_acc); //t_account_to
-	prep_stmt->setInt(7, confirmed); //t_confirmed
+	//prep_stmt->setInt(1, t->src_acc); //t_account_from
+	prep_stmt->setInt(1, 0 - t->amount); // 0 - t_amount
+	prep_stmt->setInt(2, 0); //type - sender (0)
+	prep_stmt->setString(3, t->tan); //t_code
+	prep_stmt->setString(4, t->description); //t_description
+	//prep_stmt->setInt(6, t->dst_acc); //t_account_to
+	prep_stmt->setInt(5, confirmed); //t_confirmed
 	prep_stmt -> execute();
 	delete prep_stmt;
 
@@ -359,19 +405,19 @@ void insert_transaction_receiver(Transaction * t, int confirmed, sql::Connection
 		cout << "insert transaction for receiver" <<endl;
 	}
 	char sql_transaction[] = "INSERT INTO transactions (t_account_from, t_amount, t_type, t_code, t_description, t_account_to, t_confirmed) \
-			 VALUES ( ?, ?, ?, ?, ?, ?, ?)";
+			 VALUES ( @receiverAccountId, ?, ?, ?, ?, @senderAccountId, ?)";
 	if(DEBUG == 1)
 	{
 		cout << sql_transaction << endl;
 	}
 	prep_stmt = con->prepareStatement(sql_transaction);
-	prep_stmt->setInt(1, t->dst_acc); //t_account_from
-	prep_stmt->setInt(2, t->amount); //t_amount
-	prep_stmt->setInt(3, 0); //type
-	prep_stmt->setString(4, t->tan); //t_code
-	prep_stmt->setString(5, t->description); //t_description
-	prep_stmt->setInt(6, t->src_acc); //t_account_to
-	prep_stmt->setInt(7, confirmed); //t_confirmed
+	//prep_stmt->setInt(1, t->dst_acc); //t_account_from
+	prep_stmt->setInt(1, t->amount); //t_amount
+	prep_stmt->setInt(2, 0); //type - receiver (1)
+	prep_stmt->setString(3, t->tan); //t_code
+	prep_stmt->setString(4, t->description); //t_description
+	//prep_stmt->setInt(6, t->src_acc); //t_account_to
+	prep_stmt->setInt(5, confirmed); //t_confirmed
 	prep_stmt -> execute();
 	delete prep_stmt;
 
@@ -385,6 +431,9 @@ void insert_transaction_receiver(Transaction * t, int confirmed, sql::Connection
 	delete stmt;
 }
 
+/*
+ * not needed because we display the balance based on the history.
+ * */
 void update_balance(Transaction * t, sql::Connection *con) throw(sql::SQLException){
 
 	//decrease sum for sender
@@ -443,7 +492,7 @@ void diactivate_transaction_code(Transaction * t, sql::Connection *con) throw(sq
 	char sql_transaction[] = "UPDATE transaction_codes \
 			   SET tc_active = 0 \
 			   WHERE tc_code = ? \
-			   AND tc_account = ? \
+			   AND tc_account = @senderAccountId \
 			   AND tc_active = 1 \
 			   and @sufficientBalance <> 0;"
 			;
@@ -453,7 +502,7 @@ void diactivate_transaction_code(Transaction * t, sql::Connection *con) throw(sq
 	}
 	prep_stmt = con->prepareStatement(sql_transaction);
 	prep_stmt->setString(1, t->tan); //tc_code
-	prep_stmt->setInt(2, t->src_acc); //tc_account
+	//prep_stmt->setInt(2, t->src_acc); //tc_account
 	prep_stmt -> execute();
 	delete prep_stmt;
 
@@ -481,4 +530,26 @@ void debug_db(char const name[], sql::Connection *con) throw(sql::SQLException){
 	prep_stmt->setString(1, name); //t_code
 	prep_stmt -> execute();
 	delete prep_stmt;
+}
+
+/**
+ * used to escape senstive data
+ * http://stackoverflow.com/questions/5665231/most-efficient-way-to-escape-xml-html-in-c-string
+ * a more heavy weight library for changing encoding can be used from
+ * http://site.icu-project.org/
+ * */
+void encode(std::string& data) {
+    std::string buffer;
+    buffer.reserve(data.size());
+    for(size_t pos = 0; pos != data.size(); ++pos) {
+        switch(data[pos]) {
+            case '&':  buffer.append("&amp;");       break;
+            case '\"': buffer.append("&quot;");      break;
+            case '\'': buffer.append("&apos;");      break;
+            case '<':  buffer.append("&lt;");        break;
+            case '>':  buffer.append("&gt;");        break;
+            default:   buffer.append(&data[pos], 1); break;
+        }
+    }
+    data.swap(buffer);
 }

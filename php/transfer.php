@@ -56,8 +56,11 @@
 			  </div>
             </div>
 			<div class="col-sm-12">
-			  <span>Your input must have following format:<br> Account | Amount | Transaction | Code | Description</span>
-			  </div>
+			  <span>Your input must have following format:<br> TAN,source_acc,destination_acc,amount,description </span>
+			</div>
+			<div class="col-sm-12">
+			  <a target="_blank" href="/ws14secure/php/public/transactions.txt">download template</a>
+			</div>
           </form>
 		  </section>
 			<div id="chooseFileFirst"> </div>
