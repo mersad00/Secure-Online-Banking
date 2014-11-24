@@ -46,19 +46,21 @@ echo "<table class=\"table table-striped table-condensed\">
 <th>Confirmation status</th>
 </tr>";
 $i =1;
-while($row = mysqli_fetch_array($result)) {
-  echo "<tr>";
-  echo "<td>" . $i . "</td>";
-  echo "<td>" . $row['t_timestamp'] . "</td>";
-  echo "<td>" . $row['t_amount'] . "</td>";
-  echo "<td>" . $row['from_account'] . "</td>";
-  echo "<td>" . $row['to_account'] . "</td>";
-  echo "<td>" . $row['t_description'] . "</td>";
-  echo "<td>" . $row['t_confirmation'] . "</td>";
-  echo "</tr>";
-  $i=$i+1;
+try {
+	while($row = mysqli_fetch_array($result)) {
+	  echo "<tr>";
+	  echo "<td>" . $i . "</td>";
+	  echo "<td>" . $row['t_timestamp'] . "</td>";
+	  echo "<td>" . $row['t_amount'] . "</td>";
+	  echo "<td>" . $row['from_account'] . "</td>";
+	  echo "<td>" . $row['to_account'] . "</td>";
+	  echo "<td>" . $row['t_description'] . "</td>";
+	  echo "<td>" . $row['t_confirmation'] . "</td>";
+	  echo "</tr>";
+	  $i=$i+1;
+	}
 }
-
+catch(Exception $e){}
 echo "</table>";
 mysqli_close($connection);
 ?>

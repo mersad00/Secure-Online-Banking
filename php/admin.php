@@ -69,28 +69,54 @@ include('includes/top.php');
 			if (xmlhttp.readyState==4 && xmlhttp.status==200) {
 				var arr = JSON.parse(xmlhttp.responseText);
 				//document.getElementById("persons").innerHTML=arr.length;
-				var rows="<h4 id=\"green\">List of search records:</h4><table class=\"table table-striped table-condensed\"><tr><th>#</th><th>Name</th><th>Email</th><th>Account number</th><th>Balance</th><th></th><th></th></tr>";
+				var rows="<h4 id=\"green\">List of search records:</h4><table class=\"table table-striped table-condensed\"><tr><th>#</th><th>Name</th><th>Email</th><th>Account number</th><th>Balance</th><th></th><th>Action</th></tr>";
 				for(i = 0; i < arr.length; i++) {
 				  var row=  "<tr><td>"+(i+1)+"</td><td>"+arr[i]['u_name']+
-				  "</td><td>"+arr[i]['u_email']+"</td><td>"+arr[i]['a_number']+
-				  "</td><td><input type=\"number\" value=\""+arr[i]['a_balance']+"\" name=\"customerBalance\" id=\"customerBalance\" class=\"form-control\">"
-				  
-				  +"</td>"+
-				  "<td><input name=\"submit_"+arr[i]['u_id']+
-				  "\" type=\"submit\" size =\"20\" value=\"View Transactions \" onclick=\"showTrans("+arr[i]['u_id']+")\">"
-				  
+				  "</td><td>"+arr[i]['u_email']+"</td><td>"+arr[i]['a_number']
+				  //+"</td><td>"+arr[i]['a_balance']+"</td>"
+				  +"</td><td>"+"<input type=\"number\" value=\""+arr[i]['a_balance']+"\" name=\"customerBalance\" id=\"customerBalance\" >" +"</td>"
+
+				  +"<td><input name=\"submit_balance_"+arr[i]['u_id']+
+				  "\" type=\"submit\" size =\"20\" value=\"Update Balance \" onclick=\"updateBalanceTrans("+arr[i]['u_id']+","+arr[i]['a_number']+")\">" +"</td>"
+
 				  +"<td><input name=\"submit_"+arr[i]['u_id']+
-				  "\" type=\"submit\" size =\"20\" value=\"Update Balance \" onclick=\"showTrans("+arr[i]['u_id']+")\">"
+				  "\" type=\"submit\" size =\"20\" value=\"View Transactions \" onclick=\"showTrans("+arr[i]['u_id']+")\">"
 				  +"</tr>";
 					rows += row;
 				}
 				rows+= "</table>";
+				
 				document.getElementById("persons").innerHTML=rows;
 			}
 		}
 		xmlhttp.open("GET","getuser.php?searchby="+str+"&key="+val+'&all=1',true);
 		xmlhttp.send();
 	}
+	function updateBalanceTrans(userId, account) {
+		var balance = document.getElementById("customerBalance").value;		
+		
+		if (window.XMLHttpRequest) {
+			// code for IE7+, Firefox, Chrome, Opera, Safari
+			xmlhttp=new XMLHttpRequest();
+		} else { // code for IE6, IE5
+			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		xmlhttp.onreadystatechange=function() {
+			if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+				document.getElementById("customerBalance").value=balance;
+			}
+			else{
+				document.getElementById("customerBalance").value="failed";
+			}
+		}
+		var params = "userId="+userId + "&newBalance="+balance + "&accountNumber="+ account;
+		xmlhttp.open("POST","administration.php",true);
+		xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		xmlhttp.setRequestHeader("Content-length", params.length);
+		xmlhttp.setRequestHeader("Connection", "close");
+		xmlhttp.send(params);
+	}
+
 	function showTrans(str) {
 		if (str=="") {
 			document.getElementById("trans").innerHTML="";
@@ -107,9 +133,13 @@ include('includes/top.php');
 				document.getElementById("trans").innerHTML=xmlhttp.responseText;
 			}
 		}
+
+		
+		
 		xmlhttp.open("GET","history.php?uid="+str,true);
 		xmlhttp.send();
 	}
+	
 	</script>
 <?php include('includes/bottom.php')?>
 </body>
