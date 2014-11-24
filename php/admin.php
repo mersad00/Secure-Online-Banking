@@ -8,7 +8,7 @@ include('includes/top.php');
         <div class="row">
             <div class="col-md-12">
                 <h1 class="page-header">Welcome
-                    <small><?php echo $login_session; ?></small>
+                    <small><div id="admin"><a href="admin.php"><?php echo $login_session; ?></a></div></small>                    
 					<div id="logout"><h4><a href="logout.php">Logout</a></h4></div>
                 </h1>
 			</div>
@@ -43,13 +43,13 @@ include('includes/top.php');
 		<div class="row">
 		 <div class="col-md-12">
 		<?php
-	include('activation.php');?>
+	include('confirmation.php');?>
 		</div>
 		</div>
 		<div class="row">
 		 <div class="col-md-12">
 		<?php
-	include('confirmation.php');?>
+	include('activation.php');?>
 		</div>
 		</div>
 		</div>

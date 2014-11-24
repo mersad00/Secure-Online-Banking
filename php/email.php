@@ -4,7 +4,7 @@ require 'mailer/PHPMailerAutoload.php';
 
 require_once('./fpdi/fpdf.php');
 require_once('./fpdi/fpdi.php');
-
+require_once('./fpdi/FPDI_Protection.php');
 
  if(!isset($_SESSION)) 
     {        
@@ -36,10 +36,45 @@ function generatePdf($recipientName, $tanArray){
 	$pdf->Cell(40,10,"Secure Coding - Team 16");
 	$pdf->Ln(10);
 	
-	$filename="./pdf/". $recipientName;
-	$pdf->Output($filename.'.pdf','F');
+	$filename="./pdf/". $recipientName . ".pdf";
+	
+	if (file_exists($filename)) {
+		unlink($filename);
+	}
+	
+	$pdf->Output($filename,'F');
+	
+	$encryptedFile = encryptPdf($filename,$recipientName);
+	return $encryptedFile;
 }    
-    
+
+function encryptPdf($filename, $recipientName){
+			
+	//Password for the PDF file (I suggest using the email adress of the purchaser).
+	$password = $recipientName;
+	//Name of the original file (unprotected).
+	$origFile = $filename;
+	//Name of the destination file (password protected and printing rights removed).
+	$destFile ="./pdf/protected_". $recipientName . ".pdf";
+			
+	$pdf =& new FPDI_Protection();
+	$pdf->FPDF('P', 'in');
+	//Calculate the number of pages from the original document.
+	$pagecount = $pdf->setSourceFile($origFile);
+	//Copy all pages from the old unprotected pdf in the new one.
+	for ($loop = 1; $loop <= $pagecount; $loop++) {
+		$tplidx = $pdf->importPage($loop);
+		$pdf->addPage();
+		$pdf->useTemplate($tplidx);
+	}
+
+	//Protect the new pdf file, and allow no printing, copy, etc. and
+	//leave only reading allowed.
+	$pdf->SetProtection(array(), $password);
+	$pdf->Output($destFile, 'F');
+	return $destFile;
+}
+
 function sendTansMailToUser($user_id){
 	global $connection;
 	$sql = "SELECT u_id,u_name,u_email,tc.tc_code from users 
@@ -59,24 +94,27 @@ function sendTansMailToUser($user_id){
 	$tans = $tans . '</table>';
 	mysqli_close($connection);
 	
-	generatePdf($recipientName, $tanArray);
+	$encryptedFile = generatePdf($recipientName, $tanArray);
 	
-	if(sendMail($recipientEmail,$recipientName,$tans)){ return TRUE;}
+	if(sendMail($recipientEmail,$recipientName,$tans, $encryptedFile)){ return TRUE;}
 	return FALSE;
 }
 
-function sendMail($recipientEmail,$recipientName,$tans){ 
+function sendMail($recipientEmail,$recipientName,$tans, $encryptedFile){ 
 	
 		$mail = new PHPMailer;
 		 
 		$mail->isSMTP();                                      // Set mailer to use SMTP
+		
+	
 		$mail->Host = 'smtp.gmail.com';                       // Specify main and backup server
 		$mail->SMTPAuth = true;                               // Enable SMTP authentication
 		$mail->Username = 'g16.banking@gmail.com';                   // SMTP username
 		$mail->Password = 'SecurePass!';               // SMTP password
-		$mail->SMTPSecure = 'tls';                            // Enable encryption, 'ssl' also accepted
+ 		$mail->SMTPSecure = 'tls';                            // Enable encryption, 'ssl' also accepted
 		$mail->Port = 587;                                    //Set the SMTP port number - 587 for authenticated TLS
 		$mail->setFrom('g16.banking@gmail.com', 'Secure coding banking group 16');     //Set who the message is to be sent from
+		//$mail->setFrom('team16@in.tum.de', 'Secure coding banking group 16');     //Set who the message is to be sent from
 		//$mail->addReplyTo('labnol@gmail.com', 'First Last');  //Set an alternative reply-to address
 		$mail->addAddress($recipientEmail);  // Add a recipient
 		//$mail->addAddress('ellen@example.com');               // Name is optional
@@ -88,21 +126,24 @@ function sendMail($recipientEmail,$recipientName,$tans){
 		$mail->isHTML(true);                                  // Set email format to HTML
 		 
 		$mail->Subject = 'Secret TANs for your online banking transactions';
-		$mail->Body    = 'Dear '.$recipientName.' ,<br> Please use following secure TANs for your online transactions. <br>
-		'.$tans.'
-		Your online banking team,<br>
+		$mail->Body    = 'Dear '.$recipientName.' ,<br> Please find your secure TANs for your online transactions in the attachment. <br>'
+		
+		
+		. 'Your online banking team,<br>
 		<b>G16 Secure Coding!</b>';
-		$mail->AltBody = 'Dear '.$recipientName.',<br> Please use following secure TANs for your online transactions. <br>
-		'.$tans.'
-		Your online banking team,<br>
-		<b>G16 Secure Coding!</b>';
+		$mail->AltBody = 'Dear '.$recipientName.',<br> Please use the attached secure TANs for your online transactions. <br>'
+		
+		. 'Your online banking team,<br>	<b>G16 Secure Coding!</b>';
 		 
+		$filename = $encryptedFile;
+		$mail->AddAttachment($filename); // attach uploaded file
+		
 		//Read an HTML message body from an external file, convert referenced images to embedded,
 		//convert HTML into a basic plain-text alternative body
 		//$mail->msgHTML(file_get_contents('contents.html'), dirname(__FILE__));
 		if(!$mail->send()) {
-		   return FALSE;
-		   //die( 'Mailer Error: ' . $mail->ErrorInfo);
+		    //dvar_dump( 'Mailer Error: '. $recipientEmail .' '. $mail->ErrorInfo);
+			return FALSE;
 		}else{
 		 return TRUE;
 		}

@@ -12,7 +12,7 @@ $sql = "SELECT u_id,u_name,u_email,case u_type when 0 then 'Customer' when 1 the
 from users where u_active=0";
 
 $result = mysqli_query($con,$sql);
-echo "<h4 id=\"green\">User Accounts</h4>";
+echo "<h3 id=\"green\">User Not Activated</h3>"; 
 echo "<form action=\"\" method=\"post\"><table class=\"table table-striped table-condensed\">
 <tr>
 <th>UserId</th>
@@ -20,6 +20,7 @@ echo "<form action=\"\" method=\"post\"><table class=\"table table-striped table
 <th>Email</th>
 <th>User Type</th>
 <th>Activate?</th>
+<th>Delete?</th>
 </tr>";
 $i =1;
 while($row = mysqli_fetch_array($result)) {
@@ -29,6 +30,7 @@ while($row = mysqli_fetch_array($result)) {
   echo "<td>" . $row['u_email'] . "</td>";
   echo "<td>" . $row['u_type_text'] . "</td>";
   echo "<td><input type=\"checkbox\" name=\"active[]\" value=\"".$row['u_id']."\"/></td>";
+  echo "<td><input type=\"checkbox\" name=\"delete[]\" value=\"".$row['u_id']."\"/></td>";
   echo "</tr>";
   $i=$i+1;
 }
@@ -36,28 +38,69 @@ while($row = mysqli_fetch_array($result)) {
 echo "</table>";
 echo $activateErr;
 echo '<br>';
-echo " <div class=\"col-sm-offset-10 col-sm-2\"><input class=\"btn btn-custom btn-lg btn-block\" name=\"submit\" type=\"submit\" value=\" Activate \">";
+echo "<div id=\"refreshNotActive\"><a  href=\"admin.php\">Refresh</a></div>" ;
+echo " <div class=\"col-sm-offset-10 col-sm-2\"><input class=\"btn btn-custom btn-lg btn-block\" name=\"submit\" type=\"submit\" value=\"Process\">";
 echo "</div></Form>";
+
+
+$sql = "SELECT u_id,u_name,u_email,case u_type when 0 then 'Customer' when 1 then 'Employee' end as u_type_text
+from users where u_active=1";
+
+$result = mysqli_query($con,$sql);
+echo "<h3 id=\"green\">Users Actived</h3>";
+echo "<form action=\"". "\" method=\"post\"><table class=\"table table-striped table-condensed\">
+<tr>
+<th>UserId</th>
+<th>User name</th>
+<th>Email</th>
+<th>User Type</th>
+<th>Delete?</th>
+</tr>";
+$i =1;
+while($row = mysqli_fetch_array($result)) {
+	echo "<tr id=\"" . $row['u_id'] ."\"\">";
+	echo "<td>" . $row['u_id'] . "</td>";
+	echo "<td>" . $row['u_name'] . "</td>";
+	echo "<td>" . $row['u_email'] . "</td>";
+	echo "<td>" . $row['u_type_text'] . "</td>";
+	//echo "<td><input type=\"checkbox\" name=\"active[]\" value=\"".$row['u_id']."\"/></td>";
+	echo "<td><input type=\"checkbox\" name=\"delete[]\" value=\"".$row['u_id']."\"/></td>";
+	echo "</tr>";
+	$i=$i+1;
+}
+
+echo "</table>";
+echo $activateErr;
+echo '<br>';
+echo "<div id=\"refreshActive\"><a href=\"admin.php\">Refresh</a></div>" ;
+echo " <div class=\"col-sm-offset-10 col-sm-2\"><input class=\"btn btn-custom btn-lg btn-block\" name=\"submit\" type=\"submit\" value=\"Process\">";
+echo "</div></Form>";
+
+
 mysqli_close($con);
 
-
-if (isset($_POST['submit'])  && isset($_POST['active'])  && is_array($_POST['active'])) {
-		
+if (isset($_POST['submit'])  && isset($_POST['active'])  && is_array($_POST['active'])) {	
 		foreach($_POST['active'] as $u) {
 			activate_user($u);
 		}
-		header("location: admin.php");
+		//header("location: admin.php");
+		//exit;
 }
-function hello(){
-	
-	return TRUE;
+
+if (isset($_POST['submit'])  && isset($_POST['delete'])  && is_array($_POST['delete'])) {
+	foreach($_POST['delete'] as $u) {
+		delete_user($u);
+	}
+	//header("location: admin.php");
+	//exit;
 }
+
 function activate_user($user_id){
 	global $activateErr;
 	$conm=mysqli_connect("localhost","root","SecurePass!","banking");
 	// Check connection
 	if (mysqli_connect_errno()) {
-	echo "Failed to connect to MySQL: " . mysqli_connect_error();
+		echo "Failed to connect to MySQL: " . mysqli_connect_error();
 	}
 	$conm->autocommit(FALSE); //start transaction
 	$sql = "update users set u_active =1 where u_id='$user_id'";
@@ -87,6 +130,30 @@ function activate_user($user_id){
 	catch(Exception $e){
 			$conm->rollback();
 			echo 'Failed to activate user';
+	}
+}
+
+
+function delete_user($user_id){
+	global $activateErr;
+	$conm=mysqli_connect("localhost","root","SecurePass!","banking");
+	// Check connection
+	if (mysqli_connect_errno()) {
+		echo "Failed to connect to MySQL: " . mysqli_connect_error();
+	}
+	//$conm->autocommit(FALSE); //start transaction
+	$sql = "delete from users where u_id='$user_id'";
+	try{
+		if(!mysqli_query($conm,$sql)){
+			die('Error activate user: ' . mysqli_error($con));
+			exit;
+		}
+	
+		mysqli_close($conm);
+	}
+	catch(Exception $e){
+		$conm->rollback();
+		echo 'Failed to delete user';
 	}
 }
 
