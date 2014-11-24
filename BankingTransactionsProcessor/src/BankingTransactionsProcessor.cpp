@@ -30,7 +30,7 @@ using namespace std;
 #define DB_PASS "SecurePass!"
 #define DB_DATABASE "banking"
 
-#define DEBUG 0
+#define DEBUG 1
 
 sql::Connection* initialize_connetion();
 void check_sum(Transaction * t, sql::Connection *con) throw(sql::SQLException);
@@ -280,12 +280,11 @@ void check_sum(Transaction * t, sql::Connection *con) throw(sql::SQLException){
 	//-- check sufficient sum
 	char sql_transaction[] =
 			" SET @sufficientBalance := ( select count(a_balance) from accounts join transaction_codes \
-		on accounts.a_number = transaction_codes.tc_account \
+		on accounts.a_id = transaction_codes.tc_account \
 		where a_number = ? \
 		 and a_user = ? \
 		 and a_balance > ? \
-		 and tc_code = ? \
-		 AND tc_account = ? \
+		 and tc_code = ? \		 
 		 AND tc_active = 1 \
 		)";
 	if(DEBUG == 1)
@@ -297,7 +296,6 @@ void check_sum(Transaction * t, sql::Connection *con) throw(sql::SQLException){
 	prep_stmt->setInt(2, user_id); //a_user
 	prep_stmt->setInt(3, t->amount); //a_balance
 	prep_stmt->setString(4, t->tan); //tc_code
-	prep_stmt->setInt(5, t->src_acc); //tc_account
 	// i don't expect an answer
 	prep_stmt->execute();
 	delete prep_stmt;
