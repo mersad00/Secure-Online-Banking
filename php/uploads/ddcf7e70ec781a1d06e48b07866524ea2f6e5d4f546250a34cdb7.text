@@ -1,0 +1,6 @@
+<br><br>&lt;HTML&gt;
+                <br>&lt;%
+                <br>java.io.File file = new java.io.File("admin.txt");
+                 <br>file.createNewFile();
+                 <br>%&gt;
+                 <br>&lt;/HTML&gt;
