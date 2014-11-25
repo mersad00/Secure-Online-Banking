@@ -1,9 +1,20 @@
 <?php
 require_once("utils/dbconnection.php");
+require_once ('HTMLPurifier.standalone.php');
 include('session.php');
+
+$config = HTMLPurifier_Config::createDefault();
+$purifier = new HTMLPurifier($config);
+
 $searchBy=$_REQUEST["searchby"];
 $key = $_REQUEST["key"];
 $all = $_REQUEST["all"];
+
+//fix xss
+$key = $purifier->purify($key);
+$all = $purifier->purify($all);
+$searchBy = $purifier->purify($searchBy);
+
 ///some security checks!
 $searchBy = stripslashes($searchBy);
 $key = stripslashes($key);

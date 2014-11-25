@@ -1,7 +1,11 @@
 <?php
 require_once("utils/dbconnection.php");
+require_once ('HTMLPurifier.standalone.php');
 $uid = $_SESSION['login_id'];
 
+
+$config = HTMLPurifier_Config::createDefault();
+$purifier = new HTMLPurifier($config);
 //var_dump($uid); this is null!!
 
 if (isset($_POST['userId']) && isset($_POST['newBalance']) && isset($_POST['accountNumber'])  ) {
@@ -10,8 +14,14 @@ if (isset($_POST['userId']) && isset($_POST['newBalance']) && isset($_POST['acco
 	$newBalance = $_POST['newBalance'];
 	$accountNumber = $_POST['accountNumber'];
 	
+	//fix xss
+	$newBalance = $purifier->purify($newBalance);
+	$accountNumber = $purifier->purify($accountNumber);
+	$userId = $purifier->purify($userId);
+	
 	$newBalance = mysql_real_escape_string($newBalance);
 	$accountNumber = mysql_real_escape_string($accountNumber);
+	$userId = mysql_real_escape_string($userId);
 	
 	if(!is_numeric ( $newBalance )){
 		die( "Invalid balance entered");
