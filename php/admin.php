@@ -102,11 +102,15 @@ include('includes/top.php');
 			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
 		}
 		xmlhttp.onreadystatechange=function() {
-			if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-				document.getElementById("customerBalance").value=balance;
+			if (xmlhttp.readyState==4 && xmlhttp.status==200) {				
+				$("#customerBalance").css("color","green");
+				$("#customerBalance").tooltip( "option", "content", "update success" );
+				 $('#customerBalance').data('tooltip').show();
 			}
-			else{
-				document.getElementById("customerBalance").value="failed";
+			else{				
+				$("#customerBalance").css("color","red");
+				$("#customerBalance").tooltip( "option", "content", "update failed" );
+				$('#customerBalance').data('tooltip').show();
 			}
 		}
 		var params = "userId="+userId + "&newBalance="+balance + "&accountNumber="+ account;

@@ -59,6 +59,10 @@ if (isset($_POST['submit'])) {
 				if($amount>10000){
 					$confirmed ='0';
 				}
+				if($to_a_id == $from_a_id){
+					die('invalid parameters');
+				}
+				
 				//perform transaction	
 				$sql="INSERT INTO transactions (t_account_from,t_account_to,t_amount,t_code,t_description,t_confirmed)
 				 VALUES ('$from_a_id', '$to_a_id', '$minus_ammount','$transaction_code','$details' ,'$confirmed')";
@@ -76,13 +80,23 @@ if (isset($_POST['submit'])) {
 				}
 				///update balance
 				$sql = "update accounts as a join 
-				(select t_account_from,sum(t_amount) as balance
+				(select t_account_from,sum(t_amount) as balance 
 				from transactions 
 				group by t_account_from,t_confirmed 
 				having t_confirmed=1) as t 
 				on a.a_id = t.t_account_from 
 				set a.a_balance = t.balance
-				Where a.a_id ='$from_a_id' OR a.a_id='$to_a_id'";
+				Where a.a_id ='$from_a_id' OR a.a_id='$to_a_id' ";
+				
+				//assume that there is unique combination of value, code, description
+				$sql2 = "update accounts 
+						set a_balance = a_balance + (select t_amount from transactions 
+						where t_account_from='$from_a_id' and t_account_to='$to_a_id' 
+								and t_amount='$minus_ammount' and t_code='$transaction_code'
+								and t_description='$details'
+								and t_confirmed=1)
+						where a_id='$from_a_id'";		
+												
 				
 				if (!mysqli_query($connection,$sql)) {
 					$connection->rollback();

@@ -105,8 +105,7 @@ function sendMail($recipientEmail,$recipientName,$tans, $encryptedFile){
 		$mail = new PHPMailer;
 		 
 		$mail->isSMTP();                                      // Set mailer to use SMTP
-		
-	
+			
 		$mail->Host = 'smtp.gmail.com';                       // Specify main and backup server
 		$mail->SMTPAuth = true;                               // Enable SMTP authentication
 		$mail->Username = 'g16.banking@gmail.com';                   // SMTP username

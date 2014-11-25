@@ -77,6 +77,7 @@ int main(int argc, char ** args) {
 		stmt -> execute ("ROLLBACK;");
 		delete stmt;
 		cout << "# ERR: SQLException " << endl;
+		cout << "# Please check transaction code, account number or sufficient balance." << endl;
 		if(DEBUG == 1)
 		{
 			cout << "# ERR: " << e.what();

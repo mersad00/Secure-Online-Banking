@@ -8,10 +8,12 @@ $error=''; // Variable To Store Error Message
 
 $uploaddir = '/var/www/ws14secure/php/uploads/';
 //$uploadfile = $uploaddir . basename($_FILES['uploadFile']['name']);
+// header('Content-Type: text/plain; charset=utf-8');
+?>
 
+<body>
 
-header('Content-Type: text/plain; charset=utf-8');
-
+<?php 
 try {
     // Undefined | Multiple Files | $_FILES Corruption Attack
     // If this request falls under any of them, treat it invalid.
@@ -80,7 +82,7 @@ try {
         );
     //RUN the transaction processor
     $runScript = "/var/www/ws14secure/BankingTransactionsProcessor/target/BankingTransactionsProcessor $user $tfile";
-    echo $runScript;
+    //echo $runScript;
     exec($runScript,$output);
     echo '<pre>';
     print_r( $output);
@@ -91,4 +93,8 @@ try {
     echo $e->getMessage();
 
 }
+
 ?>
+
+	<div id="back"><a href="./../profile.php">back</a></div>
+</body>
