@@ -9,8 +9,8 @@ $error=''; // Variable To Store Error Message
 $success= false;
 
 $config = HTMLPurifier_Config::createDefault();
-$config->set('Core.Encoding', 'UTF-8');
-$config->set('Cache.DefinitionImpl', null);
+//$config->set('Core.Encoding', 'UTF-8');
+//$config->set('Cache.DefinitionImpl', null);
 $purifier = new HTMLPurifier($config);
 
 
@@ -68,7 +68,7 @@ $sql="INSERT INTO users (u_name, u_email, u_password,u_type) VALUES ('$username'
 
 if (!mysqli_query($con,$sql)) {
 	$con->rollback();
-  die('Error: ' . mysqli_error($con));
+  die('Error 1: ' . mysqli_error($con));
 }
 
 ///if  user is not employee make an aaccount for her
@@ -77,10 +77,11 @@ if($employee == 0){
 			$memberid = mysqli_insert_id($con);
 			$balance = "0";
 			///Insert account
-			$sql ="insert into accounts (a_user,a_number,a_balance, a_description) values ('$memberid','$account','$balance', '$username' . ' account')";
+			$accountName = '$username' . ' account';
+			$sql ="insert into accounts (a_user,a_number,a_balance, a_name) values ('$memberid','$account','$balance', '$accountName')";
 			if (!mysqli_query($con,$sql)) {
 				$con->rollback(); 
-				die('Error: ' . mysqli_error($con));
+				die('Error2: ' . mysqli_error($con));
 			}
 			$account_id = mysqli_insert_id($con);
 			
