@@ -32,6 +32,10 @@ if ($rows == 1) {
 		$error= "User is not activated yet, must wait for admin";
 	}
 	else{
+		
+		//avoid session fixation
+		session_regenerate_id (true);
+		
 		$_SESSION['login_user']=$username; // Initializing Session
 		$_SESSION['login_id']=mysqli_result($query,0,2);
 		$_SESSION['login_a_id'] =mysqli_result($query,0,3); 

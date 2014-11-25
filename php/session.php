@@ -43,10 +43,10 @@ switch($page){
 		//ensure only client can reach here
 		$rbac->enforce('client-permission', $_SESSION['login_id']);
 		break;
-	default:
+	/*default:
 		//if I have not mentioned the page then employee as default can access only
 		$rbac->enforce('employee-permission', $_SESSION['login_id']);
-		break;
+		break;*/
 }
 
 ?>
