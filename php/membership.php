@@ -1,9 +1,19 @@
 <?php
 
 include("tangenerator.php");
+
+require_once ('HTMLPurifier.standalone.php');
+
 ini_set('display_errors', 'On');
 $error=''; // Variable To Store Error Message
 $success= false;
+
+$config = HTMLPurifier_Config::createDefault();
+$config->set('Core.Encoding', 'UTF-8');
+$config->set('Cache.DefinitionImpl', null);
+$purifier = new HTMLPurifier($config);
+
+
 if (isset($_POST['submit'])) {
 if (empty($_POST['username']) || empty($_POST['password']) || empty($_POST['email']) || (empty($_POST['account']))&&empty($_POST['employee'])       ) {
 $error = "Input is invalid- empty";
@@ -33,6 +43,8 @@ $password = mysql_real_escape_string($password);
 $password = md5($password);
 $email = mysql_real_escape_string($email);
 $account = mysql_real_escape_string($account);
+
+$username = $purifier->purify($username);
 
 // Establishing Connection with Server by passing server_name, user_id and password as a parameter
 //$connection = mysql_connect("localhost", "root", "SecurePass!");
