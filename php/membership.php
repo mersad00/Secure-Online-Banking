@@ -77,7 +77,7 @@ if($employee == 0){
 			$memberid = mysqli_insert_id($con);
 			$balance = "0";
 			///Insert account
-			$accountName = '$username' . ' account';
+			$accountName = $username . ' account';
 			$sql ="insert into accounts (a_user,a_number,a_balance, a_name) values ('$memberid','$account','$balance', '$accountName')";
 			if (!mysqli_query($con,$sql)) {
 				$con->rollback(); 
