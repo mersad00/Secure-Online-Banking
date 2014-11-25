@@ -1,6 +1,10 @@
 <?php
 include('email.php');
 ini_set('display_errors', 'On');
+require_once 'session.php';
+
+
+
 $activateErr='';
 $uid = $_SESSION['login_id'];
 $con=mysqli_connect("localhost","root","SecurePass!","banking");

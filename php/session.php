@@ -5,35 +5,48 @@ if(!isset($_SESSION))
     }
 $page = basename($_SERVER['PHP_SELF']);
 
+//check if user has been logged in
+if(!isset($_SESSION['login_user'])){
+	
+	//if user is calling from index leave him alone
+	//otherwise redirect loop will occur
+	if($page!='index.php')
+	{
+		header('Location: index.php'); // Redirecting To Home Page
+		die();
+	}
+	return;
+}
 // Storing Session
 $user_check=$_SESSION['login_user'];
 $login_session =$_SESSION['login_user'];
 $login_type = $_SESSION['login_user_type'];
-if(!isset($login_session)){
-	header('Location: index.php'); // Redirecting To Home Page
-}
+
+
+//newly added rbac provider
+require_once '../PhpRbac/src/PhpRbac/Rbac.php';
+$rbac = new \PhpRbac\Rbac();
+//end of newly added rbac provider
+
+
 
 switch($page){
+	case 'activation.php':
+	case 'confirmation.php':
 	case 'admin.php':
-	//case 'getuser.php':
 	case 'history.php':
 	case 'customerTransactionHistory.php':
-		$isEmployeePage = TRUE;
+		//ensure only employee can reach here
+		$rbac->enforce('employee-permission', $_SESSION['login_id']);
 		break;
-	default: 
-		$isEmployeePage = FALSE;
+	case 'profile.php':
+		//ensure only client can reach here
+		$rbac->enforce('client-permission', $_SESSION['login_id']);
 		break;
-}
-if($page != 'getuser.php'){
-	if($login_type != 1 && $isEmployeePage)
-	{
-		///has no access to admin group pages
-		die('Access denied!'); // Redirecting To Home Page
-		exit;
-	}
-	if($login_type == 1 && !$isEmployeePage){
-		header('location: admin.php');
-	}
+	default:
+		//if I have not mentioned the page then employee as default can access only
+		$rbac->enforce('employee-permission', $_SESSION['login_id']);
+		break;
 }
 
 ?>
