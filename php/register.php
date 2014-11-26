@@ -1,12 +1,5 @@
 <?php
- if(!isset($_SESSION)) 
-    {        
-	session_start(); //start session only if it is not already started
-    }
-if(isset($_SESSION['login_user'])){
-header('Location: profile.php'); // Redirecting To Home Page
-exit;
-}
+require_once 'session.php';
 ?>
 <?php include('includes/top.php');?>
 <?php include('membership.php');?>

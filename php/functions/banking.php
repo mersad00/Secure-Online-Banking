@@ -1,9 +1,6 @@
 <?php
 require_once("utils/dbconnection.php");
- if(!isset($_SESSION)) 
-    {        
-	session_start(); //start session only if it is not already startedonnect
-    }
+require_once 'session.php';
 ini_set('display_errors', 'On');
 
 if(isset($_SESSION['tError'])){

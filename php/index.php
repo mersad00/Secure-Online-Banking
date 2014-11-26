@@ -1,14 +1,6 @@
 <?php
 include('functions/login.php');
 require_once 'session.php'; // Includes Login Script
- /*if(!isset($_SESSION)) 
-    {        
-	session_start(); //start session only if it is not already started
-    }
-if(isset($_SESSION['login_user'])){
-header('Location: profile.php'); // Redirecting To Home Page
-exit;
-}*/
 ?>
 <?php include('includes/top.php')?>
 <body>

@@ -1,8 +1,5 @@
 <?php
- if(!isset($_SESSION)) 
-    {        
-	session_start(); //start session only if it is not already started
-    }
+require_once 'session.php';
 $uid = $_SESSION['login_id'];
 if (isset($_POST['submit'])  && isset($_POST['confirm'])) {
 		

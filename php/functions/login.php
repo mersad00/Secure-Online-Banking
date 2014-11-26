@@ -1,9 +1,10 @@
 <?php require_once("utils/dbconnection.php");?>
 <?php
- if(!isset($_SESSION)) 
-    {        
-	session_start(); //start session only if it is not already started
-    }
+ini_set('display_errors', 'On');
+if(!isset($_SESSION))
+ {
+require_once 'session.php';
+}
 $error=''; // Variable To Store Error Message
 if (isset($_POST['submit'])) {
 if (empty($_POST['username']) || empty($_POST['password'])) {
@@ -33,6 +34,7 @@ if ($rows == 1) {
 	}
 	else{
 		
+		
 		//avoid session fixation
 		session_regenerate_id (true);
 		
@@ -42,12 +44,13 @@ if ($rows == 1) {
 		$_SESSION['login_a_number'] =mysqli_result($query,0,4); 
 		$_SESSION['login_a_name'] =mysqli_result($query,0,5);
 		$_SESSION['login_user_type'] =mysqli_result($query,0,6);
+		
+		
 		if($_SESSION['login_user_type']=='0'){
 			header("location: profile.php"); // Redirecting To Other Page
 		}elseif ($_SESSION['login_user_type']=='1'){
 			header("location: admin.php");
 		}
-		
 	}
 } else {
 $error = "Username or Password is invalid";

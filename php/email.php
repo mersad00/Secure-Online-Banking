@@ -5,11 +5,7 @@ require 'mailer/PHPMailerAutoload.php';
 require_once('./fpdi/fpdf.php');
 require_once('./fpdi/fpdi.php');
 require_once('./fpdi/FPDI_Protection.php');
-
- if(!isset($_SESSION)) 
-    {        
-	session_start(); //start session only if it is not already started
-    }
+require_once 'session.php';
 
 function generatePdf($recipientName, $tanArray){
 	
