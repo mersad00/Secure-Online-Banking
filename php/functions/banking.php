@@ -16,6 +16,11 @@ if (isset($_POST['submit'])) {
 	else
 	{
 		$amount=$_POST['amount'];
+		if($amount<=0) {
+			$error = 'Amount must be positive';
+			return;
+		}
+		
 		$transaction_code=$_POST['transaction_code'];
 		$account_to = $_POST['to_account'];
 		$details = $_POST['details'];
