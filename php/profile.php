@@ -21,6 +21,8 @@ include('includes/top.php');
 		<div class="row">
 			<div class="col-md-4">
 			<div id="userInfo"></div>
+			<div id="clientKey">
+			<?php include('clientkeygenerator.php') ?></div>
 				</div>
 <?php include('transfer.php') ?>
 		</div>

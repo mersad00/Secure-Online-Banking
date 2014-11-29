@@ -1,5 +1,7 @@
 <?php
+ini_set('display_errors', 'On');
 require_once 'session.php';
+require "utils/dbconnection.php";
 $uid = $_SESSION['login_id'];
 if (isset($_POST['submit'])  && isset($_POST['confirm'])) {
 		
@@ -16,6 +18,7 @@ $sql = "SELECT t_id,t_account_from,t_account_to,t_amount,t_timestamp
 from transactions where t_confirmed=0";
 
 $result = mysqli_query($connection,$sql);
+
 echo "<h1>Transactions which need confirmation</h1>";
 echo "<Form action=\"\" method=\"post\"><table class=\"table table-striped table-condensed\">
 <tr>

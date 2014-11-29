@@ -1,5 +1,6 @@
 package ui;
 
+import cryto.AESCrypt;
 import cryto.CryptoManagerImp;
 import cryto.ICryptoManager;
 import host.DeviceManagerImp;
@@ -18,7 +19,7 @@ public class LoginImp implements ILogin {
 
 	public LoginImp() {
 		deviceManger = new DeviceManagerImp();
-		cryptoManager = new CryptoManagerImp();
+		cryptoManager = new AESCrypt();
 		repo = new SafeRepositoryImp(deviceManger, cryptoManager);
 	}
 

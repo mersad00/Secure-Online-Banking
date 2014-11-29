@@ -6,6 +6,7 @@ import repository.ISafeRepository;
 import repository.SafeRepositoryImp;
 import tan.GeneratorImp;
 import tan.IGenerator;
+import cryto.AESCrypt;
 import cryto.CryptoManagerImp;
 import cryto.ICryptoManager;
 
@@ -17,7 +18,7 @@ ISafeRepository repo;
 	ICryptoManager cryptoManager;
 	public TanGeneratorImp() {
 		deviceManger = new DeviceManagerImp();
-		cryptoManager = new CryptoManagerImp();
+		cryptoManager = new AESCrypt();
 		repo = new SafeRepositoryImp(deviceManger, cryptoManager);
 		generator = new GeneratorImp();
 }

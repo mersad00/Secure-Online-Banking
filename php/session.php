@@ -56,6 +56,7 @@ switch($page){
 		$rbac->enforce('employee-permission', $_SESSION['login_id']);
 		break;
 	case 'profile.php':
+	case 'clientkeygenerator.php':
 		//ensure only client can reach here
 		$rbac->enforce('client-permission', $_SESSION['login_id']);
 		break;
