@@ -26,7 +26,7 @@ $page = basename($_SERVER['PHP_SELF']);
 if(!isset($_SESSION['login_user'])){
 	//if user is calling from index leave him alone
 	//otherwise redirect loop will occur
-	if($page!='index.php')
+	if($page!='index.php' && $page!="register.php")
 	{
 		header('Location: index.php'); // Redirecting To Home Page
 		die();
