@@ -5,5 +5,5 @@ import repository.ISafeRepository;
 
 public interface IGenerator {
 
-	String generateTan(String account,String amount, ISafeRepository repo, ICryptoManager crypto);
+	String generateTan(String pin,String account,String amount, ISafeRepository repo, ICryptoManager crypto);
 }

@@ -8,7 +8,7 @@ public class SecureKey128bit extends SecureKey {
 
 	public SecureKey128bit(String key) throws Exception {
 		super(key);
-		if(key.length()!=16) throw new Exception("Key lentgh must be 16 chars!");
+		//if(key.length()!=16) throw new Exception("Key lentgh must be 16 chars!");
 	}
 	@Override 
 	public byte[] getBytes(){
