@@ -8,11 +8,14 @@ public class DeviceManagerImp implements IDeviceManager {
 
 	@Override
 	public String getDeviceUniquieIdentifier() throws IOException {
+		String UUID = "randomstringxUYJMw7xcrMBHyfjEb2K"; // for windows
+		String OSName = System.getProperty("os.name");
+		if(OSName.startsWith("Windows")) return UUID;
 		String serial = executeCommand("sudo dmidecode -t system");
 		int uuidindex = serial.indexOf("UUID:");
 		if(uuidindex <= 0 ) return "";
 		uuidindex += 6;
-		String UUID = serial.substring(uuidindex,uuidindex + 35);
+		UUID = serial.substring(uuidindex,uuidindex + 35);
 		return UUID;
 	}
 	private String executeCommand(String command) {
