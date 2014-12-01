@@ -55,7 +55,7 @@ public abstract class UIView {
 
 	static void ShowTanGenerator() {
 		JFrame frame = new JFrame("SCS G16 Secure Banking");
-		frame.setSize(500, 200);
+		frame.setSize(400, 200);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JPanel panel = new JPanel();
@@ -66,13 +66,39 @@ public abstract class UIView {
 
 	static void ShowLogin() {
 		JFrame frame = new JFrame("SCS G16 Secure Banking");
-		frame.setSize(300, 140);
+		frame.setSize(310, 150);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		JPanel panel = new JPanel();
 		frame.add(panel);
 		// placeComponents(panel);
 		LoginView lv = new LoginView(panel);
 		frame.setVisible(true);
+	}
+	
+	static void ShowMenu() {
+		JFrame frame = new JFrame("SCS G16 Secure Banking");
+		frame.setSize(400, 150);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		JPanel panel = new JPanel();
+		frame.add(panel);
+		// placeComponents(panel);
+		MenuView mv = new MenuView(panel);
+		frame.setVisible(true);
+		
+		
+	}
+	
+	static void ShowBatchUpload() {
+		JFrame frame = new JFrame("SCS G16 Secure Banking");
+		frame.setSize(400, 200);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		JPanel panel = new JPanel();
+		frame.add(panel);
+		// placeComponents(panel);
+		BatchUploadView buv = new BatchUploadView(panel);
+		frame.setVisible(true);
+		
+		
 	}
 
 }
