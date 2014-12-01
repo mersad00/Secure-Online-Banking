@@ -2,8 +2,6 @@ package ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -56,7 +54,7 @@ public class LoginView extends UIView implements  ActionListener {
 				
 				this.hideMe(false);
 				// /Go to tan generator
-				ShowTanGenerator();
+				ShowMenu();
 			} else {
 				JOptionPane
 						.showMessageDialog(
