@@ -2,7 +2,18 @@
 include('functions/banking.php');
 include('session.php');
 include('includes/top.php');
+
 ?>
+
+<?php 
+// create unique token to avoid csrf
+ $form_token = uniqid();
+ 
+// commit token to session
+$_SESSION['user_token'] = $form_token;
+
+
+?>	
 <body>
 <!-- Page Heading -->
 	<div class="container">

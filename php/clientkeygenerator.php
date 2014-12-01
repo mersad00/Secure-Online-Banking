@@ -26,14 +26,19 @@ else {
 }
 
 ?>
-<html>
-<body>
+<section id="myform">
 <form method="POST">
-<fieldset>
-<legend>Generate SCS A-Key:</legend>
-<input name="A-Key" type="text" value="<?php echo htmlentities($key) ?>"/><br>
-<input name="generate" type="submit" value="Generate"/>
-</fieldset>
+
+<div class="form-group">
+<div class="col-sm-7">
+<input name="A-Key" type="text" class="form-control" value="<?php echo htmlentities($key) ?>"readonly/>
+</div>
+</div>
+<div class="form-group">
+<div class="col-sm-5">
+<input type="submit" name = "generate" id="btn-login" class="btn btn-custom btn-lg btn-block" value = "Generate key"/>
+</div>
+</div>
+
 </form>
-</body>
-</html>
+</section>

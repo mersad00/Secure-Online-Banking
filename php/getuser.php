@@ -8,12 +8,6 @@ require_once '../PhpRbac/src/PhpRbac/Rbac.php';
 $rbac = new \PhpRbac\Rbac();
 //end of newly added rbac provider
 
-
-
-
-
-
-
 $searchBy=$_REQUEST["searchby"];
 $key = $_REQUEST["key"];
 $all = $_REQUEST["all"];

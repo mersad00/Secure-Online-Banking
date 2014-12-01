@@ -1,7 +1,9 @@
 <?php
 require_once("utils/dbconnection.php");
+require_once("utils/constants.php");
 require_once 'session.php';
 ini_set('display_errors', 'On');
+
 
 if(isset($_SESSION['tError'])){
 	$error = $_SESSION['tError'];
@@ -9,7 +11,11 @@ if(isset($_SESSION['tError'])){
 else{
 	$error=''; // Variable To Store Error Message
 }
-if (isset($_POST['submit'])) {
+//Check if the token of the page and session match and only if yes, proceed
+
+if (isset($_POST['submit-transfer'])) {
+if($_POST['user_token'] == $_SESSION['user_token']) 
+	{
 	if (empty($_POST['amount']) || empty($_POST['transaction_code']) || empty($_POST['to_account'])) {
 		$error = "Input is invalid- empty";
 	}
@@ -126,6 +132,11 @@ if (isset($_POST['submit'])) {
 
 		//}
 	}
+}
+else 
+{
+			$error = RESUBMIT;
+		}
 }
 
 
