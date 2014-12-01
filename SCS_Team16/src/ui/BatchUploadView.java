@@ -14,6 +14,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 
+import tan.BatchGeneratorImp;
+import tan.IBatchGenerator;
+
 public class BatchUploadView extends UIView implements  ActionListener {
 
 	File file;
@@ -84,7 +87,8 @@ public class BatchUploadView extends UIView implements  ActionListener {
 			break;   
 		case "Generate Tans":
 			//this.hideMe(true);
-			
+			IBatchGenerator batchGenerator = new BatchGeneratorImp(file);
+	
 		break;  
 
 		}
