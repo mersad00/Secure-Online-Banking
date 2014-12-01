@@ -40,10 +40,9 @@ $login_type = $_SESSION['login_user_type'];
 
 
 //newly added rbac provider
-require_once '../PhpRbac/src/PhpRbac/Rbac.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/ws14secure/PhpRbac/src/PhpRbac/Rbac.php';
 $rbac = new \PhpRbac\Rbac();
 //end of newly added rbac provider
-
 
 
 switch($page){
@@ -56,6 +55,7 @@ switch($page){
 		$rbac->enforce('employee-permission', $_SESSION['login_id']);
 		break;
 	case 'profile.php':
+	case 'administration.php':
 	case 'clientkeygenerator.php':
 		//ensure only client can reach here
 		$rbac->enforce('client-permission', $_SESSION['login_id']);

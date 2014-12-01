@@ -1,5 +1,5 @@
 <?php
-require_once 'session.php';
+require_once './../session.php';
 ini_set('display_errors', 'On');
 $error=''; // Variable To Store Error Message
 
@@ -77,8 +77,13 @@ try {
             $shfile,
             $ext
         );
+    $database = parse_ini_file("../utils/db_config.ini");
+    $dbServer = $database['host'];  
+    $dbUser = $database['username'] ;
+    $dbPass = $database['password']; 
+    $dbName =  $database['dbname'];
     //RUN the transaction processor
-    $runScript = "/var/www/ws14secure/BankingTransactionsProcessor/target/BankingTransactionsProcessor $user $tfile";
+    $runScript = "/var/www/ws14secure/BankingTransactionsProcessor/target/BankingTransactionsProcessor $user $tfile $dbServer $dbUser $dbPass $dbName ";
     //echo $runScript;
     exec($runScript,$output);
     echo '<pre>';

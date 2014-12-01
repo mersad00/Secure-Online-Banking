@@ -115,7 +115,7 @@ if (isset($_POST['submit-register'])) {
 			header('Location: index.php'); // Redirecting To Home Page
 		}
 	}
->>>>>>> 5c944299a1d1b97a999b446ed13348bce8c0d68d
+
 }
 
 
@@ -130,7 +130,7 @@ if (strlen($username) < 3 OR strlen($username) > 20) {
 			$error .= '<p class="error">Username should be within 3-20 characters long.</p>';
 			return FALSE;
 }
-<<<<<<< HEAD
+
 // To protect MySQL injection for Security purpose
 $username = stripslashes($username);
 $password = stripslashes($password);
@@ -169,9 +169,9 @@ $con=mysqli_connect("localhost","root","SecurePass!","banking");
 $con->autocommit(FALSE); //start transaction
 if (mysqli_connect_errno()) {
   echo "Failed to connect to MySQL: " . mysqli_connect_error();
-=======
+
 return TRUE;
->>>>>>> 5c944299a1d1b97a999b446ed13348bce8c0d68d
+
 }
 
 function validatePasswordPolicy($password){
@@ -184,11 +184,11 @@ $uppercase = preg_match('@[A-Z]@', $password);
 $lowercase = preg_match('@[a-z]@', $password);
 $number    = preg_match('@[0-9]@', $password);
 
-<<<<<<< HEAD
+
 if (!mysqli_query($con,$sql)) {
 	$con->rollback();
   die('Error 1: ' . mysqli_error($con));
-=======
+
 if(!$uppercase) {
   	$error .= '<p class="error">Password should contain at least one uppercase character.</p>';
 			return FALSE;
@@ -202,7 +202,7 @@ if(!$number) {
 			return FALSE;
 }
 return TRUE;
->>>>>>> 5c944299a1d1b97a999b446ed13348bce8c0d68d
+
 }
 
 function validateConfirmPassword($password, $confirm_password){
@@ -215,7 +215,7 @@ global $error;
 return TRUE;
 }
 
-<<<<<<< HEAD
+
 			$memberid = mysqli_insert_id($con);
 			$balance = "0";
 			///Insert account
@@ -229,13 +229,13 @@ return TRUE;
 			
 			///generate 100 tans
 			generateTans($memberid,$account_id,100,$con);
-=======
+
 function validateAccountNumber($account){
 global $error;
 if (!ctype_digit($account) || strlen($account) != 10) {
 			$error .= '<p class="error">Enter a valid account number (10 digits)</p>';
 			return FALSE;
->>>>>>> 5c944299a1d1b97a999b446ed13348bce8c0d68d
+
 		}
 return TRUE;
 }

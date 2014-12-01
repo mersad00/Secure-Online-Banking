@@ -25,12 +25,17 @@
 using namespace sql;
 using namespace std;
 
-#define DB_SERVER "localhost"
-#define DB_USER "root"
-#define DB_PASS "SecurePass!"
-#define DB_DATABASE "banking"
+#define DB_SERVER "server"
+#define DB_USER "user"
+#define DB_PASS "password"
+#define DB_DATABASE "database"
 
 #define DEBUG 0
+
+char * dbHost = DB_SERVER;
+char * dbUser = DB_USER;
+char * dbPass = DB_PASS;
+char * dbName = DB_DATABASE;
 
 sql::Connection* initialize_connetion();
 void check_sum(Transaction * t, sql::Connection *con) throw(sql::SQLException);
@@ -46,14 +51,21 @@ int user_id = 0;
 
 int main(int argc, char ** args) {
 
-	if (argc < 3) {
-		printf("usage: owner_id transactions_file\n");
+	if (argc < 7) {
+		printf("usage: owner_id transactions_file dbServer dbUser dbPassword dbName \n");
 		exit(-1);
 	}
-	if (argc > 3) {
+	if (argc > 7) {
 		printf("too many arguments\n");
 		exit(-1);
 	}
+
+	if(strlen(args[3]) > 0){
+			dbHost = args[3];
+			dbUser = args[4];
+			dbPass = args[5];
+			dbName = args[6];
+		}
 
 	sql::Connection *con = initialize_connetion();
 	if( con == NULL){
@@ -69,6 +81,8 @@ int main(int argc, char ** args) {
 		exit(-1);
 	}
 	char * transactions_file = args[2];
+
+
 	std::vector<Transaction *> transactions = load_transactions(transactions_file);
 	try {
 		process_transactions(transactions, con);
@@ -199,9 +213,12 @@ sql::Connection * initialize_connetion() {
 	sql::Driver *driver;
 
 	driver = get_driver_instance();
-	con = driver->connect(DB_SERVER, DB_USER, DB_PASS);
+	if(DEBUG==1){
+		cout<<"DB: " <<dbHost <<" "<< dbUser <<" "<<dbPass<< " "<< dbName <<endl;
+	}
+	con = driver->connect(dbHost, dbUser, dbPass);
 	/* Connect to the MySQL test database */
-	con->setSchema(DB_DATABASE);
+	con->setSchema(dbName);
 
 	/* disable the autocommit */
 	//con -> setAutoCommit(0);
