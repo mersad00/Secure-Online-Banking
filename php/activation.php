@@ -1,6 +1,10 @@
 <?php
 include('email.php');
+require_once('utils/dbconnection.php');
 ini_set('display_errors', 'On');
+require_once 'session.php';
+
+
 $activateErr='';
 $uid = $_SESSION['login_id'];
 $con=mysqli_connect("localhost","root","SecurePass!","banking");
@@ -12,7 +16,7 @@ $sql = "SELECT u_id,u_name,u_email,case u_type when 0 then 'Customer' when 1 the
 from users where u_active=0";
 
 $result = mysqli_query($con,$sql);
-echo "<h3 id=\"green\">User Not Activated</h3>"; 
+echo "<h3 id=\"green\">Not Activated Users</h3>"; 
 echo "<form action=\"\" method=\"post\"><table class=\"table table-striped table-condensed\">
 <tr>
 <th>UserId</th>
@@ -47,7 +51,7 @@ $sql = "SELECT u_id,u_name,u_email,case u_type when 0 then 'Customer' when 1 the
 from users where u_active=1";
 
 $result = mysqli_query($con,$sql);
-echo "<h3 id=\"green\">Users Actived</h3>";
+echo "<h3 id=\"green\">Active Users</h3>";
 echo "<form action=\"". "\" method=\"post\"><table class=\"table table-striped table-condensed\">
 <tr>
 <th>UserId</th>
@@ -102,7 +106,7 @@ function activate_user($user_id){
 	if (mysqli_connect_errno()) {
 		echo "Failed to connect to MySQL: " . mysqli_connect_error();
 	}
-	$conm->autocommit(FALSE); //start transaction
+	mysqli_autocommit($conm, false); //start transaction
 	$sql = "update users set u_active =1 where u_id='$user_id'";
 	if(!mysqli_query($conm,$sql)){
 		die('Error activate user: ' . mysqli_error($con));
@@ -114,21 +118,21 @@ function activate_user($user_id){
 		$commit = TRUE;
 		if($row = mysqli_fetch_array($result)){
 			if($row['u_type'] == 0){
-				if(!sendTansMailToUser($user_id)){
+				if(!sendTansMailToUser($user_id, $conm)){
 						die( 'Failed to send mail to user. Activation failed');
-						$conm->rollback();
+						mysqli_rollback($conm);
 						$commit = FALSE;
 				}
 			}
 		}
 		if($commit){
-			$conm->commit();
-			$conm->autocommit(TRUE);
+			mysqli_commit($conm);
+			mysqli_autocommit($conm, TRUE);
 		} 
 		mysqli_close($conm);
 	}
 	catch(Exception $e){
-			$conm->rollback();
+			mysqli_rollback($conm);
 			echo 'Failed to activate user';
 	}
 }
@@ -152,14 +156,10 @@ function delete_user($user_id){
 		mysqli_close($conm);
 	}
 	catch(Exception $e){
-		$conm->rollback();
+		mysqli_rollback($conm);
 		echo 'Failed to delete user';
 	}
 }
-
-
-
-
 
 
 ?>

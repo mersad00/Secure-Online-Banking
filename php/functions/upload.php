@@ -1,8 +1,5 @@
 <?php
- if(!isset($_SESSION)) 
-    {        
-	session_start(); //start session only if it is not already started
-    }
+require_once 'session.php';
 ini_set('display_errors', 'On');
 $error=''; // Variable To Store Error Message
 

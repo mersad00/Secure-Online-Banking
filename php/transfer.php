@@ -1,10 +1,10 @@
-			<div class="col-md-8">
+	<div class="col-md-8">
 			<table class="table">
                     <tbody><tr><th><h4 id="green"><b>Transfer Money</b></h4></th></tr></tbody></table>
 			<div class="col-md-6" style=" border-right: 1px solid #333;">
 			<h4 id="green">Use transaction Form</h4>
 			<section id="myform">
-				<form role="form" action="" method="post" id="transaction-form" class="form-horizontal" autocomplete="off">
+				<form role="form" action="" method="post" id="transaction-form" name="transaction-form" class="form-horizontal" autocomplete="off">
 				<div class="form-group">
                             <label for="to_account" class="col-sm-5 control-label">To: </label>
 							 <div class="col-sm-7">
@@ -29,8 +29,9 @@
                             <input type="textbox" name="details" id="details" class="form-control" placeholder="Description...(optional)">
 							</div>
 				</div>
+				<input type="hidden" name="user_token" id = "user_token" value="<?php echo  $_SESSION['user_token']; ?>" />
 				<div class="col-sm-offset-5 col-sm-7">
-					<input type="submit" name = "submit" id="btn-login" class="btn btn-custom btn-lg btn-block" value="Transfer">
+					<input type="submit" name = "submit-transfer" id="btn-login" class="btn btn-custom btn-lg btn-block" value="Transfer">
 				</div>
 				<div class="col-sm-offset-5 col-sm-7 control label">
 					<span class = "error"><?php echo $error; ?></span>
@@ -66,3 +67,63 @@
 			<div id="chooseFileFirst"> </div>
 			</div>
 			</div>
+			
+<script>
+$(document).ready(function() {
+    $('#transaction-form').bootstrapValidator({
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+            to_account: {
+                validators: {
+                    notEmpty: {
+                        message: 'The account number is required and cannot be empty'
+                    },
+					stringLength: {
+                        min: 10,
+                        max: 10,
+                        message: 'The account number should be 10 digits long'
+                    }
+                }
+            },
+			amount: {
+                validators: {
+                    notEmpty: {
+                        message: 'Amount is required'
+                    }
+					 integer: {
+                        message: 'The value is not an integer'
+                    }
+                }
+            },
+			transaction_code: {
+                validators: {
+                    notEmpty: {
+                        message: 'The transaction code is required'
+                    }
+					stringLength: {
+                        min: 14,
+                        max: 14,
+                        message: 'The trancaction code is not valid'
+                    }
+                }
+            },
+			details: {
+                validators: {
+                    notEmpty: {
+                        message: 'Password is required'
+                    }
+					regexp: {
+                        regexp: /^[a-zA-z0-9\s]+$/i,
+                        message: 'Details can consist of alphanumeric characters and spaces only'
+                    }
+                }
+            }
+      
+        }
+    });
+});
+</script>

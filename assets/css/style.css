@@ -23,6 +23,11 @@ float:right;
 #green{
 color: #1fa67b;
 }
+#small{
+font-size: 10px;
+color: #1fa67b;
+
+}
 
 .col-centered{
     float: none;
@@ -111,7 +116,7 @@ color: #1fa67b;
     color: #fff;
 }
 .error {
-	color: #FF6600;
+	color: #A94442;
 }
 
 .btn-file {
@@ -143,6 +148,32 @@ th {
 	background-color: #F8F8F4;
 	font-weight:bold;
 }
+
+/*    --------------------------------------------------
+	:: Password Information Window
+	-------------------------------------------------- */
+
+#pswd_info {
+    
+    padding:10px;
+	margin: 10px;
+    background:#fefefe;
+    font-size:.875em;
+    border-radius:5px;
+    box-shadow:0 1px 3px #ccc;
+    border:1px solid #ddd;
+}
+
+#pswd_info h4 {
+    margin:0 0 10px 0;
+    padding:0;
+    font-weight:normal;
+}
+
+#pswd_info {
+    display:none;
+}
+
 
 /*    --------------------------------------------------
     :: Footer

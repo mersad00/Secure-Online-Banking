@@ -2,7 +2,18 @@
 include('functions/banking.php');
 include('session.php');
 include('includes/top.php');
+
 ?>
+
+<?php 
+// create unique token to avoid csrf
+ $form_token = uniqid();
+ 
+// commit token to session
+$_SESSION['user_token'] = $form_token;
+
+
+?>	
 <body>
 <!-- Page Heading -->
 	<div class="container">
@@ -21,6 +32,8 @@ include('includes/top.php');
 		<div class="row">
 			<div class="col-md-4">
 			<div id="userInfo"></div>
+			<div id="clientKey">
+			<?php include('clientkeygenerator.php') ?></div>
 				</div>
 <?php include('transfer.php') ?>
 		</div>

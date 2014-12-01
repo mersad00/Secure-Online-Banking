@@ -1,15 +1,13 @@
 <?php
-require('constants.php');
-
+require_once('constants.php');
+$database = parse_ini_file("db_config.ini");
 // Establishing Connection with Server by passing server_name, user_id and password as a parameter
-$connection = mysqli_connect(SERVER, USERNAME, PASSWORD, DATABASE);
+if(!isset($connection)){
+$connection = mysqli_connect($database['host'], $database['username'], $database['password'], $database['dbname']);
+}
 if(!$connection){
 	die("Database Connection Failure ". mysqli_error($connection));
 }
 
-$mysqli = new mysqli(SERVER, USERNAME, PASSWORD, DATABASE);
-if ($mysqli->connect_errno) {
-	die ("Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error);
-}
 
 ?>

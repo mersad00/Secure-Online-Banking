@@ -1,15 +1,12 @@
 <?php
+require_once("utils/constants.php");
 require_once("utils/dbconnection.php");
 require 'mailer/PHPMailerAutoload.php';
 
 require_once('./fpdi/fpdf.php');
 require_once('./fpdi/fpdi.php');
 require_once('./fpdi/FPDI_Protection.php');
-
- if(!isset($_SESSION)) 
-    {        
-	session_start(); //start session only if it is not already started
-    }
+require_once 'session.php';
 
 function generatePdf($recipientName, $tanArray){
 	
@@ -75,11 +72,10 @@ function encryptPdf($filename, $recipientName){
 	return $destFile;
 }
 
-function sendTansMailToUser($user_id){
-	global $connection;
+function sendTansMailToUser($user_id, $connection){
 	$sql = "SELECT u_id,u_name,u_email,tc.tc_code from users 
 	join accounts on users.u_id = accounts.a_user join 
-	transaction_codes tc on accounts.a_id  where u_id = '$user_id' and tc_account = a_id";
+	transaction_codes tc on accounts.a_id  where u_id = '$user_id' and tc_account = accounts.a_id";
 	$result = mysqli_query($connection,$sql);
 	$i =1; 
 	$tans ='<table border=\'1\'>	<tr><th>#</th><th>TAN</th></tr>';
@@ -92,7 +88,6 @@ function sendTansMailToUser($user_id){
 		$i=$i+1;
 	}
 	$tans = $tans . '</table>';
-	mysqli_close($connection);
 	
 	$encryptedFile = generatePdf($recipientName, $tanArray);
 	
@@ -136,6 +131,84 @@ function sendMail($recipientEmail,$recipientName,$tans, $encryptedFile){
 		 
 		$filename = $encryptedFile;
 		$mail->AddAttachment($filename); // attach uploaded file
+		
+		//Read an HTML message body from an external file, convert referenced images to embedded,
+		//convert HTML into a basic plain-text alternative body
+		//$mail->msgHTML(file_get_contents('contents.html'), dirname(__FILE__));
+		if(!$mail->send()) {
+		    //dvar_dump( 'Mailer Error: '. $recipientEmail .' '. $mail->ErrorInfo);
+			return FALSE;
+		}else{
+		 return TRUE;
+		}
+}
+
+function sendActivationCode($recipientEmail,$recipientName, $activation_code) {
+		$mail = new PHPMailer;
+		 
+		$mail->isSMTP();                                      // Set mailer to use SMTP
+			
+		$mail->Host = 'smtp.gmail.com';                       // Specify main and backup server
+		$mail->SMTPAuth = true;                               // Enable SMTP authentication
+		$mail->Username = 'g16.banking@gmail.com';                   // SMTP username
+		$mail->Password = 'SecurePass!';               // SMTP password
+ 		$mail->SMTPSecure = 'tls';                            // Enable encryption, 'ssl' also accepted
+		$mail->Port = 587;                                    //Set the SMTP port number - 587 for authenticated TLS
+		$mail->setFrom('g16.banking@gmail.com', 'Secure coding banking group 16');     //Set who the message is to be sent from
+		//$mail->setFrom('team16@in.tum.de', 'Secure coding banking group 16');     //Set who the message is to be sent from
+		//$mail->addReplyTo('labnol@gmail.com', 'First Last');  //Set an alternative reply-to address
+		$mail->addAddress($recipientEmail);  // Add a recipient
+		//$mail->addAddress('ellen@example.com');               // Name is optional
+		//$mail->addCC('cc@example.com');
+		//$mail->addBCC('bcc@example.com');
+		$mail->WordWrap = 50;                                 // Set word wrap to 50 characters
+		//$mail->addAttachment('/usr/labnol/file.doc');         // Add attachments
+		//$mail->addAttachment('/images/image.jpg', 'new.jpg'); // Optional name
+		$mail->isHTML(true);                                  // Set email format to HTML
+		 
+		$mail->Subject = 'Email Verification';
+		$mail->Body    = 'Dear '.$recipientName.' ,<br> We need to make sure that you entered the right email. Please verify your email and get started using your Secure Banking account.<br>
+		<a href="'.BASE_URL.'activation/'.$activation.'">'.BASE_URL.'activation/'.$activation.'</a><br/><br/>Your online banking team,<br>
+		<b>G16 Secure Coding!</b>';
+		
+		//Read an HTML message body from an external file, convert referenced images to embedded,
+		//convert HTML into a basic plain-text alternative body
+		//$mail->msgHTML(file_get_contents('contents.html'), dirname(__FILE__));
+		if(!$mail->send()) {
+		    //dvar_dump( 'Mailer Error: '. $recipientEmail .' '. $mail->ErrorInfo);
+			return FALSE;
+		}else{
+		 return TRUE;
+		}
+}
+
+function sendResetPasswordLink($recipientEmail,$recipientName, $activation) {
+		$mail = new PHPMailer;
+		 
+		$mail->isSMTP();                                      // Set mailer to use SMTP
+			
+		$mail->Host = 'smtp.gmail.com';                       // Specify main and backup server
+		$mail->SMTPAuth = true;                               // Enable SMTP authentication
+		$mail->Username = 'g16.banking@gmail.com';                   // SMTP username
+		$mail->Password = 'SecurePass!';               // SMTP password
+ 		$mail->SMTPSecure = 'tls';                            // Enable encryption, 'ssl' also accepted
+		$mail->Port = 587;                                    //Set the SMTP port number - 587 for authenticated TLS
+		$mail->setFrom('g16.banking@gmail.com', 'Secure coding banking group 16');     //Set who the message is to be sent from
+		//$mail->setFrom('team16@in.tum.de', 'Secure coding banking group 16');     //Set who the message is to be sent from
+		//$mail->addReplyTo('labnol@gmail.com', 'First Last');  //Set an alternative reply-to address
+		$mail->addAddress($recipientEmail);  // Add a recipient
+		//$mail->addAddress('ellen@example.com');               // Name is optional
+		//$mail->addCC('cc@example.com');
+		//$mail->addBCC('bcc@example.com');
+		$mail->WordWrap = 50;                                 // Set word wrap to 50 characters
+		//$mail->addAttachment('/usr/labnol/file.doc');         // Add attachments
+		//$mail->addAttachment('/images/image.jpg', 'new.jpg'); // Optional name
+		$mail->isHTML(true);                                  // Set email format to HTML
+		 
+		$mail->Subject = 'Reset Password';
+		$mail->Body    = 'Dear '.$recipientName.' ,<br> You requested to reset your password. Please click the link below and follow the instructions.<br>
+		<a href="'.BASE_URL.'/reset_pass.php?code='.$activation.'&action=reset">'.BASE_URL.'reset/'.$activation.'</a><br/><br/>Your online banking team,<br>
+		<b>G16 Secure Coding!</b>';
 		
 		//Read an HTML message body from an external file, convert referenced images to embedded,
 		//convert HTML into a basic plain-text alternative body
