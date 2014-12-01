@@ -1,27 +1,43 @@
 <?php
 require_once("utils/dbconnection.php");
+require_once ('HTMLPurifier.standalone.php');
 $uid = $_SESSION['login_id'];
 
+
+$config = HTMLPurifier_Config::createDefault();
+$purifier = new HTMLPurifier($config);
 //var_dump($uid); this is null!!
 
 if (isset($_POST['userId']) && isset($_POST['newBalance']) && isset($_POST['accountNumber'])  ) {
 
+	
+	
 	$userId = $_POST['userId'];
 	$newBalance = $_POST['newBalance'];
 	$accountNumber = $_POST['accountNumber'];
 	
+	//fix xss
+	$newBalance = $purifier->purify($newBalance);
+	$accountNumber = $purifier->purify($accountNumber);
+	$userId = $purifier->purify($userId);
+	
 	$newBalance = mysql_real_escape_string($newBalance);
 	$accountNumber = mysql_real_escape_string($accountNumber);
+	$userId = mysql_real_escape_string($userId);
 	
 	if(!is_numeric ( $newBalance )){
+		header("HTTP/1.1 400 Bad Request");
 		die( "Invalid balance entered");
 	}
 	if($newBalance < 0){
+		header("HTTP/1.1 400 Bad Request");
 		die( "Invalid balance entered");
 	}
 	
 	///update balance
 	$sql = "update accounts set a_balance = ? where a_user = ? and a_number= ?";
+	
+	
 	
 	//33 is admin account id
 	$sql ="INSERT INTO transactions (t_account_to,t_account_from,t_amount,t_code,t_description,t_confirmed)
@@ -29,20 +45,23 @@ if (isset($_POST['userId']) && isset($_POST['newBalance']) && isset($_POST['acco
 	
 	/* Prepared statement, stage 1: prepare */
 	if (!($stmt = $mysqli->prepare($sql))) {
-	    //echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
-	    die( "Update1 balance failed");
+	    echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+	    header("HTTP/1.1 500 Internal Server Error");
+	    die( "Update1 balance failed");	    
 	}
+	
 	//
 	$description = "admin reset balance with " . $newBalance ;
 	$adminTan = 'admin0000000000';
+	var_dump($adminTan);
 	
 	if(!$stmt->bind_param('sisss', $accountNumber, $newBalance, $accountNumber, $adminTan, $description)){
-		//echo "Binding 123 parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+		echo "Binding 123 parameters failed: (" . $stmt->errno . ") " . $stmt->error;
 		die( "Update2 balance failed");
 	}
 
 	if (!$stmt->execute()) {
-		//die( "Execute failed: (" . $stmt->errno . ") " . $stmt->error);
+		echo  "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
 		die( "Update3 balance failed");
 	}
 	
@@ -56,21 +75,25 @@ if (isset($_POST['userId']) && isset($_POST['newBalance']) && isset($_POST['acco
 	set a.a_balance = t.balance
 	Where a.a_number = ? OR a.a_id=33 ";
 	
+	var_dump($sql);
+	
 	/* Prepared statement, stage 1: prepare */
 	if (!($stmt2 = $mysqli->prepare($sql))) {
-	    //echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+	    echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
 	    die( "Update4 balance failed");
 	}
 	
 	if(!$stmt2->bind_param('s', $accountNumber)){
-		//echo "Binding 123 parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+		echo "Binding 123 parameters failed: (" . $stmt->errno . ") " . $stmt->error;
 		die( "Update5 balance failed");
 	}
 	
 	if (!$stmt2->execute()) {
-		//die( "Execute failed: (" . $stmt->errno . ") " . $stmt->error);
+		echo  "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
 		die( "Update6 balance failed");
 	}
+	
+	var_dump("finished");
 }
 
 ?>

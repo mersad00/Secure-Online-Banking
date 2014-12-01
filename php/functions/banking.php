@@ -1,5 +1,17 @@
 <?php
 require_once("utils/dbconnection.php");
+
+require_once ('HTMLPurifier.standalone.php');
+
+ if(!isset($_SESSION)) 
+    {        
+	session_start(); //start session only if it is not already startedonnect
+    }
+ini_set('display_errors', 'On');
+
+$config = HTMLPurifier_Config::createDefault();
+$purifier = new HTMLPurifier($config);
+
 require_once("utils/constants.php");
 require_once 'session.php';
 ini_set('display_errors', 'On');
@@ -21,6 +33,8 @@ if($_POST['user_token'] == $_SESSION['user_token'])
 	}
 	else
 	{
+		
+				
 		$amount=$_POST['amount'];
 		if($amount<=0) {
 			$error = 'Amount must be positive';
@@ -30,11 +44,17 @@ if($_POST['user_token'] == $_SESSION['user_token'])
 		$transaction_code=$_POST['transaction_code'];
 		$account_to = $_POST['to_account'];
 		$details = $_POST['details'];
+		
+		//fix xss
+		$amount = $purifier->purify($amount);
+		$transaction_code = $purifier->purify($transaction_code);
+		$account_to = $purifier->purify($account_to);
+		$details = $purifier->purify($details);
+		
 		// To protect MySQL injection for Security purpose
 		$transaction_code = stripslashes($transaction_code);
 		$account_to = stripslashes($account_to);
 		$details = stripslashes($details);
-
 
 		$transaction_code = mysql_real_escape_string($transaction_code);
 		$account_to = mysql_real_escape_string($account_to);

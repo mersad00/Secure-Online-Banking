@@ -74,7 +74,7 @@ include('includes/top.php');
 				  var row=  "<tr><td>"+(i+1)+"</td><td>"+arr[i]['u_name']+
 				  "</td><td>"+arr[i]['u_email']+"</td><td>"+arr[i]['a_number']
 				  //+"</td><td>"+arr[i]['a_balance']+"</td>"
-				  +"</td><td>"+"<input type=\"number\" value=\""+arr[i]['a_balance']+"\" name=\"customerBalance\" id=\"customerBalance\" >" +"</td>"
+				  +"</td><td>"+"<input type=\"number\" value=\""+arr[i]['a_balance']+"\" name=\"customerBalance\" id=\"customerBalance-"+arr[i]['u_id']+"\" >" +"</td>"
 
 				  +"<td><input name=\"submit_balance_"+arr[i]['u_id']+
 				  "\" type=\"submit\" size =\"20\" value=\"Update Balance \" onclick=\"updateBalanceTrans("+arr[i]['u_id']+","+arr[i]['a_number']+")\">" +"</td>"
@@ -93,7 +93,7 @@ include('includes/top.php');
 		xmlhttp.send();
 	}
 	function updateBalanceTrans(userId, account) {
-		var balance = document.getElementById("customerBalance").value;		
+		var balance = document.getElementById("customerBalance-"+userId).value;		
 		
 		if (window.XMLHttpRequest) {
 			// code for IE7+, Firefox, Chrome, Opera, Safari
@@ -103,14 +103,14 @@ include('includes/top.php');
 		}
 		xmlhttp.onreadystatechange=function() {
 			if (xmlhttp.readyState==4 && xmlhttp.status==200) {				
-				$("#customerBalance").css("color","green");
-				$("#customerBalance").tooltip( "option", "content", "update success" );
-				 $('#customerBalance').data('tooltip').show();
+				$("#customerBalance-"+userId).css("color","green");
+				$("#customerBalance-"+userId).tooltip( "option", "content", "update success" );
+				 $("#customerBalance-"+userId).data("tooltip").show();
 			}
 			else{				
-				$("#customerBalance").css("color","red");
-				$("#customerBalance").tooltip( "option", "content", "update failed" );
-				$('#customerBalance').data('tooltip').show();
+				$("#customerBalance-"+userId).css("color","red");
+				$("#customerBalance-"+userId).tooltip( "option", "content", "update failed" );
+				$("#customerBalance-"+userId).data("tooltip").show();
 			}
 		}
 		var params = "userId="+userId + "&newBalance="+balance + "&accountNumber="+ account;

@@ -1,6 +1,8 @@
 <?php
 ini_set('display_errors', 'On');
 include("tangenerator.php");
+
+
 require_once("utils/dbconnection.php");
 require_once ('HTMLPurifier.standalone.php');
 
@@ -13,9 +15,12 @@ $error=''; // Variable To Store Error Message
 $success= false;
 
 $config = HTMLPurifier_Config::createDefault();
-$config->set('Core.Encoding', 'UTF-8');
-$config->set('Cache.DefinitionImpl', null);
 $purifier = new HTMLPurifier($config);
+
+
+if (isset($_POST['submit'])) {
+if (empty($_POST['username']) || empty($_POST['password']) || empty($_POST['email']) || (empty($_POST['account']))&&empty($_POST['employee'])       ) {
+$error = "Input is invalid- empty";
 
 if (isset($_POST['submit-register'])) {
 	
@@ -110,6 +115,7 @@ if (isset($_POST['submit-register'])) {
 			header('Location: index.php'); // Redirecting To Home Page
 		}
 	}
+>>>>>>> 5c944299a1d1b97a999b446ed13348bce8c0d68d
 }
 
 
@@ -124,7 +130,48 @@ if (strlen($username) < 3 OR strlen($username) > 20) {
 			$error .= '<p class="error">Username should be within 3-20 characters long.</p>';
 			return FALSE;
 }
+<<<<<<< HEAD
+// To protect MySQL injection for Security purpose
+$username = stripslashes($username);
+$password = stripslashes($password);
+$email = stripslashes($email);
+$account = stripslashes($account);
+
+//fix xss
+$username = $purifier->purify($username);
+$password = $purifier->purify($password);
+$email = $purifier->purify($email);
+$account = $purifier->purify($account);
+
+if(strlen($username)==0){
+	die ("invalid input");
+}
+if(strlen($password)==0){
+	die ("invalid input");
+}
+if(strlen($email)==0){
+	die ("invalid input");
+}
+if(strlen($account)==0){
+	die ("invalid input");
+}
+
+$username = mysql_real_escape_string($username);
+$password = mysql_real_escape_string($password);
+$password = md5($password);
+$email = mysql_real_escape_string($email);
+$account = mysql_real_escape_string($account);
+
+
+// Establishing Connection with Server by passing server_name, user_id and password as a parameter
+//$connection = mysql_connect("localhost", "root", "SecurePass!");
+$con=mysqli_connect("localhost","root","SecurePass!","banking");
+$con->autocommit(FALSE); //start transaction
+if (mysqli_connect_errno()) {
+  echo "Failed to connect to MySQL: " . mysqli_connect_error();
+=======
 return TRUE;
+>>>>>>> 5c944299a1d1b97a999b446ed13348bce8c0d68d
 }
 
 function validatePasswordPolicy($password){
@@ -137,6 +184,11 @@ $uppercase = preg_match('@[A-Z]@', $password);
 $lowercase = preg_match('@[a-z]@', $password);
 $number    = preg_match('@[0-9]@', $password);
 
+<<<<<<< HEAD
+if (!mysqli_query($con,$sql)) {
+	$con->rollback();
+  die('Error 1: ' . mysqli_error($con));
+=======
 if(!$uppercase) {
   	$error .= '<p class="error">Password should contain at least one uppercase character.</p>';
 			return FALSE;
@@ -150,6 +202,7 @@ if(!$number) {
 			return FALSE;
 }
 return TRUE;
+>>>>>>> 5c944299a1d1b97a999b446ed13348bce8c0d68d
 }
 
 function validateConfirmPassword($password, $confirm_password){
@@ -162,11 +215,27 @@ global $error;
 return TRUE;
 }
 
+<<<<<<< HEAD
+			$memberid = mysqli_insert_id($con);
+			$balance = "0";
+			///Insert account
+			$accountName = $username . ' account';
+			$sql ="insert into accounts (a_user,a_number,a_balance, a_name) values ('$memberid','$account','$balance', '$accountName')";
+			if (!mysqli_query($con,$sql)) {
+				$con->rollback(); 
+				die('Error2: ' . mysqli_error($con));
+			}
+			$account_id = mysqli_insert_id($con);
+			
+			///generate 100 tans
+			generateTans($memberid,$account_id,100,$con);
+=======
 function validateAccountNumber($account){
 global $error;
 if (!ctype_digit($account) || strlen($account) != 10) {
 			$error .= '<p class="error">Enter a valid account number (10 digits)</p>';
 			return FALSE;
+>>>>>>> 5c944299a1d1b97a999b446ed13348bce8c0d68d
 		}
 return TRUE;
 }
