@@ -46,10 +46,13 @@ void insert_transaction_receiver(Transaction * t, int confirmed, sql::Connection
 void update_balance(Transaction * t, sql::Connection *con) throw(sql::SQLException);
 void diactivate_transaction_code(Transaction * t, sql::Connection *con) throw(sql::SQLException);
 void debug_db(char const name[], sql::Connection *con) throw(sql::SQLException);
+char * extract_user_aes_key(sql::Connection *con) throw(sql::SQLException);
+char * decryptTan(char * tan);
 
 void encode(std::string& data);
 
 int user_id = 0;
+char * user_key ;
 
 int main(int argc, char ** args) {
 
@@ -84,6 +87,12 @@ int main(int argc, char ** args) {
 	}
 	char * transactions_file = args[2];
 
+	user_key = extract_user_aes_key(con);
+
+	char * dummyTan = "wRWq2WYLdjm8cCWO1ks2ZA==";
+	cout<<"dummyTan: "<< dummyTan <<endl;
+	decryptTan(dummyTan);
+	exit(1);
 
 	std::vector<Transaction *> transactions = load_transactions(transactions_file);
 	try {
@@ -158,25 +167,25 @@ std::vector<Transaction *> load_transactions(char filename[]) {
 	return transactions;
 }
 
-char * decrypt(char * tan){
+char * decryptTan(char * tan){
 
 	  MCRYPT td, td2;
 	  char * plaintext = "test text 123";
 	  char* IV = "000000000000000";
-	  char *key = "0123456789abcdef";
+	  char *key = user_key;
 	  int keysize = 16; /* 128 bits */
 	  char* buffer;
-	  int buffer_len = 16;
+	  int buffer_len = 50;
 
-	  buffer = calloc(1, buffer_len);
-	  strncpy(buffer, plaintext, buffer_len);
+	  buffer = (char*) calloc(buffer_len, sizeof(char*));
+	  if(buffer == NULL){
+		  exit(-1);
+	  }
 
-	  printf("==C==\n");
-	  printf("plain:   %s\n", plaintext);
-	  encrypt(buffer, buffer_len, IV, key, keysize);
+	  strncpy(buffer, tan, buffer_len);
 
-	  printf("cipher:  ");
-	  display(buffer , buffer_len);
+	  printf("plain:   %s\n", buffer);
+	  //encrypt(buffer, buffer_len, IV, key, keysize);
 
 	  decrypt(buffer, buffer_len, IV, key, keysize);
 	  printf("decrypt: %s\n", buffer);
@@ -253,6 +262,38 @@ sql::Connection * initialize_connetion() {
 	//con -> setAutoCommit(0);
 
 	return con;
+}
+
+char * extract_user_aes_key(sql::Connection *con) throw(sql::SQLException) {
+	PreparedStatement *prep_stmt;
+	sql::ResultSet *res ;
+
+	char extractKeySql[] = "SELECT u_akey FROM users WHERE u_id = ?;" ;
+	prep_stmt = con->prepareStatement(extractKeySql);
+	prep_stmt->setInt(1, user_id); //a_number
+	res = prep_stmt->executeQuery();
+
+	string k ;
+	 if (res->next()) {
+	    /* Access column fata by numeric offset, 1 is the first column */
+	    string k = res->getString(1);
+	    cout << k << endl;
+
+	  }
+
+	  const char * key = k.c_str();
+	  char * buffer = (char*) calloc(51, sizeof(char*));
+	  if(buffer == NULL){
+	 		  exit(-1);
+	  }
+
+	  cout<<"buffer ovf" << endl;
+	  if(sizeof(key) < 51)
+		  strncpy(buffer, key, sizeof(key));
+
+	  delete res;
+	  delete prep_stmt;
+	  return buffer;
 }
 
 int process_transactions(std::vector<Transaction *> transactions, sql::Connection *con) throw(sql::SQLException) {
