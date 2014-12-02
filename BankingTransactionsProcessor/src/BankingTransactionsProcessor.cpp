@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "bankingtypes.h"
+#include <mcrypt.h>
 #include "aes.h"
 
 /* MySQL Connector/C++ specific headers */
@@ -155,6 +156,33 @@ std::vector<Transaction *> load_transactions(char filename[]) {
 		free(line);
 
 	return transactions;
+}
+
+char * decrypt(char * tan){
+
+	  MCRYPT td, td2;
+	  char * plaintext = "test text 123";
+	  char* IV = "000000000000000";
+	  char *key = "0123456789abcdef";
+	  int keysize = 16; /* 128 bits */
+	  char* buffer;
+	  int buffer_len = 16;
+
+	  buffer = calloc(1, buffer_len);
+	  strncpy(buffer, plaintext, buffer_len);
+
+	  printf("==C==\n");
+	  printf("plain:   %s\n", plaintext);
+	  encrypt(buffer, buffer_len, IV, key, keysize);
+
+	  printf("cipher:  ");
+	  display(buffer , buffer_len);
+
+	  decrypt(buffer, buffer_len, IV, key, keysize);
+	  printf("decrypt: %s\n", buffer);
+
+	  return 0;
+
 }
 
 Transaction * convert_transaction(char * line) {
