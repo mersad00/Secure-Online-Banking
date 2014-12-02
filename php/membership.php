@@ -271,4 +271,5 @@ if(validateUsername($username) && validatePasswordPolicy($password) && validateC
 }
 return FALSE;
 }
+
 ?>

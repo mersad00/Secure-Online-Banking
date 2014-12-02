@@ -4,15 +4,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.JPasswordField;
 
 public class BatchUploadView extends UIView implements  ActionListener {
 
@@ -20,6 +24,10 @@ public class BatchUploadView extends UIView implements  ActionListener {
 	JFileChooser fc;
 	JButton openButton, tanGeneration;
 	JLabel fileLabel;
+	
+	
+	
+	private ITanGenerator tanController = new TanGeneratorImp();
 	
 	public BatchUploadView(JPanel panel) {
 		super(panel);
@@ -83,11 +91,125 @@ public class BatchUploadView extends UIView implements  ActionListener {
 			      }
 			break;   
 		case "Generate Tans":
-			//this.hideMe(true);
+			
+			try {
+				List<TransactionEntry> entries = readFileLines(file);
+				for (TransactionEntry entry : entries) {
+					if(entry.isComment)
+						continue;
+					String tan = tanController.generateTan(LoginImp.pin, entry.sourceAccount, entry.amount+"");
+					System.out.println("generated tan: " + tan +" for " + entry.sourceAccount + " "+ entry.amount);
+					entry.tan = tan;
+				}
+				
+				writeFileLines(entries, file);
+				
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			this.hideMe(true);
 			
 		break;  
 
 		}
 	}
 	
+	private List<TransactionEntry> readFileLines(File inputFile) throws IOException{
+		BufferedReader br = new BufferedReader(new FileReader(inputFile));
+		String strLine;
+		List<TransactionEntry> entries = new ArrayList<>();
+		while ((strLine = br.readLine()) != null) {
+			if(strLine.length() < 3)
+				continue; //ignore irelevant lines
+			if(strLine.startsWith("#"))
+				continue; //ignore comments
+			String[] elements = strLine.split(",");
+			if(elements.length < 5){
+				//invalid line
+				TransactionEntry comment = new TransactionEntry(strLine);
+				System.out.println(comment);
+				entries.add(comment);
+				continue;
+			}
+			else {
+				try{
+					TransactionEntry entry = new TransactionEntry();
+					entry.tan = elements[0];
+					entry.sourceAccount = elements[1];
+					entry.destinationAccount = elements[2];
+					entry.amount = Integer.parseInt(elements[3]);
+					entry.description = elements[4];
+					entries.add(entry);
+					TransactionEntry comment = new TransactionEntry(strLine);
+					entries.add(comment);
+				}
+				catch (NumberFormatException ex){
+					TransactionEntry comment = new TransactionEntry(strLine + " - number format exception");
+					System.out.println(comment);
+					entries.add(comment);
+				}				
+			}			
+		}
+
+		br.close();
+
+		return entries;
+	}
+	
+	private void writeFileLines(List<TransactionEntry> entries, File file) throws IOException{
+		FileWriter fw = new FileWriter(file, false);
+	    BufferedWriter bw = new BufferedWriter(fw);
+	    for (TransactionEntry transactionEntry : entries) {
+			bw.write(transactionEntry.toString()+"\n");
+		}
+	    bw.flush();
+	    bw.close();
+	}
+}
+
+class TransactionEntry {
+	public String tan;
+	public String sourceAccount;
+	public String destinationAccount;
+	public int amount;
+	public String description;
+	public boolean isComment;
+	public String comment;
+	
+	public TransactionEntry(String tan, String sourceAcc, String destAcc, int amount, String description){
+		this.tan = tan;
+		this.sourceAccount = sourceAcc;
+		this.destinationAccount = destAcc;
+		this.amount = amount;
+		this.description = description;
+		this.isComment = false;
+		this.comment = "";
+	}
+	
+	public TransactionEntry(String comment){
+		this.isComment = true;
+		this.comment = comment;
+	}
+	
+	public TransactionEntry(){
+		this.tan = "";
+		this.sourceAccount = "";
+		this.destinationAccount = "";
+		this.amount = 0;
+		this.description = "";
+		this.isComment = false;
+		this.comment = "";
+	}
+	
+	public String toString(){
+		if(isComment){
+			return "#" + comment;
+		}
+		return tan+","+sourceAccount+","+destinationAccount+","+amount+","+description;		
+	}
+	
+	public void setGeneratedTan(String tan){
+		this.tan = tan;		
+	}
 }

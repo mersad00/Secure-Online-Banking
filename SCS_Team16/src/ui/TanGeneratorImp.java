@@ -14,7 +14,7 @@ public class TanGeneratorImp implements ITanGenerator
 {
 	IGenerator generator;
 	IDeviceManager deviceManger;
-ISafeRepository repo;
+	ISafeRepository repo;
 	ICryptoManager cryptoManager;
 	public TanGeneratorImp() {
 		deviceManger = new DeviceManagerImp();
