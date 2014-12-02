@@ -18,7 +18,7 @@
  * MCrypt API available online:
  * http://linux.die.net/man/3/mcrypt
  */
-#include "mcrypt.h"
+#include <mcrypt.h>
 
 #include <math.h>
 #include <stdint.h>
