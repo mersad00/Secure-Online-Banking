@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "bankingtypes.h"
+#include "aes.h"
 
 /* MySQL Connector/C++ specific headers */
 #include <cppconn/driver.h>

@@ -1,2 +1,16 @@
-#1,2,2, to account 2
-Xenasy2UGhKZhn8mQvNDqA==,1,2,14, to account 14
+# this is a comment
+# TAN 15 characters
+# source_acc 11 characters max
+# destination_acc 11 characters max
+# amount 11 characters max
+# description 250 characters max
+# don't use commas in the description!! everything after the last comma will be ignored.
+# please follow the structure to add a transaction
+#TAN,source_acc,destination_acc,amount,description 
+
+alice0000000006,1,2,1, to account 2
+alice0000000007,1,1144,1, to account 14
+#alice0000000003,3,2,30,third deposit
+alice0000000004,1,2,4s0,fourth deposit
+#alice0000000005,1,2,10,fourth deposit
+
