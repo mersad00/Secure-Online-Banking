@@ -1,8 +1,15 @@
 package ui;
 
+import java.awt.Cursor;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -29,25 +36,37 @@ public class TanGeneratorView implements ActionListener {
 		panel.add(accountText);
 
 		JLabel amountLabel = new JLabel("Amount");
-		amountLabel.setBounds(10, 45, 80, 25);
+		amountLabel.setBounds(10, 40, 80, 25);
 		panel.add(amountLabel);
 
 		amountText = new JTextField(100);
-		amountText.setBounds(100, 45, 160, 25);
+		amountText.setBounds(100, 40, 160, 25);
 		panel.add(amountText);
 
 		JLabel tanLabel = new JLabel("Tan");
-		tanLabel.setBounds(10, 75, 80, 25);
+		tanLabel.setBounds(10, 70, 80, 25);
 		panel.add(tanLabel);
 
 		tanText = new JTextField(100);
-		tanText.setBounds(100, 75, 260, 25);
+		tanText.setBounds(100, 70, 160, 25);
 		panel.add(tanText);
 
-		JButton generateButton = new JButton("generate");
-		generateButton.setBounds(100, 110, 110, 25);
-		generateButton.addActionListener(this);
-		panel.add(generateButton);
+		Image generateImage;
+		try {
+			generateImage = ImageIO.read(new File("icons/light59.png"));
+			JButton generateButton = new JButton("generate", new ImageIcon(
+					generateImage));
+			generateButton.setBounds(100, 100, 110, 25);
+			generateButton.setBorder(BorderFactory.createEmptyBorder());
+			generateButton.setContentAreaFilled(false);
+			generateButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+			generateButton.addActionListener(this);
+			panel.add(generateButton);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 	@Override
