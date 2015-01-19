@@ -10,10 +10,10 @@ import host.IDeviceManager;
 import org.junit.Before;
 import org.junit.Test;
 
+import cryto.AESCrypt;
 import cryto.CryptoManagerImp;
 import cryto.ICryptoManager;
 import cryto.SecureKey128bit;
-
 import repository.ISafeRepository;
 import repository.SafeRepositoryImp;
 import tan.GeneratorImp;
@@ -29,7 +29,7 @@ public class GeneratorTests {
 		String SessionKey = "212121212";
 		
 		IDeviceManager devicemanager= new DeviceManagerImp();
-		ICryptoManager cryptomanager= new CryptoManagerImp();
+		ICryptoManager cryptomanager= new AESCrypt();
 		ISafeRepository repo = new SafeRepositoryImp(devicemanager,cryptomanager);
 		
 		boolean successful = repo.storeSessionKey(pin, account, SessionKey);
@@ -43,7 +43,7 @@ public class GeneratorTests {
 		String amount = "100";
 		
 		IDeviceManager devicemanager= new DeviceManagerImp();
-		ICryptoManager cryptomanager= new CryptoManagerImp();
+		ICryptoManager cryptomanager= new AESCrypt();
 		ISafeRepository repo = new SafeRepositoryImp(devicemanager,cryptomanager);
 		
 		IGenerator generator = new GeneratorImp();
@@ -59,7 +59,7 @@ public class GeneratorTests {
 		
 		try{
 		IDeviceManager devicemanager= new DeviceManagerImp();
-		ICryptoManager cryptomanager= new CryptoManagerImp();
+		ICryptoManager cryptomanager= new AESCrypt();
 		ISafeRepository repo = new SafeRepositoryImp(devicemanager,cryptomanager);
 		
 		IGenerator generator = new GeneratorImp();

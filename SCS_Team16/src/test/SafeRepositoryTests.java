@@ -6,9 +6,9 @@ import host.IDeviceManager;
 
 import org.junit.Test;
 
+import cryto.AESCrypt;
 import cryto.CryptoManagerImp;
 import cryto.ICryptoManager;
-
 import repository.ISafeRepository;
 import repository.RepositoryContent;
 import repository.SafeRepositoryImp;
@@ -22,7 +22,7 @@ public class SafeRepositoryTests {
 		String SessionKey = "212121212";
 		
 		IDeviceManager devicemanager= new DeviceManagerImp();
-		ICryptoManager cryptomanager= new CryptoManagerImp();
+		ICryptoManager cryptomanager= new AESCrypt();
 		ISafeRepository repo = new SafeRepositoryImp(devicemanager,cryptomanager);
 		
 		boolean successful = repo.storeSessionKey(pin, account, SessionKey);
@@ -36,7 +36,7 @@ public class SafeRepositoryTests {
 		String SessionKey = "212121212";
 		
 		IDeviceManager devicemanager= new DeviceManagerImp();
-		ICryptoManager cryptomanager= new CryptoManagerImp();
+		ICryptoManager cryptomanager= new AESCrypt();
 		ISafeRepository repo = new SafeRepositoryImp(devicemanager,cryptomanager);
 		
 		boolean successful = repo.storeSessionKey(pin, account, SessionKey);
