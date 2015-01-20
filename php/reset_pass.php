@@ -9,21 +9,31 @@ if(isset($_GET['action']))
     if($_GET['action']=="reset")
     {
         $encrypt = mysqli_real_escape_string($connection,$_GET['code']);
-        $query = "SELECT u_id, u_password FROM users where md5(90*13+u_id+u_password)='".$encrypt."'";
+
+        $now = time();
+        $query = "SELECT user FROM reset_tokens where token='".md5($encrypt)."' AND expire_time > '".$now."'";
         $result = mysqli_query($connection,$query);
         $rows = mysqli_fetch_array($result);
         if(count($rows)>=1)
         {
+			$user = $rows['user'];
+			// Just remove invalid tokens for the same user
+			$remove_token = "DELETE FROM reset_tokens where user='".$user."' AND expire_time < '".$now."'";
+			 if (!mysqli_query($connection,$remove_token)) {
+                mysqli_rollback($connection);
+                die('Error: ' . mysqli_error($connection));
+            }
 			
         }
         else
         {
-            $message = 'Invalid key please try again. <a href="http://localhost/ws14secure/php/forget_password.php"><span class="small">Forget Password?</span></a>';
+            $message =  INVALID_KEY;
+            header('Refresh: 2; url=forgot_password.php'); // Redirecting To Home Page
         }
 		mysqli_close($connection);
     }
 }
-elseif(isset($_POST['action']))
+else if(isset($_POST['action']))
 {
     
     $encrypt      = mysqli_real_escape_string($connection,$_POST['action']);
@@ -31,25 +41,27 @@ elseif(isset($_POST['action']))
 	$confirmpassword     = mysqli_real_escape_string($connection,$_POST['confirmpassword']);
 	
 	if(validatePasswordPolicy($password) && validateConfirmPassword($password,$confirmpassword)){
-    $query = "SELECT u_id, u_password FROM users where md5(90*13+u_id+u_password)='".$encrypt."'";
-//    echo $query;
-
-    $result = mysqli_query($connection,$query);
-    $rows = mysqli_fetch_array($result);
-	
-    if(count($rows)>=1)
-    {
-        $query = "update users set u_password='".md5($password)."' where u_id='".$rows['u_id']."'";
-        mysqli_query($connection,$query);
-		mysqli_close($connection);
-//        echo $query;
-        $message = "Your password changed sucessfully!<br/><a href='index.php'><span class='small'>Login</span></a>.";
-    }
-    else
-    {
-	
-       $message = "Invalid key please try again. <a href='http://localhost/ws14secure/php/forget_password.php'><span class='small'>Forget Password?</span></a>";
-     }
+		
+		 $select_user = "SELECT user FROM reset_tokens where token='".md5($encrypt)."'";
+		 $result = mysqli_query($connection,$select_user);
+		 $rows = mysqli_fetch_array($result);
+		 if(count($rows)>=1)
+		 {
+			 $user_update = "update users set u_password='".md5($password)."' where u_id='".$rows['user']."'";
+			 $newToken = md5(uniqid(mt_rand(), true));
+			 $token_update = "update reset_tokens set token='".$newToken."' where user='".$rows['user']."'";
+			 
+			 if(mysqli_query($connection,$user_update)){
+				mysqli_query($connection,$token_update);
+				$message = PASSWORD_CHANGED;
+			 }
+			 mysqli_close($connection);
+			 
+		 }
+		 else
+		 {
+			$message = INVALID_KEY;
+		 }
 	}
 }
 else
