@@ -88,6 +88,8 @@ public class AESCrypt implements ICryptoManager {
 		///compute hmac
 		byte[] computedhmac = computeSignature(crypted);
 		
+		String hmacb64 = new Base64().encodeAsString(hmac);
+		
 		///if hmac is not equal tampering happened
 		if(!Arrays.equals(hmac, computedhmac)) return "";
 		

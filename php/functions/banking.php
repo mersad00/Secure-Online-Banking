@@ -186,10 +186,19 @@ function checkSCSTan(){
 	{
 		$tanAccount = $taninfo[0];
 		$tanAmount = $taninfo[1];
+		date_default_timezone_set('UTC');
+		$date = new DateTime('now');
+		$datetan =new DateTime($taninfo[2]);
+		$diff=date_diff($date,$datetan);
+		$minutes = $diff->days * 24 * 60;
+		$minutes += $diff->h * 60;
+		$minutes += $diff->i;
+		
 		///check whether current transaction comply the tan
-		if($account_to != $tanAccount || $amount!=$tanAmount)
+		///tan is only valid for 10 minutes
+		if($account_to != $tanAccount || $amount!=$tanAmount||$minutes>=10)
 		{
-			$_SESSION['tError'] = $error = "tans amount and accout does not match with the input data";
+			$_SESSION['tError'] = $error = "tan is not valid.";//' amount/accout/ does not match with the input data";
 			return false;
 		}
 		return true;

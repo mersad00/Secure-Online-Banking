@@ -27,7 +27,12 @@ public class GeneratorImp implements IGenerator {
 			if (currentUTC == null)
 				return null;
 
-			String rawTan = account + ";" + amount+";"+currentUTC.getTime();
+			String rawTan = account
+					+ ";"
+					+ amount
+					+ ";"
+					+ (new SimpleDateFormat("MM/dd/yyyy KK:mm:ss a Z")
+							.format(new Date()));
 
 			SecureKey sessionKey = new SecureKey128bit(rc.getSessionKey());
 			String encTan = crypto.encrypt(rawTan, sessionKey);
@@ -48,11 +53,16 @@ public class GeneratorImp implements IGenerator {
 				"yyyy-MMM-dd HH:mm:ss");
 
 		// Time in GMT
+		// try {
+		// return
+		// dateFormatLocal.parse(dateFormatGmt.format(getCurrentTimeFromTimeServer()));
+		// } catch (ParseException e) {
 		try {
-			return dateFormatLocal.parse(dateFormatGmt.format(getCurrentTimeFromTimeServer()));
-		} catch (ParseException e) {
+			return dateFormatLocal.parse(dateFormatGmt.format(new Date()));
+		} catch (ParseException e1) {
 			return null;
 		}
+		// }
 
 	}
 

@@ -47,7 +47,7 @@ public class TanGeneratorView implements ActionListener {
 		tanLabel.setBounds(10, 70, 80, 25);
 		panel.add(tanLabel);
 
-		tanText = new JTextField(100);
+		tanText = new JTextField(200);
 		tanText.setBounds(100, 70, 160, 25);
 		panel.add(tanText);
 

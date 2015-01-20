@@ -24,8 +24,22 @@ public class AESCryptTests {
 			e.printStackTrace();
 			fail();
 		}
-		
-		
+	}
+	@Test
+	public void testHMAC(){
+		try {
+			String plainText = "2;2006456456;Tue Jan 20 13:54:34 CET 2015";
+			String cipherText ="M2KVhZJM4ZX4TvAIf8fgkteoI/rmHfPYtHlcy+svAgHvAiChtmv1MtkP6/uUJ9mbrNj5qHbNGjA8wPZNHYQEOZV0TwyLlFWytqvcRcZySLTWCh0l9hTvai9z2gNFshTV";
+			String key = "5UvSoqvtVVtrV2ZW";
+			AESCrypt aes = new AESCrypt();
+			SecureKey sec= new SecureKey128bit(key);
+			String decipherText = aes.decrypt(cipherText,sec);
+			assertTrue(plainText.equals(decipherText));
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
 	}
 
 }
