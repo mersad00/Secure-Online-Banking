@@ -7,14 +7,12 @@ require_once ('HTMLPurifier.standalone.php');
     {        
 	session_start(); //start session only if it is not already startedonnect
     }
-ini_set('display_errors', 'On');
 
 $config = HTMLPurifier_Config::createDefault();
 $purifier = new HTMLPurifier($config);
 
 require_once("utils/constants.php");
 require_once 'session.php';
-ini_set('display_errors', 'On');
 
 
 if(isset($_SESSION['tError'])){
@@ -148,7 +146,7 @@ if($_POST['user_token'] == $_SESSION['user_token'])
 					
 				header('Location: profile.php'); // Redirecting To Home Page
 			}
-			mysqli_close($connection); // Closing Connection
+			//mysqli_close($connection); // Closing Connection
 
 		//}
 	}

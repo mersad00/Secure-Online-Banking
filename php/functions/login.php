@@ -1,6 +1,5 @@
 <?php require_once("utils/dbconnection.php");?>
 <?php
-ini_set('display_errors', 'On');
 if(!isset($_SESSION))
 {
 	require_once 'session.php';
@@ -95,7 +94,7 @@ if (isset($_POST['submit-login'])) {
 					}
 					else 
 					{
-						$error = NO_USER;
+						$error = WRONG_CREDENTIALS;
 					}
 				
 			}

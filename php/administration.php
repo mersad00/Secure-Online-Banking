@@ -1,4 +1,5 @@
 <?php
+require_once 'session.php';
 require_once("utils/dbconnection.php");
 require_once ('HTMLPurifier.standalone.php');
 $uid = $_SESSION['login_id'];

@@ -1,7 +1,6 @@
 <?php
 include('email.php');
 require_once('utils/dbconnection.php');
-ini_set('display_errors', 'On');
 require_once 'session.php';
 
 

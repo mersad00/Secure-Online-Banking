@@ -1,6 +1,5 @@
 <?php
 require_once './../session.php';
-ini_set('display_errors', 'On');
 $error=''; // Variable To Store Error Message
 
 $uploaddir = '/var/www/ws14secure/php/uploads/';
