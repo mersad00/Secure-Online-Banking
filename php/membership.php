@@ -72,7 +72,7 @@ if (isset($_POST['submit-register'])) {
             $sql="INSERT INTO users (u_name, u_email, u_password, u_type) VALUES ('$username', '$email', '$password','$employee')";
             if (!mysqli_query($connection,$sql)) {
                 mysqli_rollback($connection);
-                die('Error: ' . mysqli_error($connection));
+                die('Error');
             }
 
             $memberid = mysqli_insert_id($connection);
@@ -89,7 +89,7 @@ if (isset($_POST['submit-register'])) {
                 $sql ="insert into accounts (a_user,a_number,a_balance, a_name) values ('$memberid','$account','$balance', '$accountName')";
                 if (!mysqli_query($connection,$sql)) {
                     mysqli_rollback($connection);
-                    die('Error: '. $sql . mysqli_error($connection));
+                    die('Error');
                 }
                 $account_id = mysqli_insert_id($connection);
             

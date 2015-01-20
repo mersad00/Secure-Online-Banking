@@ -53,11 +53,11 @@ function confirm_transaction($t_id){
 	global $connection;
 	$sql = "update transactions set t_confirmed =1 where t_id='$t_id'";
 	if(!mysqli_query($connection,$sql)){
-		die('Error confirming transaction: ' . mysqli_error($connection));
+		die('Error confirming transaction');
 	}
 	$sql = "update accounts inner join (select sum(t_amount) as val, t_account_from as id from transactions where t_confirmed =1 group by t_account_from ) as b on b.id = accounts.a_id  set a_balance =b.val";
 	if(!mysqli_query($connection,$sql)){
-		die('Error confirming transaction: ' . mysqli_error($connection));
+		die('Error confirming transaction');
 	}
 }
 

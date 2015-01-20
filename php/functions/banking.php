@@ -99,13 +99,11 @@ if($_POST['user_token'] == $_SESSION['user_token'])
 				$connection->autocommit(FALSE); //start transaction
 				if (!mysqli_query($connection,$sql)) {
 					$connection->rollback();
-					die('insert 1 Error: ' . $sql . mysqli_error($connection));
 				}
 				$sql ="INSERT INTO transactions (t_account_from,t_account_to,t_amount,t_code,t_description,t_confirmed,t_acode)
 				VALUES ('$to_a_id', '$from_a_id', '$amount','$transaction_code','$details' ,'$confirmed','$tacode')";
 				if (!mysqli_query($connection,$sql)) {
 					$connection->rollback();
-					die('insert 2 Error: ' . mysqli_error($con));
 				}
 				///update balance
 				$sql = "update accounts as a join
@@ -129,14 +127,12 @@ if($_POST['user_token'] == $_SESSION['user_token'])
 
 				if (!mysqli_query($connection,$sql)) {
 					$connection->rollback();
-					die('Error updating balance: '. $sql . mysqli_error($con));
 				}
 
 				///deactive tan
 				$sql = "update transaction_codes set tc_active = '0' where tc_code ='$transaction_code'";
 				if (!mysqli_query($connection,$sql)) {
 					$connection->rollback();
-					die('Error: ' . mysqli_error($con));
 				}
 				$error = "Transaction has been executed successfully!";
 				$_SESSION['tError'] = $error;

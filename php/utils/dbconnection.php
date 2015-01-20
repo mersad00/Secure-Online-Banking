@@ -6,7 +6,7 @@ if(!isset($connection)){
 $connection = mysqli_connect($database['host'], $database['username'], $database['password'], $database['dbname']);
 }
 if(!$connection){
-	die("Database Connection Failure ". mysqli_error($connection));
+	die("Database Connection Failure ");
 }
 
 $mysqli = new mysqli($database['host'], $database['username'], $database['password'], $database['dbname']);

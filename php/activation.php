@@ -108,7 +108,7 @@ function activate_user($user_id){
 	mysqli_autocommit($conm, false); //start transaction
 	$sql = "update users set u_active =1 where u_id='$user_id'";
 	if(!mysqli_query($conm,$sql)){
-		die('Error activate user: ' . mysqli_error($con));
+		die('Error activate user: ');
 		exit;
 	}
 	try{
@@ -148,7 +148,7 @@ function delete_user($user_id){
 	$sql = "delete from users where u_id='$user_id'";
 	try{
 		if(!mysqli_query($conm,$sql)){
-			die('Error activate user: ' . mysqli_error($con));
+			die('Error activate user: ');
 			exit;
 		}
 	

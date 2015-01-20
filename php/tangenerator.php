@@ -14,7 +14,7 @@ function generateTans($user_id, $account_id,$nums,$con)
 		$sql="INSERT INTO transaction_codes (tc_code, tc_account, tc_active) VALUES ('$tan', '$account_id', '1' )";
 		if (!mysqli_query($con,$sql)) {
 			$con->rollback();
-			die('Error: ' . mysqli_error($con));
+			die('Error');
 		}
 	}
 }
