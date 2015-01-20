@@ -1,5 +1,4 @@
 <?php
-ini_set('display_errors', 'On');
 require_once 'session.php';
 require "utils/dbconnection.php";
 $uid = $_SESSION['login_id'];
