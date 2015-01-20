@@ -2,6 +2,7 @@ package test;
 
 import static org.junit.Assert.*;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import host.DeviceManagerImp;
@@ -71,7 +72,8 @@ public class GeneratorTests {
 		String[] decipheredTan = cryptomanager.decrypt(tan, sessionkey).split(";");
 		assertTrue(decipheredTan[0].equals(account));
 		assertTrue(decipheredTan[1].equals(amount));
-		Date generationTime = new Date(Long.parseLong(decipheredTan[2]));
+		SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy KK:mm:ss a Z");
+		Date generationTime = formatter.parse(decipheredTan[2]);
 		long m = generationTime.getTime() - new Date().getTime();
 		long diffMinutes = m / (60 * 1000) % 60;
 		assertTrue(diffMinutes<10);
