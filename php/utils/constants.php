@@ -12,7 +12,7 @@ define("EMPTY_INPUT", "Please fill in the required fields.");
 define("NOT_ACTIVE", "User is not activated yet!");
 define("ACCOUNT_LOCKED", "Your account is locked due to many attempts.");
 define("NO_USER", "User does not exist!");
-define("USER_EXISTS", "User with the same email or username already exists!");
+define("USER_EXISTS", "Please try a different username or email");
 define("RESETLINK_SENT", "Your password reset link is sent to your e-mail address.");
 define("INVALID_EMAIL", "Invalid email address. Please type a valid email!");
 define("NOT_ROBOT", "Are you a human or a robot? Let us find out :)");
