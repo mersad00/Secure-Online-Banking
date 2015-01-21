@@ -18,7 +18,7 @@ define("INVALID_EMAIL", "Invalid email address. Please type a valid email!");
 define("NOT_ROBOT", "Are you a human or a robot? Let us find out :)");
 define("INVALID_KEY", "Invalid key or the reset request expired! Please try again. <a href=\"https://localhost/ws14secure/php/forgot_password.php\"><span class=\"small\">Forget Password?</span></a>");
 define("PASSWORD_CHANGED", "Your password changed sucessfully!<br/><a href='index.php'><span class='small'>Login</span></a>.");
-
+define("INVALID_TOKEN", "Token is invalid. Please try again!");
 // reCaptcha
 define("SITE_KEY", "6Lf3fv4SAAAAAJ2RXwpoxSrGUpLrmnpfHoVaQws-");
 define("SECRET_KEY", "6LdXvAATAAAAAJ-IDSYbhG-Afey_VU0AZfb7Ya5j");
