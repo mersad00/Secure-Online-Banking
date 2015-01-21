@@ -48,10 +48,11 @@ if ((isset($_POST['submit-activate']) || isset($_POST['submit-delete'])) && (iss
 // form not submitted yet 
 else {
 // create unique token to avoid csrf
+if(!isset($_SESSION['user_token'])){
 $form_token = substr(str_shuffle("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 1).substr(md5(time()),1);
 // commit token to session
 $_SESSION['user_token'] = $form_token;	
-
+}
 $con=mysqli_connect("localhost","root","SecurePass!","banking");
 // Check connection
 if (mysqli_connect_errno()) {
