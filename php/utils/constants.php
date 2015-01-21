@@ -10,7 +10,7 @@ define("BASE_URL", "https://localhost/ws14secure/php");
 define("WRONG_CREDENTIALS", "Username or Password is invalid.");
 define("EMPTY_INPUT", "Please fill in the required fields.");
 define("NOT_ACTIVE", "User is not activated yet!");
-define("ACCOUNT_LOCKED", "Your account is locked due to many attempts.");
+define("ACCOUNT_LOCKED", "Your account is locked due to many attempts. Please <a href=\"mailto:g16.banking@gmail.com?Subject=Account Blocked\">contact</a> an administrator.");
 define("NO_USER", "User does not exist!");
 define("USER_EXISTS", "Please try a different username or email");
 define("RESETLINK_SENT", "Your password reset link is sent to your e-mail address.");
