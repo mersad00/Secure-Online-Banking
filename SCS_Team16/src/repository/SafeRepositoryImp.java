@@ -9,6 +9,10 @@ import java.nio.charset.Charset;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+import org.apache.commons.codec.binary.Base64;
 
 import com.sun.istack.internal.Nullable;
 
@@ -91,8 +95,14 @@ public class SafeRepositoryImp implements ISafeRepository {
 	
 	private String getRepoKey(String pin) {
 		try {
-			return this.deviceManager.getDeviceUniquieIdentifier().substring(0,5)+ pin;
-		} catch (IOException e) {
+			String seckey = this.deviceManager.getDeviceUniquieIdentifier().substring(0,5)+ pin;
+			MessageDigest digest = MessageDigest.getInstance("SHA-256");
+			digest.update(seckey.getBytes("UTF-8"));
+			byte[] keyBytes = new byte[32];
+			System.arraycopy(digest.digest(), 0, keyBytes, 0, keyBytes.length);
+			return new Base64().encodeAsString(keyBytes);
+			
+		} catch (Exception e) {
 			return null;
 		}
 	}
