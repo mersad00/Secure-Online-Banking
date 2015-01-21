@@ -5,7 +5,7 @@ $uid = $_SESSION['login_id'];
 
 $confirm_error = '';
 // form is submitted
-if (isset($_POST['submit'])  && isset($_POST['confirm'])) {
+if (isset($_POST['submit-confirm'])  && isset($_POST['confirm'])) {
 	if($_POST['user_token']==$_SESSION['user_token'])
 	{
 		foreach($_POST['confirm'] as $u) 
@@ -19,12 +19,14 @@ if (isset($_POST['submit'])  && isset($_POST['confirm'])) {
 	}
 }
 // form is not yet submitted
-else
+else 
 {
 	// create unique token to avoid csrf
-	$form_token = substr(str_shuffle("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 1).substr(md5(time()),1);
-	// commit token to session
-	$_SESSION['user_token'] = $form_token;	
+	if(!isset($_SESSION['user_token'])){
+		$form_token = substr(str_shuffle("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 1).substr(md5(time()),1);
+		// commit token to session
+		$_SESSION['user_token'] = $form_token;	
+	}
 	$sql = "SELECT t_id,t_account_from,t_account_to,t_amount,t_timestamp from transactions where t_confirmed=0";
 	$result = mysqli_query($connection,$sql);
 	echo "<h1>Transactions which need confirmation</h1>";
@@ -49,16 +51,15 @@ else
 		echo "</tr>";
 		$i=$i+1;
 	}	
-
 	echo "</table>";
 	echo $confirm_error;
 	echo '<br>';
 	echo "<div class=\"col-sm-offset-10 col-sm-2\">";
 	echo "<input type=\"hidden\" name=\"user_token\" id =\"user_token\" value=\"".$_SESSION['user_token']."\" />";
-	echo "<input class=\"btn btn-custom btn-lg btn-block\" name=\"submit\" type=\"submit\" value=\" Confirm \"/>";
+	echo "<input class=\"btn btn-custom btn-lg btn-block\" name=\"submit-confirm\" type=\"submit\" value=\" Confirm \"/>";
 	echo "</div></form>";	
+mysqli_close($connection);
 }
-
 function confirm_transaction($t_id){
 	global $connection;
 	$sql = "update transactions set t_confirmed =1 where t_id='$t_id'";
@@ -73,6 +74,6 @@ function confirm_transaction($t_id){
 		
 	}
 }
-mysqli_close($connection);
+
 ?>
 
