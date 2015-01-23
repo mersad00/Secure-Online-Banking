@@ -8,7 +8,7 @@ require_once('./fpdi/fpdi.php');
 require_once('./fpdi/FPDI_Protection.php');
 require_once 'session.php';
 
-function generatePdf($recipientName, $tanArray){
+function generatePdf($recipientName, $accountNumber, $tanArray){
 	
 	//header("Location: functions/pdfgenerator.php"); /* Redirect browser */
 	//exit();
@@ -41,14 +41,14 @@ function generatePdf($recipientName, $tanArray){
 	
 	$pdf->Output($filename,'F');
 	
-	$encryptedFile = encryptPdf($filename,$recipientName);
+	$encryptedFile = encryptPdf($filename,$accountNumber,$recipientName);
 	return $encryptedFile;
 }    
 
-function encryptPdf($filename, $recipientName){
+function encryptPdf($filename, $accountNumber, $recipientName){
 			
 	//Password for the PDF file (I suggest using the email adress of the purchaser).
-	$password = $recipientName;
+	$password = $accountNumber;
 	//Name of the original file (unprotected).
 	$origFile = $filename;
 	//Name of the destination file (password protected and printing rights removed).
@@ -73,7 +73,7 @@ function encryptPdf($filename, $recipientName){
 }
 
 function sendTansMailToUser($user_id, $connection){
-	$sql = "SELECT u_id,u_name,u_email,tc.tc_code from users 
+	$sql = "SELECT u_id,u_name,u_email, a_number, tc.tc_code from users
 	join accounts on users.u_id = accounts.a_user join 
 	transaction_codes tc on accounts.a_id  where u_id = '$user_id' and tc_account = accounts.a_id";
 	$result = mysqli_query($connection,$sql);
@@ -83,13 +83,14 @@ function sendTansMailToUser($user_id, $connection){
 	while($row = mysqli_fetch_array($result)) {
 		$recipientEmail = $row['u_email'];
 		$recipientName = $row['u_name'];
+		$recipientAccountNr = $row['a_number'];
 		$tans = $tans . "<tr><td>$i</td><td> {$row['tc_code']} </td></tr>";
 		array_push($tanArray, $row['tc_code']);
 		$i=$i+1;
 	}
 	$tans = $tans . '</table>';
 	
-	$encryptedFile = generatePdf($recipientName, $tanArray);
+	$encryptedFile = generatePdf($recipientName, $recipientAccountNr, $tanArray);
 	
 	if(sendMail($recipientEmail,$recipientName,$tans, $encryptedFile)){ return TRUE;}
 	return FALSE;
@@ -209,7 +210,7 @@ function sendResetPasswordLink($recipientEmail,$recipientName, $activation) {
 		$mail->Body    = 'Dear '.$recipientName.' ,<br> You requested to reset your password. Please click the link below and follow the instructions.<br>
 
 		<a href="'.BASE_URL.'/reset_pass.php?code='.$activation.'&action=reset">'.BASE_URL.'reset/'.$activation.'</a>
-		<p>The link expires in one hour.</p>
+		<br/>Attention! The link expires in one hour.
 		
 		<br/><br/>Your online banking team,<br>
 		<b>G16 Secure Coding!</b>';

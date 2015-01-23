@@ -7,11 +7,10 @@ include('includes/top.php');
 
 <?php 
 // create unique token to avoid csrf
- $form_token = uniqid();
+ $form_token = substr(str_shuffle("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 1).substr(md5(time()),1);
  
 // commit token to session
 $_SESSION['user_token'] = $form_token;
-
 
 ?>	
 <body>

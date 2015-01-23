@@ -1,9 +1,12 @@
 <?php
 require_once('constants.php');
-$database = parse_ini_file("db_config.ini");
+$host = "localhost";
+$username = "root";
+$password = "SecurePass!";
+$dbname = "banking";
 // Establishing Connection with Server by passing server_name, user_id and password as a parameter
 if(!isset($connection)){
-$connection = mysqli_connect($database['host'], $database['username'], $database['password'], $database['dbname']);
+$connection = mysqli_connect($host, $username, $password, $dbname);
 }
 if(!$connection){
 	die("Database Connection Failure ");

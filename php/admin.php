@@ -53,7 +53,7 @@ include('includes/top.php');
 		</div>
 		</div>
 		</div>
-			<script>
+<script>
 	function showRecords(str,val) {
 		if (str=="") {
 			document.getElementById("persons").innerHTML="";
@@ -144,7 +144,7 @@ include('includes/top.php');
 		xmlhttp.send();
 	}
 	
-	</script>
+</script>
 <?php include('includes/bottom.php')?>
 </body>
 
