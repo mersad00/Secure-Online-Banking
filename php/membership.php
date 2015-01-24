@@ -1,7 +1,5 @@
 <?php
-ini_set('display_errors', 'On');
 include("tangenerator.php");
-
 
 require_once("utils/dbconnection.php");
 require_once ('HTMLPurifier.standalone.php');
@@ -61,8 +59,8 @@ if (isset($_POST['submit-register'])) {
     if(validateUserInput($username,$password,$email,$account,$password_confirm))
     {
         $password = md5($password);
-        //check if user exits
-        if(userExists($username, $email))
+        //check if user or account with same account number exits
+        if(userExists($username, $email) || accountExists($account))
         {
             $error = USER_EXISTS;
             return;
@@ -73,7 +71,7 @@ if (isset($_POST['submit-register'])) {
             $sql="INSERT INTO users (u_name, u_email, u_password, u_type) VALUES ('$username', '$email', '$password','$employee')";
             if (!mysqli_query($connection,$sql)) {
                 mysqli_rollback($connection);
-                die('Error: ' . mysqli_error($connection));
+                die('Error');
             }
 
             $memberid = mysqli_insert_id($connection);
@@ -90,7 +88,7 @@ if (isset($_POST['submit-register'])) {
                 $sql ="insert into accounts (a_user,a_number,a_balance, a_name) values ('$memberid','$account','$balance', '$accountName')";
                 if (!mysqli_query($connection,$sql)) {
                     mysqli_rollback($connection);
-                    die('Error: '. $sql . mysqli_error($connection));
+                    die('Error');
                 }
                 $account_id = mysqli_insert_id($connection);
             
@@ -183,6 +181,7 @@ global $error;
     return TRUE;
 }
 
+// does not allow a user with same username or email to register twice
 function userExists($username, $email){
 global $connection;
 $sql = "select u_id from users where u_name = '$username' or u_email = '$email'"; 
@@ -197,6 +196,22 @@ $row_count = mysqli_num_rows($result);
     return FALSE;
 }
 
+
+// does not allow accounts creation with the same account number
+function accountExists($accountNumber){
+global $connection;
+$sql = "select a_number from accounts where a_number = '$accountNumber'"; 
+$result = mysqli_query($connection,$sql);
+$row_count = mysqli_num_rows($result);
+        if($row_count == 1){
+            return TRUE;
+        }
+        else {
+            return FALSE;
+        }
+    return FALSE;
+}
+// validate userinput
 function validateUserInput($username,$password,$email,$account,$password_confirm)
 {
 if(validateUsername($username) && validatePasswordPolicy($password) && validateConfirmPassword($password,$password_confirm) && validateAccountNumber($account) && validateEmail($email))

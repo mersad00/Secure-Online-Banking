@@ -1,11 +1,7 @@
 package test;
 
 import static org.junit.Assert.*;
-
 import org.junit.Test;
-
-import sun.net.www.content.text.plain;
-
 import cryto.AESCrypt;
 import cryto.SecureKey;
 import cryto.SecureKey128bit;
@@ -28,8 +24,6 @@ public class AESCryptTests {
 			e.printStackTrace();
 			fail();
 		}
-		
-		
 	}
 
 }

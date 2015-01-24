@@ -27,7 +27,7 @@ public class TanGeneratorView implements ActionListener {
 
 		panel.setLayout(null);
 
-		JLabel accountLabel = new JLabel("Account");
+		JLabel accountLabel = new JLabel("Target Acc.");
 		accountLabel.setBounds(10, 10, 80, 25);
 		panel.add(accountLabel);
 
@@ -47,7 +47,7 @@ public class TanGeneratorView implements ActionListener {
 		tanLabel.setBounds(10, 70, 80, 25);
 		panel.add(tanLabel);
 
-		tanText = new JTextField(100);
+		tanText = new JTextField(200);
 		tanText.setBounds(100, 70, 160, 25);
 		panel.add(tanText);
 

@@ -54,11 +54,11 @@ public class Hardware4Nix {
 	private static void readDmidecode() {
 
 		String line = null;
-		String marker = "Serial Number:";
+		String marker = "UUID:";
 		BufferedReader br = null;
 
 		try {
-			br = read("dmidecode -t system");
+			br = read("sudo dmidecode -t system");
 			while ((line = br.readLine()) != null) {
 				if (line.indexOf(marker) != -1) {
 					sn = line.split(marker)[1].trim();

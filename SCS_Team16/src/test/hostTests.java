@@ -10,7 +10,6 @@ import host.IDeviceManager;
 
 import org.junit.Test;
 
-import com.sun.xml.internal.bind.v2.ClassFactory;
 
 public class hostTests {
 

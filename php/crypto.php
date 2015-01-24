@@ -23,16 +23,53 @@ class MCrypt {
 		return base64_encode($encrypted);
 	}
 
-	function decrypt($code) {
-		$td = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_CBC, '');
-		mcrypt_generic_init($td, $this->key, $this->hexToStr($this->hex_iv));
-		$str = mdecrypt_generic($td, base64_decode($code));
-		$block = mcrypt_get_block_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
-		mcrypt_generic_deinit($td);
-		mcrypt_module_close($td);
-		return $this->strippadding($str);
+	function checkSigniture($hmac,$crypted){
+		$hmacNew = hash_hmac('sha256', $crypted,$this->key,true);
+		///prevent timing attack
+		if (!$this->compareStrings($hmac, $hmacNew)) {
+			return false;
+		}
+		return true;
 	}
-
+	function compareStrings($expected, $actual)
+	{
+		$expected    = (string) $expected;
+		$actual      = (string) $actual;
+		$lenExpected = strlen($expected);
+		$lenActual   = strlen($actual);
+		$len         = min($lenExpected, $lenActual);
+	
+		$result = 0;
+		for ($i = 0; $i < $len; $i++) {
+			$result |= ord($expected[$i]) ^ ord($actual[$i]);
+		}
+		$result |= $lenExpected ^ $lenActual;
+	
+		return ($result === 0);
+	}
+	function decrypt($code) {
+		try {
+			$ciphertext = base64_decode($code);
+			$iv = substr($ciphertext,0,16);
+			$hmac = substr($ciphertext,16,32);
+			$crypted = substr($ciphertext,48);
+			//if ciphertext has been tampered silently return to avoid padding oracle attack
+			if(!$this->checkSigniture($hmac,$crypted)) return false;
+			
+			$td = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_CBC, '');
+			mcrypt_generic_init($td, $this->key, $iv);
+			$str = mdecrypt_generic($td, $crypted);
+			$block = mcrypt_get_block_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
+			mcrypt_generic_deinit($td);
+			mcrypt_module_close($td);
+			$lll =  $this->strippadding($str);
+			return $lll;
+			
+		} catch (Exception $e) {
+			return false;
+		}
+		
+	}
 	/*
 	 For PKCS7 padding
 	*/

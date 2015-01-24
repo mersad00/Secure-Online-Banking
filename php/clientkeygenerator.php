@@ -1,5 +1,4 @@
 <?php
-ini_set('display_errors', 'On');
 require_once 'session.php';
 require_once 'utils/dbconnection.php';
 $key="";
@@ -11,7 +10,7 @@ if (isset($_POST['generate']))
 	$uid = $_SESSION['login_id'];
 	$sql = "update users set u_akey='$key' where u_id='$uid'";
 	if(!mysqli_query($connection,$sql)){
-		die('Error storing SCS client key: ' . mysqli_error($connection));
+		die('Error storing SCS client key');
 		exit;
 	}
 }

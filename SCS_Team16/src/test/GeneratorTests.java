@@ -2,6 +2,7 @@ package test;
 
 import static org.junit.Assert.*;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import host.DeviceManagerImp;
@@ -10,10 +11,10 @@ import host.IDeviceManager;
 import org.junit.Before;
 import org.junit.Test;
 
+import cryto.AESCrypt;
 import cryto.CryptoManagerImp;
 import cryto.ICryptoManager;
 import cryto.SecureKey128bit;
-
 import repository.ISafeRepository;
 import repository.SafeRepositoryImp;
 import tan.GeneratorImp;
@@ -29,7 +30,7 @@ public class GeneratorTests {
 		String SessionKey = "212121212";
 		
 		IDeviceManager devicemanager= new DeviceManagerImp();
-		ICryptoManager cryptomanager= new CryptoManagerImp();
+		ICryptoManager cryptomanager= new AESCrypt();
 		ISafeRepository repo = new SafeRepositoryImp(devicemanager,cryptomanager);
 		
 		boolean successful = repo.storeSessionKey(pin, account, SessionKey);
@@ -43,7 +44,7 @@ public class GeneratorTests {
 		String amount = "100";
 		
 		IDeviceManager devicemanager= new DeviceManagerImp();
-		ICryptoManager cryptomanager= new CryptoManagerImp();
+		ICryptoManager cryptomanager= new AESCrypt();
 		ISafeRepository repo = new SafeRepositoryImp(devicemanager,cryptomanager);
 		
 		IGenerator generator = new GeneratorImp();
@@ -59,7 +60,7 @@ public class GeneratorTests {
 		
 		try{
 		IDeviceManager devicemanager= new DeviceManagerImp();
-		ICryptoManager cryptomanager= new CryptoManagerImp();
+		ICryptoManager cryptomanager= new AESCrypt();
 		ISafeRepository repo = new SafeRepositoryImp(devicemanager,cryptomanager);
 		
 		IGenerator generator = new GeneratorImp();
@@ -71,7 +72,8 @@ public class GeneratorTests {
 		String[] decipheredTan = cryptomanager.decrypt(tan, sessionkey).split(";");
 		assertTrue(decipheredTan[0].equals(account));
 		assertTrue(decipheredTan[1].equals(amount));
-		Date generationTime = new Date(Long.parseLong(decipheredTan[2]));
+		SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy KK:mm:ss a Z");
+		Date generationTime = formatter.parse(decipheredTan[2]);
 		long m = generationTime.getTime() - new Date().getTime();
 		long diffMinutes = m / (60 * 1000) % 60;
 		assertTrue(diffMinutes<10);

@@ -27,7 +27,7 @@ group by t_account_from,t_confirmed
   where a.a_user='$uid'";
 $reBalance = mysqli_query($connection,$sqlBalance);
 if($reBalance === FALSE) {
-    die(mysqli_error($connection)); // TODO: better error handling
+    die('error'); // TODO: better error handling
 }
 $row = mysqli_fetch_assoc($reBalance);
 echo "<h4 id=\"green\">Transaction history</h4>";
