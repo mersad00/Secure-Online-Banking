@@ -207,7 +207,7 @@ function sendResetPasswordLink($recipientEmail,$recipientName, $activation) {
 		 
 		$mail->Subject = 'Reset Password';
 		$mail->Body    = 'Dear '.$recipientName.' ,<br> You requested to reset your password. Please click the link below and follow the instructions.<br>
-		<a href="'.BASE_URL.'/reset_pass.php?code='.$activation.'&action=reset">'.BASE_URL.'reset/'.$activation.'</a><br/><br/>Your online banking team,<br>
+		<a href="'."".'localhost/ws14secure/php/reset_pass.php?code='.$activation.'&action=reset">'."localhost/ws14secure/php/".'reset/'.$activation.'</a><br/><br/>Your online banking team,<br>
 		<b>G16 Secure Coding!</b>';
 		
 		//Read an HTML message body from an external file, convert referenced images to embedded,
