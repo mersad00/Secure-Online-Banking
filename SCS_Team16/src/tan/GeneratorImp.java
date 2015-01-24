@@ -17,9 +17,14 @@ import cryto.SecureKey128bit;
 
 public class GeneratorImp implements IGenerator {
 
+	ISafeRepository safe;
+	ICryptoManager crypto;
 	@Override
 	public String generateTan(String pin, String account, String amount,
 			ISafeRepository repo, ICryptoManager crypto) {
+		this.crypto = crypto;
+		this.safe = repo;
+		
 		try {
 			RepositoryContent rc = repo.retrieveRepoContents(pin);
 
