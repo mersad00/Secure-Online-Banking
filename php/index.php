@@ -37,7 +37,12 @@ require_once 'session.php'; // Includes Login Script
 						</div>
 						
                         <input type="submit" name = "submit-login" id="btn-login" class="btn btn-custom btn-lg btn-block" value="Log in">
-						<span class = "error"><?php echo $error; ?></span>
+						        <?php if($error!=null) {?>
+                                        <div class="alert alert-danger alert-dismissible" role="alert">
+                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <?php echo $error; ?>
+                                        </div>
+                                        <?php }?>
                     </form>
 					<h4>Not a user yet?&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="<?php echo PHP_URL ?>register.php">Register</a></h4>
 					<hr>
