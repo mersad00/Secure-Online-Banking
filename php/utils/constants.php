@@ -3,7 +3,7 @@
 define("ASSETS_URL", "/ws14secure");
 define("PHP_URL", "/ws14secure/php/");
 define("RESUBMIT", "Your request has expired, please resubmit!");
-define("BASE_URL", "https://localhost/ws14secure/php");
+define("BASE_URL", "https://".$_SERVER['SERVER_ADDR']."/ws14secure/php");
 
 
 // Error messages
