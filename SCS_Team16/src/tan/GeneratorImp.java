@@ -37,17 +37,12 @@ public class GeneratorImp implements IGenerator {
 			}
 			
 			if(DecryptedToken == null) return null;
-			SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd KK:mm:ss a Z");
-			
-			
-			Date currentUTC = format.parse(DecryptedToken);
 
 			String rawTan = account
 					+ ";"
 					+ amount
 					+ ";"
-					+ (new SimpleDateFormat("yyyy/MM/dd KK:mm:ss a Z")
-							.format(currentUTC));
+					+DecryptedToken ;
 
 			
 			String encTan = crypto.encrypt(rawTan, sessionKey);
