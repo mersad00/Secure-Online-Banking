@@ -43,14 +43,27 @@ else {
 
 <div class="form-group">
 <div class="col-sm-7">
-<input name="token" type="text" class="form-control" value="<?php echo htmlentities($token) ?>"/><br>
-Valid until:<?php echo htmlentities($validuntil) ?>
+<textarea name="token" rows="8" cols="50" id="generatedtoken" class="form-control" onclick="this.focus();this.select()" readonly="readonly"><?php echo htmlentities($token) ?></textarea>
 </div>
+<br/>
 </div>
 <div class="form-group">
 <div class="col-sm-5">
-<input type="submit" name = "generatetoken" id="btn-token" class="btn btn-custom btn-lg btn-block" value = "Get token"/>
+	<button type="submit" name= "generatetoken" class="btn btn-custom">
+Get Token
+</button>
+ <span class="glyphicon glyphicon-info-sign text-warning"  data-toggle="tooltip" data-placement="right" title="Generate token needed for one transaction"></span>
 </div>
 </div>
 </form>
+ 
+
+<div class="col-sm-12">
+<?php if($validuntil!=null) {?>
+<div class="alert alert-warning alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+ Valid until:<?php echo htmlentities($validuntil) ?>
+</div>
+<?php }?>
+</div>
 </section>

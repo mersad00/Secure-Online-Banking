@@ -2,8 +2,6 @@
 	:: Master Properties
 	-------------------------------------------------- */
 a:link{
-	color: #1fa67b;
-    font-size: 18px;
     text-align: right;
 }
 
@@ -118,7 +116,9 @@ color: #1fa67b;
 .error {
 	color: #A94442;
 }
-
+h4 .btn-group { 
+display: inline-block; 
+}
 .btn-file {
     position: relative;
     overflow: hidden;
@@ -144,7 +144,7 @@ color: #1fa67b;
 	-------------------------------------------------- */
 
 th {
-	color: #1fa67b;
+
 	background-color: #F8F8F4;
 	font-weight:bold;
 }
