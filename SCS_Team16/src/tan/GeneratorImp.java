@@ -20,26 +20,31 @@ public class GeneratorImp implements IGenerator {
 	ISafeRepository safe;
 	ICryptoManager crypto;
 	@Override
-	public String generateTan(String pin, String account, String amount,
+	public String generateTan(String pin,String token, String account, String amount,
 			ISafeRepository repo, ICryptoManager crypto) {
 		this.crypto = crypto;
 		this.safe = repo;
 		
 		try {
 			RepositoryContent rc = repo.retrieveRepoContents(pin);
-
-			Date currentUTC = getCurrentUTC();
-			if (currentUTC == null)
-				return null;
+			SecureKey sessionKey = new SecureKey128bit(rc.getSessionKey());
+			String DecryptedToken= null;
+			///validate token
+			try{
+				DecryptedToken = crypto.decrypt(token, sessionKey);
+			}catch(Exception ex){
+				DecryptedToken = null;
+			}
+			
+			if(DecryptedToken == null) return null;
 
 			String rawTan = account
 					+ ";"
 					+ amount
 					+ ";"
-					+ (new SimpleDateFormat("MM/dd/yyyy KK:mm:ss a Z")
-							.format(new Date()));
+					+DecryptedToken ;
 
-			SecureKey sessionKey = new SecureKey128bit(rc.getSessionKey());
+			
 			String encTan = crypto.encrypt(rawTan, sessionKey);
 			return encTan;
 		} catch (Exception e) {

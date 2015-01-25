@@ -37,7 +37,8 @@ public class BatchGeneratorImp implements IBatchGenerator {
 			for (TransactionEntry entry : entries) {
 				if (entry.isComment)
 					continue;
-				String tan = tanController.generateTan(LoginImp.pin,
+				//TODO: @Alba check the entry.token you should 
+				String tan = tanController.generateTan(LoginImp.pin,entry.token,
 						entry.sourceAccount, entry.amount + "");
 				System.out.println("generated tan: " + tan + " for "
 						+ entry.sourceAccount + " " + entry.amount);
@@ -112,6 +113,7 @@ public class BatchGeneratorImp implements IBatchGenerator {
 class TransactionEntry {
 	public String tan;
 	public String sourceAccount;
+	public String token;
 	public String destinationAccount;
 	public int amount;
 	public String description;

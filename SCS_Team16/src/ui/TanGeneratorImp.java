@@ -23,7 +23,7 @@ public class TanGeneratorImp implements ITanGenerator
 		generator = new GeneratorImp();
 }
 	@Override
-	public String generateTan(String pin, String account, String amount) {
-		return generator.generateTan(pin, account, amount, repo, cryptoManager);
+	public String generateTan(String pin,String token, String account, String amount) {
+		return generator.generateTan(pin,token, account, amount, repo, cryptoManager);
 	}
 }

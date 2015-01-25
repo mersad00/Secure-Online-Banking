@@ -71,7 +71,7 @@ public abstract class UIView {
 	static void ShowTanGenerator() {
 		JFrame frame = new JFrame("SCS G16 Secure Banking");
 		frame.setIconImage(icon);
-		frame.setSize(310, 170);
+		frame.setSize(310, 210);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JPanel panel = new JPanel();
