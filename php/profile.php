@@ -33,6 +33,8 @@ $_SESSION['user_token'] = $form_token;
 			<div id="userInfo"></div>
 			<div id="clientKey">
 			<?php include('clientkeygenerator.php') ?></div>
+			<div id="clientToken">
+			<?php include('clienttokengenerator.php') ?></div>
 				</div>
 <?php include('transfer.php') ?>
 		</div>

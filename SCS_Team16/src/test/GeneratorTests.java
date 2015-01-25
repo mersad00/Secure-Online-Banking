@@ -27,7 +27,7 @@ public class GeneratorTests {
 		//ensure the repo exists
 		String pin ="1234";
 		String account = "1212111";
-		String SessionKey = "212121212";
+		String SessionKey = "CLkiKlKtKRbGcFNm";
 		
 		IDeviceManager devicemanager= new DeviceManagerImp();
 		ICryptoManager cryptomanager= new AESCrypt();
@@ -42,13 +42,13 @@ public class GeneratorTests {
 		String pin ="1234";
 		String account = "1212111";
 		String amount = "100";
-		
+		String token = "M2XObv8WMBcFIMCuxroRfGWyx3pBmYyxuTWt0XYJNAipTnsvmwNJVeQY/UA/xeIol72so962Dv4V4WSsary501kao7BXOTHsVa1L8aVCtlI=";
 		IDeviceManager devicemanager= new DeviceManagerImp();
 		ICryptoManager cryptomanager= new AESCrypt();
 		ISafeRepository repo = new SafeRepositoryImp(devicemanager,cryptomanager);
 		
 		IGenerator generator = new GeneratorImp();
-		String tan = generator.generateTan(pin, account, amount, repo, cryptomanager);
+		String tan = generator.generateTan(pin,token, account, amount, repo, cryptomanager);
 		
 		assertNotNull(tan);
 	}
@@ -57,14 +57,14 @@ public class GeneratorTests {
 		String pin ="1234";
 		String account = "1212111";
 		String amount = "100";
-		
+		String token = "M2XObv8WMBcFIMCuxroRfGWyx3pBmYyxuTWt0XYJNAipTnsvmwNJVeQY/UA/xeIol72so962Dv4V4WSsary501kao7BXOTHsVa1L8aVCtlI=";
 		try{
 		IDeviceManager devicemanager= new DeviceManagerImp();
 		ICryptoManager cryptomanager= new AESCrypt();
 		ISafeRepository repo = new SafeRepositoryImp(devicemanager,cryptomanager);
 		
 		IGenerator generator = new GeneratorImp();
-		String tan = generator.generateTan(pin, account, amount, repo, cryptomanager);
+		String tan = generator.generateTan(pin,token, account, amount, repo, cryptomanager);
 		assertNotNull(tan);
 		
 		String sessionKeyVal = repo.retrieveRepoContents(pin).getSessionKey();

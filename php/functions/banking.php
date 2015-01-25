@@ -1,6 +1,5 @@
 <?php
 require_once ("utils/dbconnection.php");
-
 require_once ('HTMLPurifier.standalone.php');
 
 if (! isset ( $_SESSION )) {
@@ -183,7 +182,8 @@ function checkSCSTan() {
 		$tanAmount = $taninfo [1];
 		date_default_timezone_set ( 'UTC' );
 		$date = new DateTime ( 'now' );
-		$datetan = new DateTime ( $taninfo [2] );
+		$datetan=DateTime::createFromFormat('Y/m/d H:i:s a O',$taninfo [2]);
+		//$datetan = new DateTime ( $taninfo [2] );
 		$diff = date_diff ( $date, $datetan );
 		$minutes = $diff->days * 24 * 60;
 		$minutes += $diff->h * 60;

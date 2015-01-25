@@ -13,14 +13,17 @@ class MCrypt {
 
 	function encrypt($str) {
 		$td = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_CBC, '');
-		mcrypt_generic_init($td, $this->key, $this->hexToStr($this->hex_iv));
+		// Random IV
+		$iv      = mcrypt_create_iv(16, MCRYPT_DEV_URANDOM);		
+		mcrypt_generic_init($td, $this->key, $iv);
 		$block = mcrypt_get_block_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
 		$pad = $block - (strlen($str) % $block);
 		$str .= str_repeat(chr($pad), $pad);
 		$encrypted = mcrypt_generic($td, $str);
+		$hmac = hash_hmac('sha256', $encrypted, $this->key,true);
 		mcrypt_generic_deinit($td);
 		mcrypt_module_close($td);
-		return base64_encode($encrypted);
+		return base64_encode($iv.$hmac.$encrypted);
 	}
 
 	function checkSigniture($hmac,$crypted){
