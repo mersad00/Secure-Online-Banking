@@ -1,5 +1,6 @@
 <?php include('includes/top.php')?>
 <?php
+require_once("utils/dbconnection.php");
 include('functions/login.php');
 require_once 'session.php'; // Includes Login Script
 

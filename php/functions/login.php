@@ -1,5 +1,5 @@
-<?php require_once("utils/dbconnection.php");?>
 <?php
+require_once ('HTMLPurifier.standalone.php');
 if(!isset($_SESSION))
 {
 	require_once 'session.php';
@@ -12,40 +12,81 @@ if (isset($_POST['submit-login'])) {
 		}
 		else
 		{
+			$config = HTMLPurifier_Config::createDefault();
+			$purifier = new HTMLPurifier($config);
 			
 			// Define $username and $password
 			$username=$_POST['username'];
 			$password=$_POST['password'];
+			$username = $purifier->purify($username);
+			$password = $purifier->purify($password);
 			// To protect MySQL injection for Security purpose
 			$username = stripslashes($username);
 			$password = stripslashes($password);
 			$username = mysqli_real_escape_string($connection,$username);
 			$password = mysqli_real_escape_string($connection,$password);
-
+						
 			$password = md5($password);
 			
 			// SQL query to fetch information of registerd users and finds user match.
 
-			
 			$selectUserQuery = "select u_name, u_password, u_active,u_id,accounts.a_id,
 					accounts.a_number,accounts.a_name,u_type
 					from users left outer join accounts on users.u_id = accounts.a_user
-					where u_name = '$username' LIMIT 1";
-					$result = mysqli_query($connection,$selectUserQuery);
-					 $row_count = mysqli_num_rows($result);
+					where u_name = ? LIMIT 1";
+			$column = array("u_name", "u_password", "u_active", "u_id", "a_id", "a_number", "a_name", "u_type") ;
+			
+			/* Prepared statement, stage 1: prepare */
+			if (!($stmt = $connection->prepare($selectUserQuery))) {
+				header("HTTP/1.1 500 Internal Server Error");
+				die( "Login failed");
+			}
+			
+			if(!$stmt->bind_param('s', $username)){
+				die( "Login failed 2");
+			}
+			
+			if (!$stmt->execute()) {				
+				die( "Login failed 3");
+			}
+			$stmt->store_result();
+			$data = array() ; // Array that accepts the data.
+			$params = array() ; // Parameter array passed to 'bind_result()'
+			foreach($column as $col_name)
+			{
+				// Assign the fetched value to the variable '$data[$name]'
+				$params[] =& $data[$col_name] ;
+			}
+			$res = call_user_func_array(array($stmt, "bind_result"), $params) ;
+			
+			if(! $res)
+			{
+				echo "bind_result() failed: " . $mysqli->error . "\n" ;
+			}
+			else
+			{
+				$res = $stmt->fetch() ;
+				if(!$res)
+				{
+					$res = 0 ;
+				}
+			}
+			$stmt->close() ;
+			
+			$row_count = $res;
 			
 						 if ($row_count == 1) 
 						 {
 							
 							// get variables from result.
-							$username = mysqli_result($result, 0,0);
-							$db_password = mysqli_result($result, 0,1);
-							$u_active = mysqli_result($result, 0,2);
-							$user_id = mysqli_result($result, 0,3);
-							$account_id = mysqli_result($result, 0,4);
-							$account_number = mysqli_result($result, 0,5);
-							$account_name = mysqli_result($result, 0,6);
-							$user_type = mysqli_result($result, 0,7);
+							$username = $data['u_name'];
+							$db_password = $data['u_password'];
+							$u_active = $data['u_active'];
+							$user_id = $data['u_id'];
+							$account_id = $data['a_id'];
+							$account_number = $data['a_number'];
+							$account_name = $data['a_name'];
+							$user_type = $data['u_type'];
 							
 						 
 							// check for brute force attacks
