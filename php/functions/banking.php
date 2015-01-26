@@ -17,8 +17,13 @@ if (isset ( $_SESSION ['tError'] )) {
 } else {
 	$error = ''; // Variable To Store Error Message
 }
-// Check if the token of the page and session match and only if yes, proceed
+if (isset ( $_SESSION ['tSuccess'] )) {
+        $success = $_SESSION ['tSuccess'];
+} else {
+        $success = ''; // Variable To Store Error Message
+}
 
+// Check if the token of the page and session match and only if yes, proceed
 if (isset ( $_POST ['submit-transfer'] )) {
 	if ($_POST ['user_token'] == $_SESSION ['user_token']) {
 		if (empty ( $_POST ['amount'] ) || empty ( $_POST ['transaction_code'] ) || empty ( $_POST ['to_account'] )) {
@@ -140,8 +145,8 @@ if (isset ( $_POST ['submit-transfer'] )) {
 						$connection->rollback ();
 					}
 				}
-				$error = "Transaction has been executed successfully!";
-				$_SESSION ['tError'] = $error;
+				$_SESSION ['tSuccess'] = "Transaction has been executed successfully!";
+				$_SESSION ['tError'] = '';
 				$connection->commit ();
 				$connection->autocommit ( TRUE );
 				

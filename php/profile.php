@@ -31,13 +31,22 @@ $_SESSION['user_token'] = $form_token;
 		<div class="row">
 			<div class="col-md-4">
 			<div id="userInfo"></div>
+			
+			<table class="table"><tbody><tr class="noborder"><th colspan="2"><h4 id="green"> <span class="btn-group">&nbsp;&nbsp;Smart-Card-Simulator</b>
+			<a href="../SCS_Team16/Executable/SCS_Team16.jar" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-download-alt"></span> Download</a>
+			</h4>
+			</span>
+			</th></tr></table>
+			
 			<div id="clientKey">
 			<?php include('clientkeygenerator.php') ?></div>
 			<div id="clientToken">
 			<?php include('clienttokengenerator.php') ?></div>
-				</div>
+			</div>
+			
 <?php include('transfer.php') ?>
 		</div>
+		<br/>
 		<div class = "row">
 		<div class = "col-md-12">
 		<?php  

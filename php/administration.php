@@ -38,8 +38,6 @@ if (isset($_POST['userId']) && isset($_POST['newBalance']) && isset($_POST['acco
 	///update balance
 	$sql = "update accounts set a_balance = ? where a_user = ? and a_number= ?";
 	
-	
-	
 	//33 is admin account id
 	$sql ="INSERT INTO transactions (t_account_to,t_account_from,t_amount,t_code,t_description,t_confirmed)
 		   VALUES ( 33, (select a_id from accounts where a_number = ?), ? - (select a_balance from accounts where a_number = ?) , ?, ? , 1)";
@@ -54,7 +52,6 @@ if (isset($_POST['userId']) && isset($_POST['newBalance']) && isset($_POST['acco
 	//
 	$description = "admin reset balance with " . $newBalance ;
 	$adminTan = 'admin0000000000';
-	var_dump($adminTan);
 	
 	if(!$stmt->bind_param('sisss', $accountNumber, $newBalance, $accountNumber, $adminTan, $description)){
 		echo "Binding 123 parameters failed: (" . $stmt->errno . ") " . $stmt->error;
@@ -76,8 +73,6 @@ if (isset($_POST['userId']) && isset($_POST['newBalance']) && isset($_POST['acco
 	set a.a_balance = t.balance
 	Where a.a_number = ? OR a.a_id=33 ";
 	
-	var_dump($sql);
-	
 	/* Prepared statement, stage 1: prepare */
 	if (!($stmt2 = $mysqli->prepare($sql))) {
 	    echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
@@ -94,7 +89,6 @@ if (isset($_POST['userId']) && isset($_POST['newBalance']) && isset($_POST['acco
 		die( "Update6 balance failed");
 	}
 	
-	var_dump("finished");
 }
 
 ?>

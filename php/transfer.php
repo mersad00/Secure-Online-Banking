@@ -33,8 +33,20 @@
 				<div class="col-sm-offset-5 col-sm-7">
 					<input type="submit" name = "submit-transfer" id="btn-login" class="btn btn-custom btn-lg btn-block" value="Transfer">
 				</div>
-				<div class="col-sm-offset-5 col-sm-7 control label">
-					<span class = "error"><?php echo $error; ?></span>
+				
+			
+				<div class="col-sm-offset-2 col-sm-10 control label">
+					<?php if($error!=null) {?>
+					<div class="alert alert-danger alert-dismissible" role="alert">
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<?php echo $error; ?>
+					</div>
+					<?php } else if(isset($_SESSION ['tSuccess'])) {?>
+					<div class="alert alert-success alert-dismissible" role="alert">
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<?php echo $_SESSION ['tSuccess']; ?>
+					</div>
+					<?php }?>
 				</div>
 				</form>
 			</section>

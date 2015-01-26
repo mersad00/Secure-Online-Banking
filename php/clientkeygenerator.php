@@ -30,14 +30,16 @@ else {
 
 <div class="form-group">
 <div class="col-sm-7">
-<input name="A-Key" type="text" class="form-control" value="<?php echo htmlentities($key) ?>"/>
+	
+<input name="A-Key" type="text" id="key" class="form-control" onclick="this.focus();this.select()" readonly="readonly" value="<?php echo htmlentities($key) ?>"/>
 </div>
 </div>
 <div class="form-group">
 <div class="col-sm-5">
-<input type="submit" name = "generate" id="btn-login" class="btn btn-custom btn-lg btn-block" value = "Generate key"/>
+<button type="submit" name= "generate" class="btn btn-custom">
+<span class="glyphicon glyphicon-lock"></span>&nbsp;Get SCS Key
+</button>
 </div>
 </div>
-<a href="../SCS_Team16/Executable/SCS_Team16.jar"> Download your SCS here!</a>
 </form>
 </section>
