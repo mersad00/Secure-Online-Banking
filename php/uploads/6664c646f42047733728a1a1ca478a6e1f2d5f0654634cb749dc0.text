@@ -1,9 +1,0 @@
- 
- <%@page import="java.io.File"%>
-<%
- //File creation
- String strPath = "admin.txt";
- File f = new File("create.txt");
-    if (!f.exists())
-    f.createNewFile();
-%> 

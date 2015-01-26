@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project SCS_Team16 with Jar-in-Jar Loader">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+    <target name="create_run_jar">
+        <jar destfile="/var/www/ws14secure/SCS_Team16/Executable/SCS_Team16_exe.jar">
+            <manifest>
+                <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
+                <attribute name="Rsrc-Main-Class" value="ui.UIView"/>
+                <attribute name="Class-Path" value="."/>
+                <attribute name="Rsrc-Class-Path" value="./ junit.jar org.hamcrest.core_1.3.0.v201303031735.jar commons-codec-1.10-javadoc.jar commons-codec-1.10.jar commons-net-3.3.jar miglayout-4.0.jar quaqua.jar"/>
+            </manifest>
+            <zipfileset src="jar-in-jar-loader.zip"/>
+            <fileset dir="/var/www/ws14secure/SCS_Team16/bin"/>
+            <zipfileset dir="/home/samurai/Documents/eclipse/plugins/org.junit_4.11.0.v201303080030" includes="junit.jar"/>
+            <zipfileset dir="/home/samurai/Documents/eclipse/plugins" includes="org.hamcrest.core_1.3.0.v201303031735.jar"/>
+            <zipfileset dir="/var/www/ws14secure/SCS_Team16/lib" includes="commons-codec-1.10-javadoc.jar"/>
+            <zipfileset dir="/var/www/ws14secure/SCS_Team16/lib" includes="commons-codec-1.10.jar"/>
+            <zipfileset dir="/var/www/ws14secure/SCS_Team16/lib" includes="commons-net-3.3.jar"/>
+            <zipfileset dir="/var/www/ws14secure/SCS_Team16/lib" includes="miglayout-4.0.jar"/>
+            <zipfileset dir="/var/www/ws14secure/SCS_Team16/lib" includes="quaqua.jar"/>
+        	
+        </jar>
+    </target>
+	<copy todir="build">
+	    	        	    <fileset dir="icons"
+	    	        	             includes="**/*.xml,**/*.properties,**/*.txt,**/*.png" />
+	    	</copy>
+</project>
