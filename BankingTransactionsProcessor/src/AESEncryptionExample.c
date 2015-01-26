@@ -7,7 +7,9 @@
  Description : Hello World in C, Ansi-style
  ============================================================================
  */
-
+#ifdef __cplusplus
+extern "C"{
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -19,7 +21,7 @@
 #include "cencode.h"
 #include "cdecode.h"
 #include "sha256.h"
-
+#include "AESEncryptionExample.h"
 /* arbitrary buffer size */
 #define SIZE 100
 
@@ -116,14 +118,15 @@ void display(char* ciphertext, int len) {
 	printf("\n");
 }
 
-int main() {
+char* decryptSCS( char* mykey, char* encryptedTan) {
+
 
 	//customer key get this from user table in DB
-	char* mykey = "5UvSoqvtVVtrV2ZW";
-
+	//char* mykey = "5UvSoqvtVVtrV2ZW";
+	//printf("decrypt: %s\n", mykey);
 	///here is the tan that you received
-	char * encryptedTan =
-			"FUrlvSwdV18pZI9fl/1ZXFT4dFu3CRkSvmbneNOg8lnFTwrjJlkaEiMjTrxEOn3pBEWQ1tDRYQ1rLvY1HeOLa4EGE/9R4YLtz+ZcJpSDWNUtpZk+/TkC9bH8AsBU7U+x";
+	//char * encryptedTan =
+	//		"FUrlvSwdV18pZI9fl/1ZXFT4dFu3CRkSvmbneNOg8lnFTwrjJlkaEiMjTrxEOn3pBEWQ1tDRYQ1rLvY1HeOLa4EGE/9R4YLtz+ZcJpSDWNUtpZk+/TkC9bH8AsBU7U+x";
 	/* decode the base64 */
 	char * decoded = decode(encryptedTan);
 
@@ -155,7 +158,7 @@ int main() {
 	//You can now pick up the decipheredTan
 	//TODO: trim character 14 at the end of decipheredTan
 	//Remember the timestamp is based on UTC
-	printf("decrypt: %s\n", decipheredTan);
+	//printf("decrypt: %s\n", decipheredTan);
     //output: decrypt: 2;200;01/23/2015 10:57:08 PM +0100
 
 	free(decoded);
@@ -163,6 +166,9 @@ int main() {
 	free(myhmac);
 	free(mytan);
 	free(mykeybyte);
-	free(decipheredTan);
-	return 0;
+	//free(decipheredTan);
+	return decipheredTan;
 }
+#ifdef __cplusplus
+}
+#endif

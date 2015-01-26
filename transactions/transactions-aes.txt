@@ -8,9 +8,9 @@
 # please follow the structure to add a transaction
 #TAN,source_acc,destination_acc,amount,description 
 
-alice0000000006,1,2,1, to account 2
-alice0000000007,1,1144,1, to account 14
+FUrlvSwdV18pZI9fl/1ZXFT4dFu3CRkSvmbneNOg8lnFTwrjJlkaEiMjTrxEOn3pBEWQ1tDRYQ1rLvY1HeOLa4EGE/9R4YLtz+ZcJpSDWNUtpZk+/TkC9bH8AsBU7U+x,1,2,200, to account 2
+#alice0000000007,1,1144,1, to account 14
 #alice0000000003,3,2,30,third deposit
-alice0000000004,1,2,4s0,fourth deposit
+#alice0000000004,1,2,4s0,fourth deposit
 #alice0000000005,1,2,10,fourth deposit
 

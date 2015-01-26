@@ -8,10 +8,13 @@
 #include <resultset.h>
 #include <statement.h>
 #include <vector>
+#include <sstream>
 
 #include "bankingtypes.h"
 #include <mcrypt.h>
-#include "aes.h"
+
+#include "crypto.h"
+#include "AESEncryptionExample.h"
 
 /* MySQL Connector/C++ specific headers */
 #include <cppconn/driver.h>
@@ -47,9 +50,13 @@ void update_balance(Transaction * t, sql::Connection *con) throw(sql::SQLExcepti
 void diactivate_transaction_code(Transaction * t, sql::Connection *con) throw(sql::SQLException);
 void debug_db(char const name[], sql::Connection *con) throw(sql::SQLException);
 char * extract_user_aes_key(sql::Connection *con) throw(sql::SQLException);
-char * decryptTan(char * tan);
-
+int checkSCSTan( Transaction * t, sql::Connection *con);
 void encode(std::string& data);
+void diactivate_scs_transaction_code(Transaction * t, sql::Connection *con) throw(sql::SQLException);
+
+std::vector<std::string> split(const std::string &s, char delim);
+std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems);
+std::string intToString(int number);
 
 int user_id = 0;
 char * user_key ;
@@ -87,13 +94,6 @@ int main(int argc, char ** args) {
 	}
 	char * transactions_file = args[2];
 
-	user_key = extract_user_aes_key(con);
-
-	char * dummyTan = "wRWq2WYLdjm8cCWO1ks2ZA==";
-	cout<<"dummyTan: "<< dummyTan <<endl;
-	decryptTan(dummyTan);
-	exit(1);
-
 	std::vector<Transaction *> transactions = load_transactions(transactions_file);
 	try {
 		process_transactions(transactions, con);
@@ -119,10 +119,43 @@ int main(int argc, char ** args) {
 	return 0;
 }
 
+
+int checkSCSTan( Transaction * t, sql::Connection *con){
+	char* encryptedTan = t->tan;
+	///retrivea the client key from db
+	 char* mykey =  extract_user_aes_key(con);//"5UvSoqvtVVtrV2ZW";
+	///try to decrypt
+	char* decrypted = decryptSCS( mykey,  encryptedTan);
+	cout << "decr:"<< decrypted << endl;
+		///here is the tan that you received
+	std::vector<std::string> elements = split(decrypted, ';');
+	string destination;
+	string amount;
+	string date;
+	if (elements.size() == 3){
+		destination = elements.at(0);
+		amount = elements.at(1);
+		date = elements.at(2);
+		cout<<destination <<" "<<amount<<" "<<date<<endl;
+	}
+
+	string amountFile = intToString(t->amount);
+	if (amount.compare(amountFile) != 0){
+		if(DEBUG == 1){
+			cout<<"amount_err";
+			return 0;
+		}
+	}
+
+	//TODO: check time
+
+	return 1;
+}
+
 std::vector<Transaction *> load_transactions(char filename[]) {
 	FILE * fp;
 	char * line = NULL;
-	size_t len = 20;
+	size_t len = 200;
 	ssize_t read;
 	std::vector<Transaction *> transactions(1);
 
@@ -167,32 +200,7 @@ std::vector<Transaction *> load_transactions(char filename[]) {
 	return transactions;
 }
 
-char * decryptTan(char * tan){
 
-	  MCRYPT td, td2;
-	  char * plaintext = "test text 123";
-	  char* IV = "000000000000000";
-	  char *key = user_key;
-	  int keysize = 16; /* 128 bits */
-	  char* buffer;
-	  int buffer_len = 50;
-
-	  buffer = (char*) calloc(buffer_len, sizeof(char*));
-	  if(buffer == NULL){
-		  exit(-1);
-	  }
-
-	  strncpy(buffer, tan, buffer_len);
-
-	  printf("plain:   %s\n", buffer);
-	  //encrypt(buffer, buffer_len, IV, key, keysize);
-
-	  decrypt(buffer, buffer_len, IV, key, keysize);
-	  printf("decrypt: %s\n", buffer);
-
-	  return 0;
-
-}
 
 Transaction * convert_transaction(char * line) {
 
@@ -221,13 +229,18 @@ Transaction * convert_transaction(char * line) {
 	if(t==NULL){
 		return NULL;
 	}
-	strncpy(t->tan, tan, 16);
+	strncpy(t->tan, tan, 200);
 	t->src_acc = strtol (src_acc,NULL,10);
 	t->dst_acc = strtol(dst_acc,NULL,10);
 	t->amount = strtol(amount,NULL,10);
 	if(t->amount < 0){
 		cout<<"amount is not allowed to be negative"<<endl;
 		exit(-1);
+	}
+	if(strlen(t->tan)>20){
+		t->type = 1; //scs
+	}else {
+		t->type = 0; //normal
 	}
 	//force last character to end of string
 	description[250] = '\0';
@@ -239,8 +252,8 @@ Transaction * convert_transaction(char * line) {
 
 	if(DEBUG == 1)
 	{
-		printf("loaded: %s %d %d %d %s", t->tan, t->src_acc, t->dst_acc,
-			t->amount, t->description);
+		printf("loaded: %s %d %d %d %s type %d\n", t->tan, t->src_acc, t->dst_acc,
+			t->amount, t->description, t->type);
 	}
 	return t;
 }
@@ -276,9 +289,7 @@ char * extract_user_aes_key(sql::Connection *con) throw(sql::SQLException) {
 	string k ;
 	 if (res->next()) {
 	    /* Access column fata by numeric offset, 1 is the first column */
-	    string k = res->getString(1);
-	    cout << k << endl;
-
+	    k = res->getString(1);
 	  }
 
 	  const char * key = k.c_str();
@@ -287,9 +298,10 @@ char * extract_user_aes_key(sql::Connection *con) throw(sql::SQLException) {
 	 		  exit(-1);
 	  }
 
-	  cout<<"buffer ovf" << endl;
-	  if(sizeof(key) < 51)
-		  strncpy(buffer, key, sizeof(key));
+	  //cout<<"buffer " << key << " size "<<strlen(key) << endl;
+	  if(strlen(key) < 51)
+		  strncpy(buffer, key, strlen(key));
+	  buffer[50] = 0;
 
 	  delete res;
 	  delete prep_stmt;
@@ -331,6 +343,10 @@ int process_transactions(std::vector<Transaction *> transactions, sql::Connectio
 		Transaction * t = transactions.at(i) ;
 		if(t == NULL)
 			continue;
+		if (0==checkSCSTan(t,con)){
+			cout <<"invalid entry"<<endl;
+			return 0;
+		}
 		if(DEBUG == 1)
 		{
 			cout << "processing [tan] >> " << t->tan
@@ -347,7 +363,10 @@ int process_transactions(std::vector<Transaction *> transactions, sql::Connectio
 		insert_transaction_sender(t, confirmed, con);
 		insert_transaction_receiver(t, confirmed, con);
 		update_balance(t, con);
-		diactivate_transaction_code(t, con);
+		if(t->type==0)
+			diactivate_transaction_code(t, con);
+		else
+			diactivate_scs_transaction_code(t,con);
 
 		processed_transactions ++;
 	}
@@ -389,24 +408,35 @@ void check_sum(Transaction * t, sql::Connection *con) throw(sql::SQLException){
 		cout << "check_sum" << endl;
 	}
 	//-- check sufficient sum
-	char sql_transaction[] =
+
+	char sql_transaction0[] =
 			" SET @senderAccountId := ( select a_id from accounts join transaction_codes \
 		on accounts.a_id = transaction_codes.tc_account \
 		where a_number = ? \
 		 and a_user = ? \
 		 and a_balance > ? \
-		 and tc_code = ? \		 
-		 AND tc_active = 1 \
-		)";
+		 and tc_code = ?  AND tc_active = 1 	) ";
+	char * sql_transaction = sql_transaction0;
+	if (t->type==1){
+		char sql_transaction1[] =	" SET @senderAccountId := ( select a_id from accounts  \
+				where a_number = ? \
+				 and a_user = ? \
+				 and a_balance > ? 	) ";
+		sql_transaction = sql_transaction1;
+	}
+
 	if(DEBUG == 1)
 	{
 		cout << sql_transaction << endl;
 	}
 	prep_stmt = con->prepareStatement(sql_transaction);
 	prep_stmt->setInt(1, t->src_acc); //a_number
-	prep_stmt->setInt(2, user_id); //a_user
+	prep_stmt->setInt(2, user_id);//a_user
 	prep_stmt->setInt(3, t->amount); //a_balance
-	prep_stmt->setString(4, t->tan); //tc_code
+	if(t->type==0){
+		prep_stmt->setString(4, t->tan); //tc_code
+	}
+
 	// i don't expect an answer
 	prep_stmt->execute();
 	delete prep_stmt;
@@ -605,6 +635,39 @@ void diactivate_transaction_code(Transaction * t, sql::Connection *con) throw(sq
 	delete stmt;
 }
 
+void diactivate_scs_transaction_code(Transaction * t, sql::Connection *con) throw(sql::SQLException){
+
+	//disable transaction code
+	PreparedStatement *prep_stmt = NULL;
+	if(DEBUG == 1)
+	{
+		cout << "diactivate_transaction_code" <<endl;
+	}
+	char sql_transaction[] = "INSERT INTO transaction_codes \
+			   (tc_code, tc_account, tc_active)\
+			   VALUES(?,?,0);"
+			;
+	if(DEBUG == 1)
+	{
+		cout << sql_transaction << endl;
+	}
+	prep_stmt = con->prepareStatement(sql_transaction);
+	prep_stmt->setString(1, t->tan); //tc_code
+	prep_stmt->setInt(2, t->src_acc); //tc_account
+	prep_stmt -> execute();
+	delete prep_stmt;
+
+	//update flag variables
+	char transactionValid[] = "SET @codesDisabled = (select ROW_COUNT());" ;
+	Statement *stmt = con -> createStatement();
+	stmt->execute(transactionValid);
+	debug_db("@codesDisabled", con);
+	char transactionValid2[] = "SET @validTransactionsCounter := @validTransactionsCounter + @codesDisabled;" ;
+	stmt->execute(transactionValid2);
+	debug_db("@validTransactionsCounter", con);
+	delete stmt;
+}
+
 void debug_db(char const name[], sql::Connection *con) throw(sql::SQLException){
 	if(DEBUG == 0 )
 	{
@@ -640,4 +703,25 @@ void encode(std::string& data) {
         }
     }
     data.swap(buffer);
+}
+
+std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
+    std::stringstream ss(s);
+    std::string item;
+    while (std::getline(ss, item, delim)) {
+        elems.push_back(item);
+    }
+    return elems;
+}
+
+
+std::vector<std::string> split(const std::string &s, char delim) {
+    std::vector<std::string> elems;
+    split(s, delim, elems);
+    return elems;
+}
+
+std::string intToString(int number){
+	string String = static_cast<ostringstream*>( &(ostringstream() << number) )->str();
+	return String;
 }
