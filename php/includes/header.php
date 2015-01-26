@@ -1,4 +1,5 @@
 <!-- Page Heading -->
+<?php header('X-Frame-Options: DENY'); ?>
 	    <div class="container">
         <div class="row">
             <div class="col-lg-12">
