@@ -26,19 +26,19 @@ public class BatchGeneratorImp implements IBatchGenerator {
 	}
 
 	@Override
-	public String generateTan() {
+	public String generateTan(String token) {
 
-		return generateTansFile();
+		return generateTansFile(token);
 	}
 
-	private String generateTansFile() {
+	private String generateTansFile(String token) {
 		try {
 			List<TransactionEntry> entries = readFileLines(file);
 			for (TransactionEntry entry : entries) {
 				if (entry.isComment)
 					continue;
-				//TODO: @Alba check the entry.token you should 
-				String tan = tanController.generateTan(LoginImp.pin,entry.token,
+				// TODO: @Alba check the entry.token you should
+				String tan = tanController.generateTan(LoginImp.pin, token,
 						entry.sourceAccount, entry.amount + "");
 				System.out.println("generated tan: " + tan + " for "
 						+ entry.sourceAccount + " " + entry.amount);

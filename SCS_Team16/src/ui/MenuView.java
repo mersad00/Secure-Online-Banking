@@ -8,7 +8,7 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -19,26 +19,22 @@ public class MenuView extends UIView implements ActionListener {
 	public MenuView(JPanel panel) {
 		super(panel);
 
-		JLabel userLabel = new JLabel("Please choose one of the options");
-		userLabel.setBounds(90, 10, 250, 25);
-
-		panel.setLayout(null);
-
-		panel.add(userLabel);
+		JLabel userLabel = new JLabel(
+				"Please choose one of the following options:");
+		// userLabel.setBounds(90, 10, 250, 25);
+		panel.add(userLabel, "cell 2 0 3 1");
+		panel.add(Box.createVerticalStrut(40));
 
 		Image generateButtonImage;
 		try {
 			generateButtonImage = ImageIO.read(new File("icons/forms.png"));
 			JButton generateButton = new JButton("TAN generation form",
 					new ImageIcon(generateButtonImage));
-			generateButton.setBounds(20, 50, 170, 25);
-			generateButton.setBorder(BorderFactory.createEmptyBorder());
-			generateButton.setContentAreaFilled(false);
 			generateButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 			generateButton.addActionListener(this);
-			panel.add(generateButton);
+			panel.add(generateButton, "cell 2 2 1 1");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			// TODO Auto-generated catch block111
 			e.printStackTrace();
 		}
 
@@ -48,13 +44,9 @@ public class MenuView extends UIView implements ActionListener {
 					"icons/batch.png"));
 			JButton batchFileGenerationButton = new JButton("TAN batch upload",
 					new ImageIcon(batchFileGenerationButtonImage));
-			batchFileGenerationButton.setBounds(200, 50, 150, 25);
-			batchFileGenerationButton.setBorder(BorderFactory
-					.createEmptyBorder());
-			batchFileGenerationButton.setContentAreaFilled(false);
 			batchFileGenerationButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 			batchFileGenerationButton.addActionListener(this);
-			panel.add(batchFileGenerationButton);
+			panel.add(batchFileGenerationButton, "cell 3 2 1 1");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

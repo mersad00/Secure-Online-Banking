@@ -8,7 +8,7 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -25,43 +25,40 @@ public class RegisterView extends UIView implements ActionListener {
 	public RegisterView(JPanel panel) {
 		super(panel);
 
-		panel.setLayout(null);
+		JLabel titleLabel = new JLabel("Setup your SCS account");
+		panel.add(titleLabel, "cell 0 0 2 1");
 
 		JLabel accountLabel = new JLabel("Account");
-		accountLabel.setBounds(10, 10, 80, 25);
-		panel.add(accountLabel);
+		panel.add(accountLabel, "cell 0 1 1 1");
+		panel.add(Box.createHorizontalStrut(10));
+		accountText = new JTextField(20);
+		panel.add(accountText, "cell 1 1 1 1");
 
-		accountText = new JTextField(100);
-		accountText.setBounds(100, 10, 160, 25);
-		panel.add(accountText);
+		panel.add(Box.createVerticalStrut(10));
 
 		JLabel amountLabel = new JLabel("A-Key");
-		amountLabel.setBounds(10, 40, 80, 25);
-		panel.add(amountLabel);
+		panel.add(amountLabel, "cell 0 2 1 1");
+		panel.add(Box.createHorizontalStrut(10));
+		sessionKeyText = new JTextField(20);
+		panel.add(sessionKeyText, "cell 1 2 1 1 ");
 
-		sessionKeyText = new JTextField(100);
-		sessionKeyText.setBounds(100, 40, 160, 25);
-		panel.add(sessionKeyText);
+		panel.add(Box.createVerticalStrut(10));
 
 		JLabel pinLabel = new JLabel("Pin");
-		pinLabel.setBounds(10, 70, 80, 25);
-		panel.add(pinLabel);
-
-		pinText = new JTextField(100);
-		pinText.setBounds(100, 70, 160, 25);
-		panel.add(pinText);
+		panel.add(pinLabel, "cell 0 3 1 1 ");
+		panel.add(Box.createHorizontalStrut(10));
+		pinText = new JTextField(20);
+		panel.add(pinText, "cell 1 3 1 1 ");
 
 		Image saveImage;
 		try {
 			saveImage = ImageIO.read(new File("icons/save28.png"));
 			JButton registerButton = new JButton("save", new ImageIcon(
 					saveImage));
-			registerButton.setBounds(100, 100, 110, 25);
-			registerButton.setBorder(BorderFactory.createEmptyBorder());
-			registerButton.setContentAreaFilled(false);
+
 			registerButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 			registerButton.addActionListener(this);
-			panel.add(registerButton);
+			panel.add(registerButton, "cell 0 4");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

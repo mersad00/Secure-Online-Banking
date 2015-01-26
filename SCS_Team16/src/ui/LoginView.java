@@ -8,7 +8,7 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -25,24 +25,23 @@ public class LoginView extends UIView implements ActionListener {
 	public LoginView(JPanel panel) {
 		super(panel);
 
-		panel.setLayout(null);
-
 		Image pinImage;
 		try {
 			pinImage = ImageIO.read(new File("icons/password.png"));
 			JLabel userLabel = new JLabel("Pin", new ImageIcon(pinImage), 0);
-			userLabel.setBounds(30, 10, 80, 25);
-			userLabel.setBorder(BorderFactory.createEmptyBorder());
+			// userLabel.setBounds(30, 10, 80, 25);
+			// userLabel.setBorder(BorderFactory.createEmptyBorder());
 
-			panel.add(userLabel);
+			panel.add(userLabel, "cell 0 0 1 1");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		pinText = new JPasswordField(20);
-		pinText.setBounds(100, 10, 100, 25);
-		panel.add(pinText);
+		pinText = new JPasswordField(23);
+		panel.add(pinText, "cell 1 0 3 1");
+
+		panel.add(Box.createVerticalStrut(50));
 
 		Image loginImage;
 		try {
@@ -50,12 +49,10 @@ public class LoginView extends UIView implements ActionListener {
 
 			JButton loginButton = new JButton("login",
 					new ImageIcon(loginImage));
-			loginButton.setBounds(10, 80, 80, 25);
-			loginButton.setBorder(BorderFactory.createEmptyBorder());
-			loginButton.setContentAreaFilled(false);
+
 			loginButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 			loginButton.addActionListener(this);
-			panel.add(loginButton);
+			panel.add(loginButton, "cell 1 1 1 1");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -66,12 +63,10 @@ public class LoginView extends UIView implements ActionListener {
 			resetImage = ImageIO.read(new File("icons/refresh.png"));
 			JButton resetButton = new JButton("reset",
 					new ImageIcon(resetImage));
-			resetButton.setBounds(95, 80, 80, 25);
-			resetButton.setBorder(BorderFactory.createEmptyBorder());
-			resetButton.setContentAreaFilled(false);
+
 			resetButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 			resetButton.addActionListener(this);
-			panel.add(resetButton);
+			panel.add(resetButton, "cell 2 1 1 1");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -82,12 +77,9 @@ public class LoginView extends UIView implements ActionListener {
 			settingsImage = ImageIO.read(new File("icons/settings.png"));
 			JButton registerButton = new JButton("settings", new ImageIcon(
 					settingsImage));
-			registerButton.setBounds(180, 80, 100, 25);
-			registerButton.setBorder(BorderFactory.createEmptyBorder());
-			registerButton.setContentAreaFilled(false);
 			registerButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 			registerButton.addActionListener(this);
-			panel.add(registerButton);
+			panel.add(registerButton, "cell 3 1 1 1");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
