@@ -143,6 +143,11 @@ function activate_user($user_id){
 	if (mysqli_connect_errno()) {
 		echo "Failed to connect to MySQL: " . mysqli_connect_error();
 	}
+	
+	// To protect MySQL injection for Security purpose
+	$user_id = stripslashes ( $user_id );
+	$user_id = mysql_real_escape_string ( $user_id );
+	
 	mysqli_autocommit($conm, false); //start transaction
 	$sql = "update users set u_active =1 where u_id='$user_id'";
 	if(!mysqli_query($conm,$sql)){
@@ -181,6 +186,9 @@ function deactivate_user($user_id){
 	if (mysqli_connect_errno()) {
 		echo "Failed to connect to MySQL: " . mysqli_connect_error();
 	}
+	// To protect MySQL injection for Security purpose
+	$user_id = stripslashes ( $user_id );
+	$user_id = mysql_real_escape_string ( $user_id );
 	$sql = "update users set u_active = 0 where u_id = '$user_id'";
 		try{
 		if(!mysqli_query($conm,$sql)){
@@ -204,6 +212,9 @@ function delete_user($user_id){
 	if (mysqli_connect_errno()) {
 		echo "Failed to connect to MySQL: " . mysqli_connect_error();
 	}
+	// To protect MySQL injection for Security purpose
+	$user_id = stripslashes ( $user_id );
+	$user_id = mysql_real_escape_string ( $user_id );
 	//$conm->autocommit(FALSE); //start transaction
 	$sql = "delete from users where u_id='$user_id'";
 	try{

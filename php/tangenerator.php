@@ -3,6 +3,15 @@ include("crypto.php");
 
 function generateTans($user_id, $account_id,$nums,$con)
 {
+	// To protect MySQL injection for Security purpose
+	$user_id = stripslashes ( $user_id );
+	$account_id = stripslashes ( $account_id );
+	$nums = stripslashes ( $nums );
+		
+	$user_id = mysql_real_escape_string ( $user_id );
+	$account_id = mysql_real_escape_string ( $account_id );
+	$nums = mysql_real_escape_string ( $nums );
+	
 	if (mysqli_connect_errno()) {
 		echo "Failed to connect to MySQL: " . mysqli_connect_error();
 	}
