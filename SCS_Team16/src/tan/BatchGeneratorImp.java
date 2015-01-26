@@ -35,11 +35,11 @@ public class BatchGeneratorImp implements IBatchGenerator {
 		try {
 			List<TransactionEntry> entries = readFileLines(file);
 			for (TransactionEntry entry : entries) {
-				if (!entry.isComment)
+				if ( entry.isComment)
 					continue;
 				// TODO: @Alba check the entry.token you should
 				String tan = tanController.generateTan(LoginImp.pin, token,
-						entry.sourceAccount, entry.amount + "");
+						entry.destinationAccount, entry.amount + "");
 				System.out.println("generated tan: " + tan + " for "
 						+ entry.sourceAccount + " " + entry.amount);
 				entry.tan = tan;

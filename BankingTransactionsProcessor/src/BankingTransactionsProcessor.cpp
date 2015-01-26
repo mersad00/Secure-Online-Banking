@@ -101,7 +101,7 @@ int main(int argc, char ** args) {
 		Statement *stmt = con -> createStatement();
 		stmt -> execute ("ROLLBACK;");
 		delete stmt;
-		cout << "# ERR: SQLException " << endl;
+
 		cout << "# Please check transaction code, account number or sufficient balance." << endl;
 		if(DEBUG == 1)
 		{
@@ -123,10 +123,14 @@ int main(int argc, char ** args) {
 int checkSCSTan( Transaction * t, sql::Connection *con){
 	char* encryptedTan = t->tan;
 	///retrivea the client key from db
-	 char* mykey =  extract_user_aes_key(con);//"5UvSoqvtVVtrV2ZW";
+	char* mykey =  extract_user_aes_key(con);//"5UvSoqvtVVtrV2ZW";
 	///try to decrypt
 	char* decrypted = decryptSCS( mykey,  encryptedTan);
-	cout << "decr:"<< decrypted << endl;
+	if(DEBUG == 1){
+		cout << "mykey:"<< mykey << endl;
+		cout << "encryptedTan:"<< encryptedTan << endl;
+		cout << "decr:"<< decrypted << endl;
+	}
 		///here is the tan that you received
 	std::vector<std::string> elements = split(decrypted, ';');
 	string destination;
@@ -136,13 +140,27 @@ int checkSCSTan( Transaction * t, sql::Connection *con){
 		destination = elements.at(0);
 		amount = elements.at(1);
 		date = elements.at(2);
-		cout<<destination <<" "<<amount<<" "<<date<<endl;
+		if(DEBUG == 1){
+			cout<<destination <<" "<<amount<<" "<<date<<endl;
+		}
 	}
 
+	int amountInt = atoi(amount.c_str());
 	string amountFile = intToString(t->amount);
-	if (amount.compare(amountFile) != 0){
+
+	if (amountFile.compare(amount) != 0){
 		if(DEBUG == 1){
-			cout<<"amount_err";
+			cout<<"amount_err "<< amountFile << " " <<amount<<endl;
+			cout<<"amount_err "<< amountFile.size() << " " <<amount.size()<<endl;
+			return 0;
+		}
+	}
+
+	int destinationInt = atoi(destination.c_str());
+	string dstFile = intToString(t->dst_acc);
+	if (destinationInt != t->dst_acc){
+		if(DEBUG == 1){
+			cout<<"dst_err "<< destinationInt << " " <<t->dst_acc<<endl;
 			return 0;
 		}
 	}

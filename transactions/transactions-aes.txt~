@@ -1,16 +1,4 @@
-# this is a comment
-# TAN 15 characters
-# source_acc 11 characters max
-# destination_acc 11 characters max
-# amount 11 characters max
-# description 250 characters max
-# don't use commas in the description!! everything after the last comma will be ignored.
-# please follow the structure to add a transaction
-#TAN,source_acc,destination_acc,amount,description 
-
-FUrlvSwdV18pZI9fl/1ZXFT4dFu3CRkSvmbneNOg8lnFTwrjJlkaEiMjTrxEOn3pBEWQ1tDRYQ1rLvY1HeOLa4EGE/9R4YLtz+ZcJpSDWNUtpZk+/TkC9bH8AsBU7U+x,1,2,10, to account 2
-#alice0000000007,1,1144,1, to account 14
-#alice0000000003,3,2,30,third deposit
-#alice0000000004,1,2,4s0,fourth deposit
-#alice0000000005,1,2,10,fourth deposit
-
+#1,12345678,19, to account 12345678
+0g+N7S58qimw8g0DVRcutaeMSnzdfEFIDhd/hZ+AKpsI5i92ZqaUrhAfkGbZl7vJyRoEmtWzFJrd0dWU7cMtd2Mk0fSVGBpW5C1a6P5xDuRlFtQIp0R94BTXV8MQNa3c,1,12345678,19, to account 12345678
+#1,1234567890,22, to account 1234567890
+ToLtwkdm8hLWTBgSz0Sh3IcvIDm7tMesRgUmrKVnWX5OjITtRvzppIQhUghASYRSi4sJKowr/2R0m/nWp5kFRub+MKFLV0CsxiAhQ0IiEx6PgYOnHkJvuvyt7GTD6rdz,1,1234567890,22, to account 1234567890

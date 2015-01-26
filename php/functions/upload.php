@@ -77,10 +77,10 @@ try {
             $ext
         );
     $database = parse_ini_file("../utils/db_config.ini");
-    $dbServer = $database['host'];  
-    $dbUser = $database['username'] ;
-    $dbPass = $database['password']; 
-    $dbName =  $database['dbname'];
+    $dbServer = 'localhost';  
+    $dbUser = 'root' ;
+    $dbPass = 'SecurePass!'; 
+    $dbName =  'banking';
     //RUN the transaction processor
     $runScript = "/var/www/ws14secure/BankingTransactionsProcessor/target/BankingTransactionsProcessor $user $tfile $dbServer $dbUser $dbPass $dbName ";
     //echo $runScript;
