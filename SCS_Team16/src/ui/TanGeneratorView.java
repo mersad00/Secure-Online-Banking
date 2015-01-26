@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -16,7 +15,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class TanGeneratorView implements ActionListener {
+public class TanGeneratorView extends UIView implements ActionListener {
 
 	ITanGenerator tanController = new TanGeneratorImp();
 	JTextField tokenText;
@@ -25,53 +24,43 @@ public class TanGeneratorView implements ActionListener {
 	JTextField amountText;
 
 	public TanGeneratorView(JPanel panel) {
-
-		panel.setLayout(null);
-
+		super(panel);
+		JLabel titleLabel = new JLabel("Transaction Form");
+		panel.add(titleLabel, "cell 0 0 2 1");
 
 		JLabel tokenLabel = new JLabel("Token");
-		tokenLabel.setBounds(10, 10, 80, 25);
-		panel.add(tokenLabel);
-		
-		tokenText = new JTextField(100);
-		tokenText.setBounds(100, 10, 160, 25);
-		panel.add(tokenText);
-	
-		JLabel accountLabel = new JLabel("Target Acc.");
-		accountLabel.setBounds(10, 50, 80, 25);
-		panel.add(accountLabel);
-		
-		accountText = new JTextField(100);
-		accountText.setBounds(100, 50, 160, 25);
-		panel.add(accountText);
+		panel.add(tokenLabel, "cell 0 1 2 1");
+
+		tokenText = new JTextField(20);
+		panel.add(tokenText, "cell 1 1 2 1");
+
+		JLabel accountLabel = new JLabel("Target Account");
+		panel.add(accountLabel, "cell 0 2 1 1");
+
+		accountText = new JTextField(20);
+		panel.add(accountText, "cell 1 2 1 1");
 
 		JLabel amountLabel = new JLabel("Amount");
-		amountLabel.setBounds(10, 80, 80, 25);
-		panel.add(amountLabel);
+		panel.add(amountLabel, "cell 0 3 1 1");
 
-		amountText = new JTextField(100);
-		amountText.setBounds(100, 80, 160, 25);
-		panel.add(amountText);
+		amountText = new JTextField(20);
+		panel.add(amountText, "cell 1 3 1 1");
 
-		JLabel tanLabel = new JLabel("Tan");
-		tanLabel.setBounds(10, 110, 80, 25);
-		panel.add(tanLabel);
+		JLabel tanLabel = new JLabel("TAN");
+		panel.add(tanLabel, "cell 0 4 3 1");
 
-		tanText = new JTextField(200);
-		tanText.setBounds(100, 110, 160, 25);
-		panel.add(tanText);
+		tanText = new JTextField(20);
+		panel.add(tanText, "cell 1 4 3 1");
 
 		Image generateImage;
 		try {
 			generateImage = ImageIO.read(new File("icons/light59.png"));
 			JButton generateButton = new JButton("generate", new ImageIcon(
 					generateImage));
-			generateButton.setBounds(100, 140, 110, 25);
-			generateButton.setBorder(BorderFactory.createEmptyBorder());
-			generateButton.setContentAreaFilled(false);
+
 			generateButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 			generateButton.addActionListener(this);
-			panel.add(generateButton);
+			panel.add(generateButton, "cell 0 5 ");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -83,12 +72,19 @@ public class TanGeneratorView implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		try {
 			int amount = Integer.parseInt(amountText.getText());
-			if (tokenText.getText().length() == 0 || accountText.getText().length() == 0 || amount <= 0) {
+			if (tokenText.getText().length() == 0
+					|| accountText.getText().length() == 0 || amount <= 0) {
 				JOptionPane.showMessageDialog(null, "Invalid input!");
 				return;
 			}
-			this.tanText.setText(tanController.generateTan(LoginImp.pin,tokenText.getText(),
-					accountText.getText(), amountText.getText()));
+			String generatedTan = tanController.generateTan(LoginImp.pin,
+					tokenText.getText(), accountText.getText(),
+					amountText.getText());
+			if (generatedTan.length() == 0) {
+				JOptionPane.showMessageDialog(null, "Invalid input!");
+				return;
+			}
+			this.tanText.setText(generatedTan);
 		} catch (Exception exc) {
 			JOptionPane.showMessageDialog(null, "Invalid input!");
 		}

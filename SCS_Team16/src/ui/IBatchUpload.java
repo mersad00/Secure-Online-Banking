@@ -2,6 +2,6 @@ package ui;
 
 public interface IBatchUpload {
 
-	String generateTansFile();
+	String generateTansFile(String string);
 
 }
