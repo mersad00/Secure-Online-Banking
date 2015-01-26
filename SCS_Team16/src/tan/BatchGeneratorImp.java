@@ -35,7 +35,7 @@ public class BatchGeneratorImp implements IBatchGenerator {
 		try {
 			List<TransactionEntry> entries = readFileLines(file);
 			for (TransactionEntry entry : entries) {
-				if (entry.isComment)
+				if (!entry.isComment)
 					continue;
 				// TODO: @Alba check the entry.token you should
 				String tan = tanController.generateTan(LoginImp.pin, token,
@@ -77,7 +77,7 @@ public class BatchGeneratorImp implements IBatchGenerator {
 			if (strLine.startsWith("#"))
 				continue; // ignore comments
 			String[] elements = strLine.split(",");
-			if (elements.length < 5) {
+			if (elements.length < 4) {
 				// invalid line
 				TransactionEntry comment = new TransactionEntry(strLine);
 				System.out.println(comment);
@@ -88,11 +88,11 @@ public class BatchGeneratorImp implements IBatchGenerator {
 					TransactionEntry comment = new TransactionEntry(strLine);
 					entries.add(comment);
 					TransactionEntry entry = new TransactionEntry();
-					entry.tan = elements[0];
-					entry.sourceAccount = elements[1];
-					entry.destinationAccount = elements[2];
-					entry.amount = Integer.parseInt(elements[3]);
-					entry.description = elements[4];
+					// entry.tan = elements[0];
+					entry.sourceAccount = elements[0];
+					entry.destinationAccount = elements[1];
+					entry.amount = Integer.parseInt(elements[2]);
+					entry.description = elements[3];
 					entries.add(entry);
 				} catch (NumberFormatException ex) {
 					TransactionEntry comment = new TransactionEntry(strLine
