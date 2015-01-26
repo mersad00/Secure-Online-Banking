@@ -7,18 +7,21 @@ C_SRCS += \
 ../src/AESEncryptionExample.c \
 ../src/cdecode.c \
 ../src/cencode.c \
+../src/crypto.c \
 ../src/sha256.c 
 
 OBJS += \
 ./src/AESEncryptionExample.o \
 ./src/cdecode.o \
 ./src/cencode.o \
+./src/crypto.o \
 ./src/sha256.o 
 
 C_DEPS += \
 ./src/AESEncryptionExample.d \
 ./src/cdecode.d \
 ./src/cencode.d \
+./src/crypto.d \
 ./src/sha256.d 
 
 
@@ -26,7 +29,7 @@ C_DEPS += \
 src/%.o: ../src/%.c
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C Compiler'
-	gcc -I/home/samurai/Downloads/libb64-1.2.1/include -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
+	gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 

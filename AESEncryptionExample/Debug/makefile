@@ -23,19 +23,19 @@ endif
 # Add inputs and outputs from these tool invocations to the build variables 
 
 # All Target
-all: AESEncryptionExample
+all: libAESEncryptionExample
 
 # Tool invocations
-AESEncryptionExample: $(OBJS) $(USER_OBJS)
+libAESEncryptionExample: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C Linker'
-	gcc -L/usr/lib -o "AESEncryptionExample" $(OBJS) $(USER_OBJS) $(LIBS)
+	gcc -L/usr/lib -shared -o "libAESEncryptionExample" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) $(OBJS)$(C_DEPS)$(EXECUTABLES) AESEncryptionExample
+	-$(RM) $(OBJS)$(C_DEPS)$(LIBRARIES) libAESEncryptionExample
 	-@echo ' '
 
 .PHONY: all clean dependents

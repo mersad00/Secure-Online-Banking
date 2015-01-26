@@ -6,8 +6,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
-import org.apache.commons.net.ntp.NTPUDPClient;
-import org.apache.commons.net.ntp.TimeInfo;
 
 import repository.ISafeRepository;
 import repository.RepositoryContent;
@@ -76,19 +74,5 @@ public class GeneratorImp implements IGenerator {
 
 	}
 
-	@Override
-	public Date getCurrentTimeFromTimeServer() {
-		String TIME_SERVER = "time-a.nist.gov";
-		NTPUDPClient timeClient = new NTPUDPClient();
-		InetAddress inetAddress;
-		try {
-			inetAddress = InetAddress.getByName(TIME_SERVER);
-			TimeInfo timeInfo = timeClient.getTime(inetAddress);
-			long returnTime = timeInfo.getReturnTime();
-			Date time = new Date(returnTime);
-			return time;
-		} catch (Exception exc) {
-			return null;
-		}
-	}
+
 }
