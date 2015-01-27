@@ -10,13 +10,14 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class BatchUploadView extends UIView implements ActionListener {
@@ -28,14 +29,14 @@ public class BatchUploadView extends UIView implements ActionListener {
 	JLabel fileLabel, tansFileLabel, userLabel;
 	IBatchUpload bachTanController;
 
+	JTextArea tokenText;
+	JScrollPane scrollPane;
+
 	public BatchUploadView(JPanel panel) {
 		super(panel);
-		panel.setLayout(null);
 
-		userLabel = new JLabel("Please choose the batch file");
-		userLabel.setBounds(90, 10, 250, 25);
-		panel.add(userLabel);
-
+		userLabel = new JLabel("Please choose the batch file (.txt)");
+		panel.add(userLabel, "cell 0 0 1 1");
 		fc = new JFileChooser();
 		// Add listener on chooser to detect changes to selected file
 		fc.addPropertyChangeListener(new PropertyChangeListener() {
@@ -58,39 +59,40 @@ public class BatchUploadView extends UIView implements ActionListener {
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
 				"TEXT FILES", "txt", "text");
 		fc.setFileFilter(filter);
-		panel.add(fc);
+		fc.setVisible(false);
+		panel.add(fc, "cell 2 0 1 1");
 
 		Image uploadImage;
 		try {
+
+			tokenText = new JTextArea(4, 30);
+			tokenText.setText("Enter token here...");
+			scrollPane = new JScrollPane(tokenText);
+			panel.add(scrollPane, "cell 0 1");
+			scrollPane.setVisible(false);
+
 			uploadImage = ImageIO.read(new File("icons/upload124.png"));
 			JButton openButton = new JButton("Upload file", new ImageIcon(
 					uploadImage));
-			openButton.setBounds(100, 50, 150, 25);
-			openButton.setBorder(BorderFactory.createEmptyBorder());
-			openButton.setContentAreaFilled(false);
 			openButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 			openButton.addActionListener(this);
-			panel.add(openButton);
+			panel.add(openButton, "cell 1 0");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		fileLabel = new JLabel();
-		fileLabel.setBounds(30, 50, 250, 25);
 		fileLabel.setVisible(false);
-		panel.add(fileLabel);
+		panel.add(fileLabel, "cell 2 1");
 
 		// Tan generation button
 		tanGeneration = new JButton("Generate Tans");
-		tanGeneration.setBounds(120, 100, 150, 25);
 		tanGeneration.addActionListener(this);
-		panel.add(tanGeneration);
+		panel.add(tanGeneration, "cell 1 1");
 		tanGeneration.setVisible(false);
 
-		tansFileLabel = new JLabel(
-				"Now you can download the file with generated TANs");
-		tansFileLabel.setBounds(30, 10, 420, 25);
+		tansFileLabel = new JLabel("Download the file with generated TANs");
 
 	}
 
@@ -100,6 +102,7 @@ public class BatchUploadView extends UIView implements ActionListener {
 		switch (buttonText) {
 		case "Upload file":
 			// this.hideMe(true);
+			fc.setVisible(true);
 			int returnVal = fc.showDialog(panel, "Upload");
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				file = fc.getSelectedFile();
@@ -107,9 +110,14 @@ public class BatchUploadView extends UIView implements ActionListener {
 				fileLabel.setVisible(true);
 				tanGeneration.setVisible(true);
 			}
+			scrollPane.setVisible(true);
 			break;
 		case "Generate Tans":
-
+			if (tokenText.getText().length() == 0) {
+				JOptionPane.showMessageDialog(null, "Invalid input!");
+				return;
+			}
+			scrollPane.setVisible(false);
 			if (file.isFile()) {
 				// this.hideMe(true);
 				bachTanController = new BatchUploadImp(file);
@@ -123,13 +131,11 @@ public class BatchUploadView extends UIView implements ActionListener {
 							.read(new File("icons/download.png"));
 					JButton downloadButton = new JButton("Download TANs",
 							new ImageIcon(downloadImage));
-					downloadButton.setBounds(100, 50, 160, 30);
-					downloadButton.setBorder(BorderFactory.createEmptyBorder());
-					downloadButton.setContentAreaFilled(false);
+
 					downloadButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 					downloadButton.addActionListener(this);
-					panel.add(downloadButton);
-					panel.add(tansFileLabel);
+					panel.add(downloadButton, "cell 1 0 1 1");
+					panel.add(tansFileLabel, "cell 0 0 1 1");
 					downloadButton.addActionListener(new ActionListener() {
 
 						@Override
@@ -139,11 +145,13 @@ public class BatchUploadView extends UIView implements ActionListener {
 							switch (buttonText) {
 							case "Download TANs":
 								// save the generated file
-								JOptionPane.showMessageDialog(
-										null,
-										"File successfully downloaded: "
-												+ bachTanController
-														.generateTansFile());
+								JOptionPane
+										.showMessageDialog(
+												null,
+												"File successfully downloaded: "
+														+ bachTanController
+																.generateTansFile(tokenText
+																		.getText()));
 							}
 
 						}

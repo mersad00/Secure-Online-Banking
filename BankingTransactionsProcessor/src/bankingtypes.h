@@ -1,11 +1,12 @@
 
 typedef struct  
 {
-	char tan[16];
+	char tan[200];
 	int src_acc;
 	int dst_acc;
 	int amount;
 	char description[251];
+	int type; //0-normal-tan, 1-scs-tan
 } Transaction;
 
 

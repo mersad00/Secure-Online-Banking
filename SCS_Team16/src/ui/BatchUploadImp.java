@@ -14,10 +14,10 @@ public class BatchUploadImp implements IBatchUpload {
 	}
 
 	@Override
-	public String generateTansFile() {
+	public String generateTansFile(String token) {
 
-		String resultPath = batchGenerator.generateTan();
-		
+		String resultPath = batchGenerator.generateTan(token);
+
 		return resultPath;
 	}
 

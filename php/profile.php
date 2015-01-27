@@ -36,7 +36,13 @@ $_SESSION['user_token'] = $form_token;
 			<a href="../SCS_Team16/Executable/SCS_Team16.jar" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-download-alt"></span> Download</a>
 			</h4>
 			</span>
-			</th></tr></table>
+			</th></tr>
+			<tr class="noborder"><th colspan="2"><h4 id="green"> <span class="btn-group">&nbsp;&nbsp;SCS batch template</b>
+			<a target="_blank" href="/ws14secure/php/public/transactions-scs.txt" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-download-alt"></span> Download</a>
+			</h4>
+			</span>
+			</th></tr>
+			</table>
 			
 			<div id="clientKey">
 			<?php include('clientkeygenerator.php') ?></div>
