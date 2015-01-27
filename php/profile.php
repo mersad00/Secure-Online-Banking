@@ -33,7 +33,7 @@ $_SESSION['user_token'] = $form_token;
 			<div id="userInfo"></div>
 			
 			<table class="table"><tbody><tr class="noborder"><th colspan="2"><h4 id="green"> <span class="btn-group">&nbsp;&nbsp;Smart-Card-Simulator</b>
-			<a href="../SCS_Team16/Executable/SCS_Team16.jar" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-download-alt"></span> Download</a>
+			<a href="../SCS_Team16/Executable/SCS_Team16.zip" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-download-alt"></span> Download</a>
 			</h4>
 			</span>
 			</th></tr>
