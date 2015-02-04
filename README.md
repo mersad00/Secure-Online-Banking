@@ -77,3 +77,114 @@ when server is evaluating tans, to avoid timing attacks a timely secure compareS
 ##Batch Transaction Application written in C++ 
 We have implemented a command line application for processing batch transaction files. This application is being called by the php server as soon as clients uploading batch transaction files
 
+##OWASP Testing Status 
+Following table demonstrates the tests that we have performed on our secure online banking.
+
+
+| Ref. No. 	| Category 	| Test Name 	| Status 	|
+|----------	|------------------	|---------------------------------------------------------------------------	|------------	|
+|  	|  	|  	|  	|
+| 4.3 	|  	| Configuration and Deploy Management Testing 	|  	|
+| 4.3.2 	| OTG-CONFIG-002 	| Test Application Platform Configuration 	| Secure 	|
+| 4.3.3 	| OTG-CONFIG-003 	| Test File Extensions Handling for Sensitive Information 	| Secure 	|
+| 4.3.4 	| OTG-CONFIG-004 	| Backup and Unreferenced Files for Sensitive Information 	| Secure 	|
+| 4.3.5 	| OTG-CONFIG-005 	| Enumerate Infrastructure and Application Admin Interfaces 	| Secure 	|
+| 4.3.6 	| OTG-CONFIG-006 	| Test HTTP Methods 	| Secure 	|
+| 4.3.7 	| OTG-CONFIG-007 	| Test HTTP Strict Transport Security 	| Secure 	|
+| 4.3.8 	| OTG-CONFIG-008 	| Test RIA cross domain policy 	| NA 	|
+|  	|  	|  	|  	|
+| 4.4 	|  	| Identity Management Testing 	|  	|
+| 4.4.1 	| OTG-IDENT-001 	| Test Role Definitions 	| Secure 	|
+| 4.4.2 	| OTG-IDENT-002 	| Test User Registration Process 	| Fixed 	|
+| 4.4.3 	| OTG-IDENT-003 	| Test Account Provisioning Process 	| Secure 	|
+| 4.4.4 	| OTG-IDENT-004 	| Testing for Account Enumeration and Guessable User Account 	| Secure 	|
+| 4.4.5 	| OTG-IDENT-005 	| Testing for Weak or unenforced username policy 	| Secure 	|
+|  	|  	|  	|  	|
+| 4.5 	|  	| Authentication Testing 	|  	|
+| 4.5.1 	| OTG-AUTHN-001 	| Testing for Credentials Transported over an Encrypted Channel 	| Secure 	|
+| 4.5.2 	| OTG-AUTHN-002 	| Testing for default credentials 	| Secure 	|
+| 4.5.3 	| OTG-AUTHN-003 	| Testing for Weak lock out mechanism 	| Secure 	|
+| 4.5.4 	| OTG-AUTHN-004 	| Testing for bypassing authentication schema 	| Fixed 	|
+| 4.5.5 	| OTG-AUTHN-005 	| Test remember password functionality 	| Secure 	|
+| 4.5.6 	| OTG-AUTHN-006 	| Testing for Browser cache weakness 	| Secure 	|
+| 4.5.7 	| OTG-AUTHN-007 	| Testing for Weak password policy 	| Secure 	|
+| 4.5.8 	| OTG-AUTHN-008 	| Testing for Weak security question/answer 	| NA 	|
+| 4.5.9 	| OTG-AUTHN-009 	| Testing for weak password change or reset functionalities 	| Fixed 	|
+| 4.5.10 	| OTG-AUTHN-010 	| Testing for Weaker authentication in alternative channel 	| NA 	|
+|  	|  	|  	|  	|
+| 4.6 	|  	| Authorization Testing 	|  	|
+| 4.6.1 	| OTG-AUTHZ-001 	| Testing Directory traversal/file include 	| Fixed 	|
+| 4.6.2 	| OTG-AUTHZ-002 	| Testing for bypassing authorization schema 	| Secure 	|
+| 4.6.3 	| OTG-AUTHZ-003 	| Testing for Privilege Escalation 	| Secure 	|
+| 4.6.4 	| OTG-AUTHZ-004 	| Testing for Insecure Direct Object References 	| NA 	|
+|  	|  	|  	|  	|
+| 4.7 	|  	| Session Management Testing 	|  	|
+| 4.7.1 	| OTG-SESS-001 	| Testing for Bypassing Session Management Schema 	| Secure 	|
+| 4.7.2 	| OTG-SESS-002 	| Testing for Cookies attributes 	| Secure 	|
+| 4.7.3 	| OTG-SESS-003 	| Testing for Session Fixation 	| Secure 	|
+| 4.7.4 	| OTG-SESS-004 	| Testing for Exposed Session Variables 	| Secure 	|
+| 4.7.5 	| OTG-SESS-005 	| Testing for Cross Site Request Forgery 	| Fixed 	|
+| 4.7.6 	| OTG-SESS-006 	| Testing for logout functionality 	| Secure 	|
+| 4.7.7 	| OTG-SESS-007 	| Test Session Timeout 	| Secure 	|
+| 4.7.8 	| OTG-SESS-008 	| Testing for Session puzzling 	| Secure 	|
+|  	|  	|  	|  	|
+| 4.8 	|  	| Data Validation Testing 	|  	|
+| 4.8.1 	| OTG-INPVAL-001 	| Testing for Reflected Cross Site Scripting 	| Secure 	|
+| 4.8.2 	| OTG-INPVAL-002 	| Testing for Stored Cross Site Scripting 	| Secure 	|
+| 4.8.3 	| OTG-INPVAL-003 	| Testing for HTTP Verb Tampering 	| Secure 	|
+| 4.8.4 	| OTG-INPVAL-004 	| Testing for HTTP Parameter pollution 	| Secure 	|
+| 4.8.5 	| OTG-INPVAL-005 	| Testing for SQL Injection 	| Fixed 	|
+| 4.8.5.2 	|  	| MySQL Testing 	|  	|
+| 4.8.6 	| OTG-INPVAL-006 	| Testing for LDAP Injection 	| NA 	|
+| 4.8.7 	| OTG-INPVAL-007 	| Testing for ORM Injection 	| NA 	|
+| 4.8.8 	| OTG-INPVAL-008 	| Testing for XML Injection 	| NA 	|
+| 4.8.9 	| OTG-INPVAL-009 	| Testing for SSI Injection 	| NA 	|
+| 4.8.10 	| OTG-INPVAL-010 	| Testing for XPath Injection 	| NA 	|
+| 4.8.11 	| OTG-INPVAL-011 	| IMAP/SMTP Injection 	| NA 	|
+|  	|  	|  	|  	|
+| 4.8.12 	| OTG-INPVAL-012 	| Testing for Code Injection 	| Secure 	|
+| 4.8.12.1 	|  	| Testing for Local File Inclusion 	| Secure 	|
+| 4.8.12.2 	|  	| Testing for Remote File Inclusion 	|  	|
+| 4.8.13 	| OTG-INPVAL-013 	| Testing for Command Injection 	|  	|
+| 4.8.14 	| OTG-INPVAL-014 	| Testing for Buffer overflow 	| Secure 	|
+| 4.8.14.1 	|  	| Testing for Heap overflow 	| Secure 	|
+| 4.8.14.2 	|  	| Testing for Stack overflow 	| Secure 	|
+| 4.8.14.3 	|  	| Testing for Format string 	| Secure 	|
+| 4.8.15 	| OTG-INPVAL-015 	| Testing for incubated vulnerabilities 	| Secure 	|
+| 4.8.16 	| OTG-INPVAL-016 	| Testing for HTTP Splitting/Smuggling 	| Not Tested 	|
+|  	|  	|  	|  	|
+| 4.9 	|  	| Error Handling 	|  	|
+| 4.9.1 	| OTG-ERR-001 	| Analysis of Error Codes 	| Fixed 	|
+| 4.9.2 	| OTG-ERR-002 	| Analysis of Stack Traces 	| Secure 	|
+|  	|  	|  	|  	|
+| 4.1 	|  	| Cryptography 	|  	|
+| 4.10.1 	| OTG-CRYPST-001 	| Testing for Weak SSL/TSL Ciphers, Insufficient Transport Layer Protection 	| Secure 	|
+| 4.10.2 	| OTG-CRYPST-002 	| Testing for Padding Oracle 	| Fixed 	|
+| 4.10.3 	| OTG-CRYPST-003 	| Testing for Sensitive information sent via unencrypted channels 	| Secure 	|
+|  	|  	| Testing for not using a random iv 	| Fixed 	|
+|  	|  	|  	|  	|
+| 4.11 	|  	| Business Logic Testing 	|  	|
+| 4.11.1 	| OTG-BUSLOGIC-001 	| Test Business Logic Data Validation 	| Secure 	|
+| 4.11.2 	| OTG-BUSLOGIC-002 	| Test Ability to Forge Requests 	| Secure 	|
+| 4.11.3 	| OTG-BUSLOGIC-003 	| Test Integrity Checks 	| Secure 	|
+| 4.11.4 	| OTG-BUSLOGIC-004 	| Test for Process Timing 	| Secure 	|
+| 4.11.5 	| OTG-BUSLOGIC-005 	| Test Number of Times a Function Can be Used Limits 	| Secure 	|
+| 4.11.6 	| OTG-BUSLOGIC-006 	| Testing for the Circumvention of Work Flows 	| Secure 	|
+| 4.11.7 	| OTG-BUSLOGIC-007 	| Test Defenses Against Application Mis-use 	| Secure 	|
+| 4.11.8 	| OTG-BUSLOGIC-008 	| Test Upload of Unexpected File Types 	| Secure 	|
+| 4.11.9 	| OTG-BUSLOGIC-009 	| Test Upload of Malicious Files 	| Secure 	|
+|  	|  	|  	|  	|
+| 4.12 	|  	| Client Side Testing 	|  	|
+| 4.12.1 	| OTG-CLIENT-001 	| Testing for DOM based Cross Site Scripting 	| Secure 	|
+| 4.12.2 	| OTG-CLIENT-002 	| Testing for JavaScript Execution 	| Secure 	|
+| 4.12.3 	| OTG-CLIENT-003 	| Testing for HTML Injection 	| Secure 	|
+| 4.12.4 	| OTG-CLIENT-004 	| Testing for Client Side URL Redirect 	| Secure 	|
+| 4.12.5 	| OTG-CLIENT-005 	| Testing for CSS Injection 	| Secure 	|
+| 4.12.6 	| OTG-CLIENT-006 	| Testing for Client Side Resource Manipulation 	| Secure 	|
+| 4.12.7 	| OTG-CLIENT-007 	| Test Cross Origin Resource Sharing 	| Secure 	|
+| 4.12.8 	| OTG-CLIENT-008 	| Testing for Cross Site Flashing 	| NA 	|
+| 4.12.9 	| OTG-CLIENT-009 	| Testing for Clickjacking 	| Fixed 	|
+| 4.12.10 	| OTG-CLIENT-010 	| Testing WebSockets 	| NA 	|
+| 4.12.11 	| OTG-CLIENT-011 	| Test Web Messaging 	| NA 	|
+| 4.12.12 	| OTG-CLIENT-012 	| Test Local Storage 	| Secure 	|
+
